@@ -1,4 +1,8 @@
-import { handle } from 'hono/vercel'
-import { app } from '../backend/index'
+import { getRequestListener } from '@hono/node-server'
+import { app } from './index'
 
-export default handle(app)
+const listener = getRequestListener(app.fetch)
+
+export default function handler(req: any, res: any) {
+  return listener(req, res)
+}
