@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import { BuildStamp } from './components/BuildStamp'
 import Home from './pages/Home'
 import ClienteLogin from './pages/ClienteLogin'
 import ClienteEntregaveis from './pages/ClienteEntregaveis'
@@ -34,25 +35,28 @@ function ProtectedAdmin({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/c/:slug" element={<ClienteLogin />} />
-      <Route path="/c/:slug/entregaveis" element={<ProtectedCliente><ClienteEntregaveis /></ProtectedCliente>} />
-      <Route path="/c/:slug/ciclo" element={<ProtectedCliente><ClienteCiclo /></ProtectedCliente>} />
-      <Route path="/c/:slug/ciclo/:cycleId/peca/:pieceId" element={<ProtectedCliente><ClientePeca /></ProtectedCliente>} />
-      <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
-      <Route path="/admin/clientes" element={<ProtectedAdmin><AdminClientes /></ProtectedAdmin>} />
-      <Route path="/admin/clientes/:id" element={<ProtectedAdmin><AdminClienteEdit /></ProtectedAdmin>} />
-      <Route path="/admin/entregaveis" element={<ProtectedAdmin><AdminEntregaveis /></ProtectedAdmin>} />
-      <Route path="/admin/ciclos" element={<ProtectedAdmin><AdminCiclos /></ProtectedAdmin>} />
-      <Route path="/admin/ciclos/:cycleId/pecas" element={<ProtectedAdmin><AdminCicloPecas /></ProtectedAdmin>} />
-      <Route path="/admin/ciclos/:cycleId/pecas/:pieceId" element={<ProtectedAdmin><AdminPecaEdit /></ProtectedAdmin>} />
-      <Route path="/admin/comentarios" element={<ProtectedAdmin><AdminComentarios /></ProtectedAdmin>} />
-      <Route path="/admin/ajustes" element={<ProtectedAdmin><AdminAjustes /></ProtectedAdmin>} />
-      <Route path="/admin/aditivos" element={<ProtectedAdmin><AdminAditivos /></ProtectedAdmin>} />
-      <Route path="/admin/senha" element={<ProtectedAdmin><AdminSenha /></ProtectedAdmin>} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/c/:slug" element={<ClienteLogin />} />
+        <Route path="/c/:slug/entregaveis" element={<ProtectedCliente><ClienteEntregaveis /></ProtectedCliente>} />
+        <Route path="/c/:slug/ciclo" element={<ProtectedCliente><ClienteCiclo /></ProtectedCliente>} />
+        <Route path="/c/:slug/ciclo/:cycleId/peca/:pieceId" element={<ProtectedCliente><ClientePeca /></ProtectedCliente>} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
+        <Route path="/admin/clientes" element={<ProtectedAdmin><AdminClientes /></ProtectedAdmin>} />
+        <Route path="/admin/clientes/:id" element={<ProtectedAdmin><AdminClienteEdit /></ProtectedAdmin>} />
+        <Route path="/admin/entregaveis" element={<ProtectedAdmin><AdminEntregaveis /></ProtectedAdmin>} />
+        <Route path="/admin/ciclos" element={<ProtectedAdmin><AdminCiclos /></ProtectedAdmin>} />
+        <Route path="/admin/ciclos/:cycleId/pecas" element={<ProtectedAdmin><AdminCicloPecas /></ProtectedAdmin>} />
+        <Route path="/admin/ciclos/:cycleId/pecas/:pieceId" element={<ProtectedAdmin><AdminPecaEdit /></ProtectedAdmin>} />
+        <Route path="/admin/comentarios" element={<ProtectedAdmin><AdminComentarios /></ProtectedAdmin>} />
+        <Route path="/admin/ajustes" element={<ProtectedAdmin><AdminAjustes /></ProtectedAdmin>} />
+        <Route path="/admin/aditivos" element={<ProtectedAdmin><AdminAditivos /></ProtectedAdmin>} />
+        <Route path="/admin/senha" element={<ProtectedAdmin><AdminSenha /></ProtectedAdmin>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <BuildStamp />
+    </>
   )
 }
