@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
-import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import { BuildStamp } from './BuildStamp'
 
 const STATUS_LABELS: Record<string, string> = {
   pendente: 'Pendente',
@@ -35,24 +35,24 @@ export function Logo({ size = 40 }: { size?: number }) {
 }
 
 export function Header({
+  homeTo = '/',
   title = 'Central de Entregas',
-  subtitle = 'FGX',
   children,
 }: {
+  homeTo?: string
   title?: string
-  subtitle?: string
   children?: React.ReactNode
 }) {
   return (
-    <header className="fgx-header px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
-      <div className="flex items-center gap-3 min-w-0">
+    <header className="fgx-header px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+      <Link to={homeTo} className="fgx-brand-link min-w-0" aria-label="Voltar ao início">
         <Logo />
         <div className="min-w-0 leading-tight">
           <p className="font-titillium font-semibold text-base sm:text-[1.05rem] text-ink truncate">{title}</p>
-          <p className="font-montserrat text-xs text-ink-3 truncate">{subtitle}</p>
+          <BuildStamp />
         </div>
-      </div>
-      <nav className="flex items-center gap-3 sm:gap-5 flex-wrap justify-end" aria-label="Principal">
+      </Link>
+      <nav className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end" aria-label="Principal">
         {children}
       </nav>
     </header>
@@ -67,62 +67,27 @@ export function ClientChrome({
   children: React.ReactNode
 }) {
   const { slug } = useParams<{ slug: string }>()
-  const { pessoaNome, clientRename, logout } = useAuth()
-  const [showRename, setShowRename] = useState(false)
-  const [newName, setNewName] = useState('')
-
-  const handleRename = async () => {
-    if (!newName.trim()) return
-    await clientRename(newName.trim())
-    setShowRename(false)
-  }
+  const { logout } = useAuth()
+  const homeTo = `/c/${slug}/entregaveis`
 
   return (
     <div className="min-h-screen">
-      <Header title="Central de Entregas" subtitle="FGX Gestão">
-        <span className="hidden md:inline text-sm text-ink-3 font-montserrat">
-          Olá, <span className="text-ink font-medium">{pessoaNome}</span>
-        </span>
-        {!showRename ? (
-          <button
-            type="button"
-            className="fgx-nav-link text-xs underline decoration-ink-3/40"
-            onClick={() => {
-              setShowRename(true)
-              setNewName(pessoaNome || '')
-            }}
-          >
-            Não sou eu
-          </button>
-        ) : (
-          <span className="flex items-center gap-2">
-            <input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="border border-line rounded-lg px-2 py-1 text-sm text-ink w-28"
-              aria-label="Novo nome"
-            />
-            <button type="button" className="text-xs bg-fgx-red text-white px-2.5 py-1 rounded-lg font-semibold" onClick={handleRename}>
-              OK
-            </button>
-            <button type="button" className="text-xs text-ink-3 underline" onClick={() => setShowRename(false)}>
-              Cancelar
-            </button>
-          </span>
-        )}
+      <Header homeTo={homeTo} title="Central de Entregas">
         <Link
-          to={`/c/${slug}/entregaveis`}
-          className={`fgx-nav-link ${active === 'entregaveis' ? 'is-active' : ''}`}
+          to={homeTo}
+          className={`fgx-nav-link fgx-nav-item ${active === 'entregaveis' ? 'is-active' : ''}`}
         >
           Entregáveis
+          <span className="fgx-nav-sub">Projeto</span>
         </Link>
         <Link
           to={`/c/${slug}/ciclo`}
-          className={`fgx-nav-link ${active === 'ciclo' || active === 'peca' ? 'is-active' : ''}`}
+          className={`fgx-nav-link fgx-nav-item ${active === 'ciclo' || active === 'peca' ? 'is-active' : ''}`}
         >
-          Ciclo editorial
+          Ciclo Editorial
         </Link>
-        <button type="button" className="fgx-nav-link" onClick={logout}>
+        <span className="fgx-nav-divider" aria-hidden />
+        <button type="button" className="fgx-nav-link fgx-nav-item fgx-nav-sair" onClick={logout}>
           Sair
         </button>
       </Header>

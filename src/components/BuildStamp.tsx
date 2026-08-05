@@ -12,24 +12,26 @@ function formatBuildStamp(iso: string): string {
   })
 }
 
-/** Versão e data/hora do build que está no ar (injetadas no Vite no momento do deploy). */
-export function BuildStamp() {
+export function getBuildMeta() {
   const version = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0'
   const buildTime = typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__ : ''
   const commit = typeof __GIT_COMMIT__ !== 'undefined' ? __GIT_COMMIT__ : ''
   const when = buildTime ? formatBuildStamp(buildTime) : '—'
+  return { version, buildTime, commit, when }
+}
 
-  const label = commit
-    ? `v${version} · ${when} · ${commit}`
-    : `v${version} · ${when}`
+/** Versão + data/hora do build — exibida sob a logo no cabeçalho. */
+export function BuildStamp({ className = '' }: { className?: string }) {
+  const { version, buildTime, commit, when } = getBuildMeta()
+  const label = commit ? `v${version} · ${when} · ${commit}` : `v${version} · ${when}`
 
   return (
-    <div
-      className="build-stamp"
+    <p
+      className={`build-stamp-inline ${className}`.trim()}
       title={`Versão em produção\nBuild: ${buildTime || 'n/d'}${commit ? `\nCommit: ${commit}` : ''}`}
       aria-label={`Versão ${version}, build em ${when}`}
     >
       {label}
-    </div>
+    </p>
   )
 }

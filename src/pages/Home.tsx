@@ -1,16 +1,19 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../components/Shared'
+import { BuildStamp } from '../components/BuildStamp'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-fgx-gray">
-      <header className="fgx-header px-6 py-5">
-        <div className="max-w-3xl mx-auto flex items-center gap-4">
-          <Logo size={48} />
-          <div className="leading-tight">
-            <p className="font-titillium font-semibold text-lg text-ink">Central de Entregas</p>
-            <p className="font-montserrat text-sm text-ink-3">FGX Gestão · Portal do Cliente</p>
-          </div>
+      <header className="fgx-header px-6 py-4">
+        <div className="max-w-3xl mx-auto">
+          <Link to="/" className="fgx-brand-link" aria-label="Início">
+            <Logo size={48} />
+            <div className="leading-tight min-w-0">
+              <p className="font-titillium font-semibold text-lg text-ink">Central de Entregas</p>
+              <BuildStamp />
+            </div>
+          </Link>
         </div>
       </header>
 

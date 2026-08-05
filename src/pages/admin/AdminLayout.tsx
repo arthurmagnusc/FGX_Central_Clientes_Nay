@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { Logo } from '../../components/Shared'
+import { BuildStamp } from '../../components/BuildStamp'
 
 const NAV = [
   { to: '/admin/dashboard', label: 'Dashboard' },
@@ -19,15 +20,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-fgx-gray">
-      <header className="fgx-header px-6 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <header className="fgx-header px-6 py-3 flex items-center justify-between">
+        <Link to="/admin/dashboard" className="fgx-brand-link" aria-label="Voltar ao dashboard">
           <Logo />
-          <div className="leading-tight">
+          <div className="leading-tight min-w-0">
             <p className="font-titillium font-semibold text-base text-ink">Admin FGX</p>
-            <p className="font-montserrat text-xs text-ink-3">Portal interno</p>
+            <BuildStamp />
           </div>
-        </div>
-        <button type="button" className="fgx-nav-link" onClick={logout}>
+        </Link>
+        <button type="button" className="fgx-nav-link fgx-nav-item fgx-nav-sair" onClick={logout}>
           Sair
         </button>
       </header>
