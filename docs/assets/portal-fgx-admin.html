@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal FGX — Painel administrativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Titillium+Web:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fgx-red:#B12119; --fgx-orange:#E77938; --fgx-red-dark:#7E131C;
+  --fgx-beige-light:#FAE7CF; --fgx-green:#527F3E; --fgx-gold:#FAB826; --fgx-blue:#356FA9;
+  --ink:#1C1A19; --ink-2:#4A4341; --ink-3:#7A716D;
+  --line:#E7E1DD; --bg:#F6F3F1;
+  --sh:0 1px 2px rgba(28,26,25,.03),0 3px 14px rgba(28,26,25,.05);
+  --side:288px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Montserrat,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Titillium Web',system-ui,sans-serif}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+a{color:var(--fgx-red)}
+.hidden{display:none !important}
+svg{flex:none}
+
+#demoBar{background:#0F0E0D;color:#EDE8E5;font-size:12px;padding:6px 20px;text-align:center;letter-spacing:.2px}
+#demoBar b{color:var(--fgx-gold)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--fgx-red);color:#fff}.btn-primary:hover{background:var(--fgx-red-dark)}
+.btn-ghost{border:1.5px solid var(--line);color:var(--ink-2);background:#fff}.btn-ghost:hover{border-color:var(--ink-3)}
+.btn-dark{background:var(--ink);color:#fff}.btn-dark:hover{background:#000}
+.btn-green{background:var(--fgx-green);color:#fff}.btn-green:hover{filter:brightness(.92)}
+.btn-sm{padding:7px 13px;font-size:13px;border-radius:8px}
+.btn-xs{padding:4px 9px;font-size:12px;border-radius:6px}
+.btn-full{width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+label{display:block;font-size:11.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase}
+.inp,textarea.inp,select.inp{width:100%;padding:10px 13px;border:1.5px solid var(--line);border-radius:9px;background:#fff;outline:none;transition:.15s}
+.inp:focus{border-color:var(--fgx-orange);box-shadow:0 0 0 3px rgba(231,121,56,.13)}
+textarea.inp{resize:vertical;line-height:1.6}
+.field{margin-bottom:16px}
+.hint{font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.5;text-transform:none;font-weight:400;letter-spacing:0}
+
+/* ===== LOGIN ===== */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#26221F 0%,#151312 60%,#0C0B0A 100%)}
+.login-card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.logo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,var(--fgx-red),var(--fgx-orange));font-family:'Titillium Web';font-weight:900;color:#fff;font-size:17px;flex:none}
+.login-card .logo{margin-bottom:22px}
+.login-card h1{font-size:25px;font-weight:700;letter-spacing:-.4px}
+.login-card .sub{color:var(--ink-3);font-size:14px;margin:6px 0 26px}
+.err{background:rgba(177,33,25,.08);color:var(--fgx-red);font-size:13px;padding:10px 13px;border-radius:8px;margin-bottom:15px}
+.warn{background:rgba(250,184,38,.14);color:#7A5405;font-size:12.5px;padding:11px 14px;border-radius:9px;margin-bottom:16px;line-height:1.5}
+.demo-creds{margin-top:24px;padding-top:19px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.demo-creds code{background:var(--bg);padding:2px 7px;border-radius:5px;color:var(--ink-2)}
+
+/* ===== SHELL ===== */
+#app{display:flex;min-height:100vh}
+aside.side{width:var(--side);flex:none;color:#fff;display:flex;flex-direction:column;padding:20px 16px;position:sticky;top:0;height:100vh;background:linear-gradient(170deg,#2A2523 0%,#1A1716 55%,#100E0D 100%)}
+.brand{display:flex;align-items:center;gap:12px;padding:0 4px 20px}
+.brand .logo{width:42px;height:42px;font-size:14px;border-radius:10px}
+.brand .bn{font-family:'Titillium Web';font-weight:700;font-size:16px;line-height:1.15}
+.brand .bs{font-size:9px;letter-spacing:1.5px;opacity:.55;text-transform:uppercase;margin-top:2px}
+.admtag{background:rgba(231,121,56,.18);border:1px solid rgba(231,121,56,.35);color:#F0A570;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 11px;border-radius:7px;text-align:center;margin-bottom:16px}
+.cliSel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 12px;cursor:pointer;transition:.15s}
+.cliSel:hover{background:rgba(255,255,255,.12)}
+.cliSel .cl{font-size:9.5px;letter-spacing:1.1px;opacity:.55;text-transform:uppercase}
+.cliSel select{background:none;border:none;color:#fff;font-family:'Titillium Web';font-weight:700;font-size:15px;width:100%;outline:none;margin-top:2px;cursor:pointer}
+.cliSel option{color:var(--ink)}
+.navlabel{font-size:9px;letter-spacing:1.5px;opacity:.45;text-transform:uppercase;margin:22px 4px 9px}
+nav.main{display:flex;flex-direction:column;gap:2px}
+nav.main button{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;font-size:14px;font-weight:500;color:rgba(255,255,255,.72);transition:.15s;position:relative;text-align:left;width:100%}
+nav.main button:hover{background:rgba(255,255,255,.08);color:#fff}
+nav.main button.on{background:rgba(255,255,255,.13);color:#fff;font-weight:600}
+nav.main button.on:before{content:'';position:absolute;left:-16px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--fgx-orange)}
+nav.main .cnt{margin-left:auto;font-size:11px;font-weight:700;background:var(--fgx-orange);color:#3A1B08;padding:1px 8px;border-radius:20px;min-width:22px;text-align:center}
+nav.main .cnt.mute{background:rgba(255,255,255,.16);color:#fff}
+.side-bottom{margin-top:auto;display:flex;flex-direction:column;gap:2px}
+.side-bottom button{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:10px;font-size:13.5px;color:rgba(255,255,255,.6);width:100%;text-align:left}
+.side-bottom button:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main.content{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;gap:14px;padding:14px 30px;background:rgba(255,255,255,.78);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+.crumb{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--ink-3)}
+.crumb b{color:var(--ink);font-weight:600}
+.crumb button:hover{color:var(--fgx-red)}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.pad{padding:28px 30px 80px;max-width:1360px}
+.mobtoggle{display:none}
+
+.phead{display:flex;align-items:flex-start;gap:18px;margin-bottom:26px;flex-wrap:wrap}
+.phead h1{font-size:29px;font-weight:700;letter-spacing:-.6px;line-height:1.15}
+.phead .ps{font-size:14px;color:var(--ink-3);margin-top:5px;max-width:620px}
+.phead .acts{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:var(--sh)}
+.cardp{padding:20px 22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill.pendente{color:#7A716D;background:#F0EEEC}
+.pill.em_revisao{color:#2A5A8C;background:rgba(53,111,169,.11)}
+.pill.ajustada{color:#B2531D;background:rgba(231,121,56,.13)}
+.pill.aprovada{color:#3F6530;background:rgba(82,127,62,.11)}
+.pill.rascunho{color:#7A716D;background:#F0EEEC}
+.pill.publicado{color:#2A5A8C;background:rgba(53,111,169,.11)}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:var(--fgx-beige-light);color:#8A4A22}
+.tag.n{background:var(--bg);color:var(--ink-3)}
+.tag.est{background:rgba(177,33,25,.09);color:var(--fgx-red)}
+
+/* ===== TABELA ===== */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-3);font-weight:700;padding:0 14px 11px;border-bottom:1px solid var(--line)}
+.tbl td{padding:14px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.click{cursor:pointer}
+.tbl tr.click:hover td{background:#FBFAF9}
+.tbl .tt{font-weight:600;line-height:1.35}
+.tbl .sm{font-size:12px;color:var(--ink-3);margin-top:3px}
+
+/* ===== EDITOR DE BLOCOS ===== */
+.ed-layout{display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start}
+.paste-zone{border:2px dashed var(--line);border-radius:12px;padding:20px;background:#fff}
+.paste-zone textarea{width:100%;min-height:190px;border:none;outline:none;resize:vertical;font-size:14.5px;line-height:1.65;font-family:inherit}
+.paste-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.seg{display:flex;background:var(--bg);border-radius:9px;padding:3px;gap:2px}
+.seg button{padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.seg button.on{background:#fff;color:var(--fgx-red);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+.blk{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:11px;overflow:hidden;transition:.15s}
+.blk.drag{opacity:.4}
+.blk.over{border-color:var(--fgx-orange);box-shadow:0 0 0 3px rgba(231,121,56,.14)}
+.blk-h{display:flex;align-items:center;gap:10px;padding:11px 15px;background:#FBFAF9;border-bottom:1px solid var(--line)}
+.blk-n{font-family:'Titillium Web';font-weight:700;font-size:12px;color:var(--fgx-orange);letter-spacing:.6px;text-transform:uppercase}
+.blk-h .chars{font-size:11.5px;color:var(--ink-3);margin-left:6px}
+.blk-h .chars.over{color:var(--fgx-red);font-weight:700}
+.blk-h .tools{margin-left:auto;display:flex;gap:3px}
+.iconbtn{width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);transition:.15s}
+.iconbtn:hover{background:rgba(28,26,25,.07);color:var(--ink)}
+.iconbtn.dz{cursor:grab}
+.iconbtn:disabled{opacity:.25;cursor:not-allowed}
+.blk-b{padding:13px 15px}
+.blk-b input.t{width:100%;border:none;outline:none;font-weight:700;font-size:15.5px;font-family:'Titillium Web';margin-bottom:8px;padding:3px 0}
+.blk-b input.t::placeholder{font-weight:400;color:#BDB5B0}
+.blk-b textarea{width:100%;border:none;outline:none;resize:none;font-size:14.5px;line-height:1.68;font-family:inherit;overflow:hidden}
+.blk-warn{font-size:11.5px;color:#8A6208;background:rgba(250,184,38,.13);padding:7px 15px;border-top:1px solid var(--line)}
+.ed-summary{position:sticky;top:80px}
+.sum-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.sum-row:last-child{border-bottom:none}
+.sum-row b{font-family:'Titillium Web';font-size:15px}
+.sum-row.bad b{color:var(--fgx-red)}
+.sum-row.good b{color:var(--fgx-green)}
+
+/* ===== COMENTÁRIOS ===== */
+.cmt-layout{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+.cmt-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px 19px;margin-bottom:12px;box-shadow:var(--sh);transition:.15s}
+.cmt-item.sel{border-color:var(--fgx-orange);box-shadow:0 0 0 3px rgba(231,121,56,.13)}
+.cmt-item.done{opacity:.62}
+.cmt-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:9px;font-size:12px;color:var(--ink-3)}
+.cmt-h b{color:var(--ink);font-size:13.5px;font-weight:600}
+.cmt-src{font-size:12px;color:var(--ink-3);margin-bottom:9px;padding:8px 12px;background:var(--bg);border-radius:7px;line-height:1.45}
+.cmt-src b{color:var(--ink-2)}
+.cmt-txt{font-size:14.5px;line-height:1.6;border-left:3px solid var(--fgx-blue);padding-left:13px;margin-bottom:13px}
+.cmt-f{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.badge-ok{font-size:11.5px;font-weight:600;color:var(--fgx-green);display:flex;align-items:center;gap:6px}
+.adj-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:11px;box-shadow:var(--sh)}
+.adj-card .ah{display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+.adj-card .ad{font-size:13.5px;line-height:1.55}
+.adj-card .asrc{font-size:11.5px;color:var(--ink-3);font-style:italic;margin-top:8px}
+.adj-f{display:flex;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.empty{text-align:center;padding:44px 20px;color:var(--ink-3);font-size:14px;line-height:1.6}
+
+/* ===== MODAL ===== */
+.overlay{position:fixed;inset:0;background:rgba(15,14,13,.55);z-index:90;display:flex;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(2px)}
+.modal{background:#fff;border-radius:15px;width:100%;max-width:620px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.modal-h{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.modal-h h3{font-size:19px;font-weight:700}
+.modal-b{padding:22px 24px;overflow-y:auto}
+.modal-f{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:9px;justify-content:flex-end;background:#FBFAF9;border-radius:0 0 15px 15px;flex-wrap:wrap}
+.radio{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:.15s}
+.radio:hover{border-color:var(--ink-3)}
+.radio.on{border-color:var(--fgx-red);background:rgba(177,33,25,.04)}
+.radio input{margin-top:4px;accent-color:var(--fgx-red)}
+.radio .rt{font-weight:600;font-size:14.5px}
+.radio .rd{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin-top:2px}
+.md-prev{background:var(--ink);color:#E8E3E0;border-radius:10px;padding:16px 18px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;max-height:280px;overflow-y:auto}
+
+.flash{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 10px 34px rgba(0,0,0,.35);transition:.28s;z-index:120;opacity:0;max-width:88vw;text-align:center}
+.flash.on{transform:translateX(-50%) translateY(0);opacity:1}
+.flash.ok{background:#3F6530}
+
+@media (max-width:1150px){.ed-layout,.cmt-layout{grid-template-columns:1fr}.ed-summary{position:static}}
+@media (max-width:900px){
+  aside.side{position:fixed;left:0;top:0;z-index:70;transform:translateX(-100%);transition:.25s;box-shadow:0 0 60px rgba(0,0,0,.45)}
+  aside.side.open{transform:translateX(0)}
+  .mobtoggle{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:#fff}
+  .pad{padding:22px 16px 70px}.topbar{padding:12px 16px}
+  .phead h1{font-size:23px}.grid2{grid-template-columns:1fr}
+  .tbl thead{display:none}
+  .tbl td{display:block;border:none;padding:4px 14px}
+  .tbl tr{display:block;border-bottom:1px solid var(--line);padding:12px 0}
+}
+</style>
+</head>
+<body>
+
+<div id="demoBar">PROTÓTIPO DO PAINEL ADMINISTRATIVO — lado interno da FGX. Dados de <b>demonstração</b>.</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <div class="login-card">
+    <div class="logo">FGX</div>
+    <h1>Painel administrativo</h1>
+    <p class="sub">Área interna da equipe FGX</p>
+    <div class="warn"><b>Senha inicial não trocada.</b> Enquanto a senha de administrador for a definida na instalação, este aviso aparece em todas as telas.</div>
+    <div id="loginErr" class="err hidden"></div>
+    <form id="loginForm">
+      <div class="field"><label for="pw">Senha de administrador</label><input id="pw" class="inp" type="password" autocomplete="off"></div>
+      <button class="btn btn-dark btn-full" type="submit">Entrar</button>
+    </form>
+    <div class="demo-creds">No protótipo, a senha é <code>fgxadmin</code>.</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" class="hidden">
+  <aside class="side" id="sidebar">
+    <div class="brand"><div class="logo">FGX</div>
+      <div><div class="bn">Portal FGX</div><div class="bs">Painel interno</div></div></div>
+    <div class="admtag">Área administrativa</div>
+    <div class="cliSel">
+      <div class="cl">Cliente em edição</div>
+      <select id="cliSelect" onchange="flash('No protótipo só a Fiedra está carregada.')">
+        <option>Fiedra, Britto &amp; Ferreira Neto</option>
+        <option>Freire, Gerbasi e Bittencourt</option>
+        <option>Reis, Souza, Takeishi e Arsuffi</option>
+      </select>
+    </div>
+    <div class="navlabel">Produção</div>
+    <nav class="main" id="nav"></nav>
+    <div class="side-bottom">
+      <button onclick="flash('No protótipo, as configurações são ilustrativas.')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.7 1.7 0 008.9 19a1.7 1.7 0 00-1.9.4l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1A1.7 1.7 0 004.6 8.9a1.7 1.7 0 00-.4-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+        Configurações</button>
+      <button id="logout">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M15 17l5-5-5-5M20 12H9M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h5"/></svg>
+        Sair</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <button class="mobtoggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="crumb" id="crumb"></div>
+      <div class="right"><span style="font-size:12.5px;color:var(--ink-3)">Equipe FGX</span></div>
+    </div>
+    <div class="pad" id="view"></div>
+  </main>
+</div>
+
+<div id="modalHost"></div>
+<div id="flash" class="flash"></div>
+
+<script>
+/* =====================================================================
+   DADOS (mesma base do portal do cliente)
+   ===================================================================== */
+const CANAIS={redes_sociais:{nome:'Redes Sociais',limite:2200},blog:{nome:'Blog',limite:null},newsletter:{nome:'Newsletter',limite:null}};
+const FORMATOS={carrossel:'Carrossel',artigo:'Artigo',analise_tecnica:'Análise técnica',texto_email:'Texto de e-mail'};
+const EDITORIAS=['Fiedra em Destaque','Atuação Estratégica','Institucional','Cenários do Varejo','Frente Imobiliária','Negócios'];
+const PILARES=['Profundidade no Varejo Alimentar','Conexão Acadêmico-Empresarial em Imobiliário','Ponto Focal Nordeste'];
+const FUNIS=['Topo','Meio','Fundo'];
+const STATUS_LABEL={pendente:'Pendente',em_revisao:'Em revisão',ajustada:'Ajustada',aprovada:'Aprovada'};
+const LIM_SLIDE=230;
+
+const PECAS=[
+ {id:'p1',status:'em_revisao',canal:'redes_sociais',formato:'carrossel',editoria:'Cenários do Varejo',pilar:'Profundidade no Varejo Alimentar',funil:'Topo',area:'Relações de Consumo',
+  tema:'Marca própria e o risco de rotulagem que o varejo herda sem perceber',
+  blocos:[
+   {t:'',c:'A etiqueta é do fabricante.\nA ação chega no supermercado.\n\nE o contrato entre os dois quase nunca resolve isso.'},
+   {t:'',c:'Rede regional lança linha de marca própria. O fornecedor entrega o produto com o rótulo que ele mesmo aprovou.\n\nSeis meses depois, a ação por informação nutricional divergente cita a rede — não a indústria.'},
+   {t:'',c:'Quem responde quando a informação ao consumidor falha em produto de marca própria?'},
+   {t:'',c:'O Código de Defesa do Consumidor não pergunta quem imprimiu o rótulo.\n\nEle pergunta quem se apresenta ao consumidor como responsável pelo produto.'},
+   {t:'',c:'Na marca própria, a rede aparece como fabricante.\n\nNome, logo e identidade visual da rede na embalagem constroem a confiança — e, com ela, a responsabilidade.'},
+   {t:'',c:'A cláusula de regresso contra o fornecedor continua válida.\n\nMas ela resolve depois, entre as partes. Não impede que a ação chegue primeiro na rede.'},
+   {t:'',c:'Antes da próxima negociação de marca própria:\n\n• quem valida o rótulo\n• quem responde pelo laudo\n• quem arca com recolhimento\n\nO consumidor vai escolher quem acionar. O contrato define quem paga no fim.'}],
+  trilha:9,fontes:3,
+  comentarios:[{id:'c1',b:4,autor:'Lara Britto',dt:'26/06/2026 09:14',txt:'Esse slide é o coração da peça. Só trocaria "se apresenta ao consumidor como responsável" por algo mais direto — o leitor Cluster 1 pode não pegar de primeira.',tratado:false}]},
+
+ {id:'p2',status:'pendente',canal:'redes_sociais',formato:'carrossel',editoria:'Frente Imobiliária',pilar:'Conexão Acadêmico-Empresarial em Imobiliário',funil:'Meio',area:'Direito Civil / Imobiliário',
+  tema:'Patrimônio de afetação: a pergunta que o comprador aprendeu a fazer',
+  blocos:[{t:'',c:'O comprador de unidade na planta mudou.\n\nEle pergunta agora o que só o jurídico perguntava dez anos atrás.'},
+   {t:'',c:'Incorporadora regional com três empreendimentos simultâneos. Um deles atrasa por questão de licenciamento.\n\nA pergunta que chega da carteira não é sobre o prazo. É sobre onde está o dinheiro dos outros dois.'},
+   {t:'',c:'O regime de afetação separa o patrimônio de cada incorporação do patrimônio da incorporadora.'},
+   {t:'',c:'É facultativo por lei.\n\nMas deixou de ser facultativo na conversa comercial.'},
+   {t:'',c:'Para a incorporadora, a decisão tem dois lados: a afetação restringe a livre movimentação de caixa entre empreendimentos — e, ao mesmo tempo, é o argumento mais concreto de segurança que ela tem a oferecer.'},
+   {t:'',c:'A pergunta não é se a afetação protege o comprador.\n\nÉ se a sua estrutura de capital comporta a disciplina que ela impõe.'}],
+  trilha:9,fontes:2,comentarios:[]},
+
+ {id:'p3',status:'aprovada',canal:'blog',formato:'artigo',editoria:'Frente Imobiliária',pilar:'Conexão Acadêmico-Empresarial em Imobiliário',funil:'Fundo',area:'Direito Civil / Imobiliário',
+  tema:'Resilição pelo comprador na incorporação: o que a Lei do Distrato resolveu e o que ela empurrou para o contencioso de massa',
+  blocos:[{t:'A promessa de previsibilidade',c:'Quando a Lei nº 13.786/2018 entrou em vigor, a leitura corrente no mercado foi de que o contencioso de distrato tinha encontrado seu limite.'},
+   {t:'Primeira pergunta: sobre o que incide o percentual',c:'A retenção incide sobre o valor efetivamente pago pelo adquirente. A formulação é simples até o momento em que se pergunta o que compõe esse valor em um contrato real.'},
+   {t:'Segunda pergunta: quem resiliu, e por quê',c:'A lei disciplina a resilição por iniciativa do adquirente. Ela não transforma em resilição voluntária toda extinção contratual que a incorporadora classifique como tal.'}],
+  trilha:9,fontes:3,
+  comentarios:[{id:'c2',b:2,autor:'Ermiro Ferreira Neto',dt:'23/06/2026 16:40',txt:'A lista de itens que compõem o valor pago está correta e é a parte mais útil do texto. Manter exatamente como está.',tratado:true}]},
+
+ {id:'p4',status:'ajustada',canal:'blog',formato:'analise_tecnica',editoria:'Cenários do Varejo',pilar:'Profundidade no Varejo Alimentar',funil:'Fundo',area:'Relações de Consumo',
+  tema:'O dever de informar do art. 10 do CDC e o momento em que a rede perde a discricionariedade sobre o recolhimento',
+  blocos:[{t:'O intervalo que interessa',c:'Discussões sobre recolhimento de produto costumam ser conduzidas como decisão de gestão de crise.'},
+   {t:'Quando a rede sabe',c:'Definir o momento do conhecimento é a questão de fato mais disputada nesse tipo de litígio.'},
+   {t:'A cadeia não dilui o dever',c:'Em produto fornecido por terceiro, é natural que a rede aguarde posicionamento do fabricante antes de agir. Essa espera é comercialmente razoável e juridicamente arriscada.'}],
+  trilha:9,fontes:3,
+  comentarios:[
+   {id:'c3',b:3,autor:'Lara Britto',dt:'21/06/2026 10:22',txt:'Falta o cenário mais comum na prática: produto de fornecedor, e a rede esperando o fabricante se posicionar. Precisa estar no texto, é onde a maioria erra.',tratado:true},
+   {id:'c4',b:null,autor:'Lara Britto',dt:'22/06/2026 08:31',txt:'Ficou bom. E aproveitem: esse formato de fechar com registros nomeados deveria virar padrão para todas as peças de consumo.',tratado:false}]},
+
+ {id:'p5',status:'aprovada',canal:'newsletter',formato:'texto_email',editoria:'Negócios',pilar:'Ponto Focal Nordeste',funil:'Fundo',area:'Direito Societário / Empresarial',
+  tema:'Newsletter executiva de junho — três movimentos que mudam a leitura de risco de quem opera no Nordeste',
+  blocos:[{t:'Abertura',c:'Esta edição reúne três movimentos do último trimestre que alteram, de forma concreta, a leitura de risco de quem opera na Bahia e no Nordeste.'},
+   {t:'1. A operação regional deixou de ser detalhe na diligência',c:'Operações conduzidas por escritórios do eixo Sul-Sudeste com ativos no Nordeste vêm ampliando o escopo da diligência regional.'}],
+  trilha:5,fontes:2,
+  comentarios:[{id:'c5',b:null,autor:'Camilla Galvão',dt:'18/06/2026 14:05',txt:'O ponto sobre dispersão de causas de pedir é exatamente a conversa que tivemos com a diretoria semana passada. Manter.',tratado:false}]},
+
+ {id:'p6',status:'pendente',canal:'redes_sociais',formato:'carrossel',editoria:'Fiedra em Destaque',pilar:'Ponto Focal Nordeste',funil:'Topo',area:'Institucional',
+  tema:'Reconhecimento Legal 500 — Firm to Watch, City Focus Salvador',
+  blocos:[{t:'',c:'O Fiedra foi reconhecido pelo Legal 500 como Firm to Watch no City Focus Salvador.'},
+   {t:'',c:'O reconhecimento olha para operação, não para tamanho.'},
+   {t:'',c:'26 anos em Salvador.\n\nA régua continua sendo a mesma: entregar respostas e caminhos.'}],
+  trilha:5,fontes:1,comentarios:[]}
+];
+
+/* ---- normalização: trilha, raciocínios, fontes e gancho ---- */
+const TRILHA_PADRAO=[
+ {p:'Scan setorial mensal',d:'Varredura de 30 a 45 dias em atos normativos, jurisprudência e imprensa do setor.'},
+ {p:'Seleção da ancoragem',d:'Escolha do gancho e classificação como jornalístico ou analítico.'},
+ {p:'Checagem da trava de confidencialidade',d:'Confirmação de que o tema não toca caso ativo identificável de cliente.'},
+ {p:'Geração de ângulos',d:'Ângulos gerados a partir da ancoragem, com registro dos descartados.'},
+ {p:'Curadoria estratégica',d:'Escolha do ângulo que fala com a persona-alvo da peça.'},
+ {p:'Aprofundamento factual',d:'Verificação dos dispositivos e fontes citados.'},
+ {p:'Redação no formato do canal',d:'Texto produzido no padrão do formato e do funil.'},
+ {p:'Revisão de tom',d:'Ajuste ao tom de voz das diretrizes do cliente.'},
+ {p:'Revisão técnica interna',d:'Conferência de precisão antes do envio para validação.'}
+];
+const FONTES_DEMO={
+ p1:[{t:'Lei nº 8.078/1990 — Código de Defesa do Consumidor',u:'https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm',tp:'Legislação',d:'11/09/1990'},
+     {t:'RDC ANVISA nº 429/2020 — Rotulagem nutricional',u:'https://www.gov.br/anvisa/pt-br',tp:'Norma regulatória',d:'08/10/2020'},
+     {t:'Instrução Normativa ANVISA nº 75/2020',u:'https://www.gov.br/anvisa/pt-br',tp:'Norma regulatória',d:'08/10/2020'}],
+ p2:[{t:'Lei nº 10.931/2004 — Patrimônio de afetação',u:'https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.931.htm',tp:'Legislação',d:'02/08/2004'},
+     {t:'Lei nº 4.591/1964 — Incorporações imobiliárias',u:'https://www.planalto.gov.br/ccivil_03/leis/l4591.htm',tp:'Legislação',d:'16/12/1964'}],
+ p3:[{t:'Lei nº 13.786/2018 — Lei do Distrato',u:'https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13786.htm',tp:'Legislação',d:'27/12/2018'},
+     {t:'Lei nº 4.591/1964 — Incorporações imobiliárias',u:'https://www.planalto.gov.br/ccivil_03/leis/l4591.htm',tp:'Legislação',d:'16/12/1964'},
+     {t:'Lei nº 10.406/2002 — Código Civil',u:'https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm',tp:'Legislação',d:'10/01/2002'}],
+ p4:[{t:'Lei nº 8.078/1990 — Código de Defesa do Consumidor',u:'https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm',tp:'Legislação',d:'11/09/1990'},
+     {t:'ANVISA — orientações sobre recolhimento de alimentos',u:'https://www.gov.br/anvisa/pt-br',tp:'Órgão regulador',d:''}],
+ p5:[{t:'Lei nº 6.404/1976 — Sociedades por Ações',u:'https://www.planalto.gov.br/ccivil_03/leis/l6404compilada.htm',tp:'Legislação',d:'15/12/1976'}],
+ p6:[{t:'The Legal 500 — Latin America',u:'https://www.legal500.com/',tp:'Ranking',d:''}]
+};
+const RACIOCINIOS_DEMO={
+ p1:[{t:'Por que este ângulo',c:'O leitor Cluster 2 já sabe que existe responsabilidade solidária na cadeia de consumo. O que ele não costuma ter mapeado é o momento exato em que a rede deixa de ser comerciante e passa a ser fabricante aparente — e esse momento é uma decisão comercial, tomada na negociação da marca própria, não no jurídico.'},
+     {t:'Que tensão de marca trabalha',c:'A peça opera a tensão entre "descrever o problema" e "entregar caminho", que é a frase-síntese da Apresentação Institucional.'},
+     {t:'O que foi descartado',c:'Descartamos o ângulo de multa administrativa por rotulagem irregular — verdadeiro, mas é o ângulo que qualquer escritório escreveria.'}],
+ p3:[{t:'Por que este ângulo',c:'A produção sobre a Lei do Distrato é abundante e quase toda organizada por dispositivo. A única contribuição possível é mostrar que a variável que explica resultado não é a que o leitor está medindo.'},
+     {t:'Por que termina em leitura de carteira',c:'Peça de Fundo precisa terminar em algo executável na segunda-feira.'}],
+ p4:[{t:'Por que a peça não usa caso concreto',c:'O tema toca área em que o escritório tem casos ativos. A trava de confidencialidade recomenda ancoragem exclusivamente normativa.'}]
+};
+const GANCHOS_DEMO={
+ p1:{texto:'Entrada em vigor das novas exigências de rotulagem nutricional e o aumento de ações sobre informação em produto de marca própria.',tipo:'jornalistico',url:'https://www.gov.br/anvisa/pt-br',data:'02/06/2026'},
+ p2:{texto:'Aumento da exigência de informação sobre patrimônio de afetação por parte de compradores na planta, relatado pelo mercado regional.',tipo:'analitico',url:'',data:''},
+ p3:{texto:'Sete anos da Lei do Distrato: balanço do que efetivamente reduziu litígio e do que migrou de discussão.',tipo:'analitico',url:'',data:''},
+ p4:{texto:'Movimento de comunicações de recolhimento no setor de alimentos e a discussão sobre o momento do dever de informar.',tipo:'jornalistico',url:'https://www.gov.br/anvisa/pt-br',data:'10/06/2026'},
+ p5:{texto:'Consolidação trimestral de três movimentos com efeito material sobre operação regional.',tipo:'analitico',url:'',data:''},
+ p6:{texto:'Publicação do Legal 500 com o Fiedra como Firm to Watch — City Focus Salvador.',tipo:'jornalistico',url:'https://www.legal500.com/',data:'24/06/2026'}
+};
+PECAS.forEach(p=>{
+  const n=typeof p.trilha==='number'?p.trilha:9;
+  p.trilha=TRILHA_PADRAO.slice(0,n).map(e=>({...e}));
+  p.fontes=(FONTES_DEMO[p.id]||[]).map(f=>({...f}));
+  p.raciocinios=(RACIOCINIOS_DEMO[p.id]||[]).map(r=>({...r}));
+  p.gancho=GANCHOS_DEMO[p.id]||{texto:'',tipo:'jornalistico',url:'',data:''};
+});
+
+let AJUSTES=[
+ {id:'a1',pecaId:'p4',cmtId:'c3',d:'Incluir tratamento explícito da situação em que o produto é fornecido por terceiro, deixando claro que a espera pelo posicionamento do fabricante não suspende o dever da rede.',tp:'pontual',st:'aplicado',enviado:null},
+];
+let ADITIVOS=[];
+
+/* ===== ESTADO ===== */
+let textoColado='';
+let view='ciclo',pecaEd=null,modoSplit='paragrafo',selCmt=null,filtroCmt='pendentes',abaEd='conteudo';
+const ABAS=[
+ {id:'conteudo',n:'Conteúdo e blocos',c:p=>p.blocos.length},
+ {id:'gancho',n:'Gancho e ancoragem',c:p=>p.gancho&&p.gancho.texto?1:0},
+ {id:'trilha',n:'Trilha de produção',c:p=>p.trilha.length},
+ {id:'raciocinios',n:'Raciocínios',c:p=>p.raciocinios.length},
+ {id:'fontes',n:'Fontes',c:p=>p.fontes.length}
+];
+const TIPOS_FONTE=['Legislação','Jurisprudência','Norma regulatória','Órgão regulador','Imprensa','Doutrina','Ranking','Dado setorial','Outro'];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function flash(m,ok){const f=$('#flash');f.textContent=m;f.className='flash on'+(ok?' ok':'');clearTimeout(f._t);f._t=setTimeout(()=>f.className='flash',2800);}
+function svg(i,s){return `<svg width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${i}</svg>`;}
+function todosCmts(){return PECAS.flatMap(p=>p.comentarios.map(c=>({...c,peca:p})));}
+function nPend(){return todosCmts().filter(c=>!c.tratado).length;}
+function chars(p){return p.blocos.reduce((a,b)=>a+b.c.length+(b.t?b.t.length:0),0);}
+
+const NAV=[
+ {id:'ciclo',n:'Ciclo de junho',ic:'<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16"/>'},
+ {id:'comentarios',n:'Comentários',ic:'<path d="M21 12a8 8 0 01-8 8H7l-4 3V12a8 8 0 018-8h2a8 8 0 018 8z"/>'},
+ {id:'ajustes',n:'Ajustes e aditivos',ic:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>'},
+ {id:'entregaveis',n:'Entregáveis',ic:'<path d="M4 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2z"/>'},
+ {id:'clientes',n:'Clientes e canais',ic:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0M16 5.5a3 3 0 010 5.8M18 20a5.5 5.5 0 00-3-4.5"/>'}
+];
+
+/* ===== LOGIN ===== */
+$('#loginForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const err=$('#loginErr');
+  if($('#pw').value.trim()!=='fgxadmin'){err.textContent='Senha incorreta. No protótipo, use fgxadmin.';err.classList.remove('hidden');return;}
+  err.classList.add('hidden');$('#login').classList.add('hidden');$('#app').classList.remove('hidden');
+  renderNav();ir('ciclo');
+});
+$('#logout').addEventListener('click',()=>{$('#pw').value='';$('#app').classList.add('hidden');$('#login').classList.remove('hidden');});
+
+function renderNav(){
+  const c={ciclo:PECAS.length,comentarios:nPend(),ajustes:AJUSTES.filter(a=>a.st!=='aplicado').length,entregaveis:9,clientes:3};
+  $('#nav').innerHTML=NAV.map(n=>`<button class="${view===n.id?'on':''}" onclick="ir('${n.id}')">
+    ${svg(n.ic,19)}<span>${n.n}</span>${c[n.id]?`<span class="cnt ${n.id==='comentarios'&&c[n.id]?'':'mute'}">${c[n.id]}</span>`:''}</button>`).join('');
+}
+function ir(v){view=v;pecaEd=null;selCmt=null;document.getElementById('sidebar').classList.remove('open');renderNav();render();window.scrollTo(0,0);}
+function render(){
+  const nome=(NAV.find(n=>n.id===view)||{}).n||'';
+  $('#crumb').innerHTML=pecaEd?`<button onclick="ir('ciclo')">Ciclo de junho</button><span>/</span><b>Editar peça</b>`
+    :`<span>Fiedra</span><span>/</span><b>${esc(nome)}</b>`;
+  if(pecaEd)return renderEditor();
+  if(view==='ciclo')renderCiclo();
+  else if(view==='comentarios')renderComentarios();
+  else if(view==='ajustes')renderAjustes();
+  else renderPlaceholder(nome);
+}
+function renderPlaceholder(n){
+  $('#view').innerHTML=`<div class="phead"><div><h1>${esc(n)}</h1>
+    <p class="ps">Esta tela existe no escopo, mas não foi prototipada — o foco desta rodada é o cadastro de peça e a central de comentários. Diga se quer que eu detalhe esta também.</p></div></div>
+    <div class="card cardp empty">Tela não prototipada nesta rodada.</div>`;
+}
+
+/* =====================================================================
+   CICLO
+   ===================================================================== */
+function renderCiclo(){
+  let h=`<div class="phead"><div>
+      <span class="pill publicado">Ciclo publicado</span>
+      <h1 style="margin-top:9px">Junho de 2026</h1>
+      <p class="ps">${PECAS.length} peças no ciclo · ${nPend()} comentários do cliente aguardando tratamento.</p></div>
+    <div class="acts">
+      <button class="btn btn-ghost" onclick="flash('No protótipo, despublicar é ilustrativo.')">Despublicar</button>
+      <button class="btn btn-primary" onclick="novaPeca()">${svg('<path d="M12 5v14M5 12h14"/>',17)} Nova peça</button></div></div>
+  <div class="card"><div style="padding:18px 8px 4px"><table class="tbl"><thead><tr>
+    <th style="width:38%">Peça</th><th>Canal e formato</th><th>Editoria</th><th>Blocos</th><th>Camadas</th><th>Comentários</th><th>Status</th><th></th>
+  </tr></thead><tbody>`;
+  PECAS.forEach(p=>{
+    const pend=p.comentarios.filter(c=>!c.tratado).length;
+    const camadas=[['G',p.gancho.texto],['T',p.trilha.length],['R',p.raciocinios.length],['F',p.fontes.length>=3]];
+    h+=`<tr class="click" onclick="editar('${p.id}')">
+      <td><div class="tt">${esc(p.tema)}</div><div class="sm">${esc(p.area)} · Funil ${esc(p.funil)}</div></td>
+      <td><span class="tag">${CANAIS[p.canal].nome}</span> <span class="tag n">${FORMATOS[p.formato]}</span></td>
+      <td style="font-size:13px">${esc(p.editoria)}</td>
+      <td><b>${p.blocos.length}</b> <span class="sm" style="display:inline">· ${chars(p).toLocaleString('pt-BR')} car.</span></td>
+      <td><span title="Gancho · Trilha · Raciocínios · Fontes" style="display:flex;gap:4px">${camadas.map(([l,ok])=>`<span style="width:21px;height:21px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;${ok?'background:rgba(82,127,62,.13);color:#3F6530':'background:#F0EEEC;color:#BDB5B0'}">${l}</span>`).join('')}</span></td>
+      <td>${pend?`<span class="pill ajustada">${pend} a tratar</span>`:`<span class="sm">${p.comentarios.length} total</span>`}</td>
+      <td><span class="pill ${p.status}">${STATUS_LABEL[p.status]}</span></td>
+      <td style="text-align:right;color:var(--fgx-red);font-weight:600;font-size:13px">Editar →</td></tr>`;
+  });
+  h+='</tbody></table></div></div>';
+  $('#view').innerHTML=h;
+}
+function novaPeca(){
+  const p={id:'p'+(PECAS.length+1),status:'pendente',canal:'redes_sociais',formato:'carrossel',
+    editoria:EDITORIAS[3],pilar:PILARES[0],funil:'Topo',area:'',tema:'',blocos:[],
+    trilha:[],raciocinios:[],fontes:[],gancho:{texto:'',tipo:'jornalistico',url:'',data:''},
+    comentarios:[],nova:true};
+  PECAS.push(p);pecaEd=p;abaEd='conteudo';render();window.scrollTo(0,0);
+}
+function editar(id){pecaEd=PECAS.find(p=>p.id===id);render();window.scrollTo(0,0);}
+
+/* =====================================================================
+   EDITOR DE PEÇA — cadastro e divisão em blocos
+   ===================================================================== */
+function renderEditor(){
+  const p=pecaEd,carr=p.formato==='carrossel',lim=CANAIS[p.canal].limite,tot=chars(p);
+  const estouro=p.blocos.filter(b=>carr&&b.c.length>LIM_SLIDE).length;
+  let h=`<div class="phead"><div>
+      <span class="pill ${p.status}">${STATUS_LABEL[p.status]}</span>
+      <h1 style="margin-top:9px">${p.nova?'Nova peça':'Editar peça'}</h1>
+      <p class="ps">Cole o texto vindo da produção e divida em blocos. Cada bloco é o que o cliente vai poder comentar isoladamente — slide no carrossel, trecho no artigo.</p></div>
+    <div class="acts">
+      <button class="btn btn-ghost" onclick="ir('ciclo')">Voltar</button>
+      <button class="btn btn-primary" onclick="salvarPeca()">${svg('<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',17)} Salvar peça</button></div></div>
+
+  <div class="card cardp" style="margin-bottom:18px">
+    <div class="field"><label>Tema da peça</label>
+      <input class="inp" id="fTema" value="${esc(p.tema)}" placeholder="Ex.: Marca própria e o risco de rotulagem que o varejo herda sem perceber" oninput="pecaEd.tema=this.value"></div>
+    <div class="grid3">
+      <div class="field" style="margin:0"><label>Canal</label><select class="inp" onchange="mudaCanal(this.value)">
+        ${Object.keys(CANAIS).map(k=>`<option value="${k}" ${p.canal===k?'selected':''}>${CANAIS[k].nome}</option>`).join('')}</select></div>
+      <div class="field" style="margin:0"><label>Formato</label><select class="inp" onchange="pecaEd.formato=this.value;render()">
+        ${Object.keys(FORMATOS).map(k=>`<option value="${k}" ${p.formato===k?'selected':''}>${FORMATOS[k]}</option>`).join('')}</select></div>
+      <div class="field" style="margin:0"><label>Editoria</label><select class="inp" onchange="pecaEd.editoria=this.value">
+        ${EDITORIAS.map(e=>`<option ${p.editoria===e?'selected':''}>${e}</option>`).join('')}</select></div>
+      <div class="field" style="margin:0"><label>Pilar</label><select class="inp" onchange="pecaEd.pilar=this.value">
+        ${PILARES.map(e=>`<option ${p.pilar===e?'selected':''}>${e}</option>`).join('')}</select></div>
+      <div class="field" style="margin:0"><label>Funil</label><select class="inp" onchange="pecaEd.funil=this.value">
+        ${FUNIS.map(e=>`<option ${p.funil===e?'selected':''}>${e}</option>`).join('')}</select></div>
+      <div class="field" style="margin:0"><label>Área do Direito</label>
+        <input class="inp" value="${esc(p.area)}" placeholder="Ex.: Relações de Consumo" oninput="pecaEd.area=this.value"></div>
+    </div>
+  </div>
+
+  <div class="seg" style="margin-bottom:18px;width:fit-content;max-width:100%;flex-wrap:wrap">
+    ${ABAS.map(a=>`<button class="${abaEd===a.id?'on':''}" onclick="setAba('${a.id}')">${a.n}${a.c(p)?` <span style="opacity:.55">${a.c(p)}</span>`:''}</button>`).join('')}
+  </div>
+  <div class="ed-layout"><div>`;
+
+  if(abaEd==='gancho')h+=abaGancho(p);
+  else if(abaEd==='trilha')h+=abaTrilha(p);
+  else if(abaEd==='raciocinios')h+=abaRaciocinios(p);
+  else if(abaEd==='fontes')h+=abaFontes(p);
+  else{
+  h+=`
+    <div class="paste-zone" style="margin-bottom:18px">
+      <label>Colar o texto integral</label>
+      <textarea id="pasteBox" oninput="textoColado=this.value" placeholder="Cole aqui o texto da peça, do jeito que veio da produção. Depois escolha como dividir e clique em Dividir em blocos.">${esc(textoColado)}</textarea>
+      <div class="paste-tools">
+        <div class="seg">
+          <button class="${modoSplit==='paragrafo'?'on':''}" onclick="setModo('paragrafo')">Por parágrafo</button>
+          <button class="${modoSplit==='titulo'?'on':''}" onclick="setModo('titulo')">Por título (##)</button>
+          <button class="${modoSplit==='separador'?'on':''}" onclick="setModo('separador')">Por separador (---)</button>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="dividir()">${svg('<path d="M8 3v18M3 8h5M3 16h5M13 12h8M13 12l3-3M13 12l3 3"/>',16)} Dividir em blocos</button>
+        <button class="btn btn-ghost btn-sm" onclick="anexarBlocos()">Acrescentar ao final</button>
+        <span style="margin-left:auto;font-size:12px;color:var(--ink-3)" id="pasteInfo"></span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:13px;flex-wrap:wrap">
+      <h3 style="font-size:18px">Blocos da peça</h3>
+      <span style="font-size:12.5px;color:var(--ink-3)">${p.blocos.length} ${p.blocos.length===1?'bloco':'blocos'}${carr?' · limite de '+LIM_SLIDE+' caracteres por slide':''}</span>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="addBloco()">${svg('<path d="M12 5v14M5 12h14"/>',15)} Bloco em branco</button>
+    </div>
+    <div id="blocos">`;
+
+  if(!p.blocos.length){
+    h+=`<div class="card cardp empty">Nenhum bloco ainda.<br>Cole o texto acima e clique em <b>Dividir em blocos</b>.</div>`;
+  }
+  p.blocos.forEach((b,i)=>{
+    const over=carr&&b.c.length>LIM_SLIDE;
+    const rot=carr?`Slide ${i+1} de ${p.blocos.length}`:`Trecho ${i+1}`;
+    h+=`<div class="blk" draggable="true" data-i="${i}"
+        ondragstart="dragStart(event,${i})" ondragover="dragOver(event,${i})" ondrop="drop(event,${i})" ondragend="dragEnd(event)">
+      <div class="blk-h">
+        <span class="iconbtn dz" title="Arraste para reordenar">${svg('<circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/>',16)}</span>
+        <span class="blk-n">${rot}</span>
+        <span class="chars${over?' over':''}">${b.c.length} car.</span>
+        <div class="tools">
+          <button class="iconbtn" onclick="mover(${i},-1)" ${i===0?'disabled':''} title="Subir">${svg('<path d="M12 19V5M5 12l7-7 7 7"/>',15)}</button>
+          <button class="iconbtn" onclick="mover(${i},1)" ${i===p.blocos.length-1?'disabled':''} title="Descer">${svg('<path d="M12 5v14M5 12l7 7 7-7"/>',15)}</button>
+          <button class="iconbtn" onclick="juntar(${i})" ${i===0?'disabled':''} title="Juntar com o bloco anterior">${svg('<path d="M12 3v7M12 21v-7M8 10h8M8 14h8M9 6l3-3 3 3M9 18l3 3 3-3"/>',15)}</button>
+          <button class="iconbtn" onclick="separar(${i})" title="Separar nas quebras de linha">${svg('<path d="M12 3v6M12 15v6M4 12h16M9 6l3-3 3 3M9 18l3 3 3-3"/>',15)}</button>
+          <button class="iconbtn" onclick="remover(${i})" title="Remover bloco">${svg('<path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/>',15)}</button>
+        </div>
+      </div>
+      <div class="blk-b">
+        ${!carr?`<input class="t" placeholder="Título do trecho (opcional)" value="${esc(b.t||'')}" oninput="pecaEd.blocos[${i}].t=this.value">`:''}
+        <textarea oninput="pecaEd.blocos[${i}].c=this.value;autoH(this);atualizaChars(${i},this.value.length)" onfocus="autoH(this)">${esc(b.c)}</textarea>
+      </div>
+      ${over?`<div class="blk-warn">Acima do padrão de ${LIM_SLIDE} caracteres por slide definido na Síntese. O texto não é cortado — é só um aviso.</div>`:''}
+    </div>`;
+  });
+  h+=`</div>`;
+  }
+  h+=`</div>
+
+  <div class="ed-summary">
+    <div class="card cardp" style="margin-bottom:14px">
+      <h4 style="font-size:15px;margin-bottom:11px">Resumo da peça</h4>
+      <div class="sum-row"><span>Blocos</span><b>${p.blocos.length}</b></div>
+      <div class="sum-row"><span>Caracteres</span><b>${tot.toLocaleString('pt-BR')}</b></div>
+      ${lim?`<div class="sum-row ${tot>lim?'bad':'good'}"><span>Limite do canal</span><b>${tot>lim?'acima':'ok'}</b></div>`:''}
+      ${carr?`<div class="sum-row ${estouro?'bad':'good'}"><span>Slides acima de ${LIM_SLIDE}</span><b>${estouro}</b></div>`:''}
+      ${carr?`<div class="sum-row ${p.blocos.length>10?'bad':'good'}"><span>Padrão de 6 a 8 slides</span><b>${p.blocos.length}</b></div>`:''}
+    </div>
+    <div class="card cardp" style="margin-bottom:14px">
+      <h4 style="font-size:15px;margin-bottom:4px">Camadas de processo</h4>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:12px">É o que demonstra robustez ao cliente na página da peça.</p>
+      <div class="sum-row ${p.gancho.texto?'good':'bad'}"><span>Gancho registrado</span><b>${p.gancho.texto?'sim':'não'}</b></div>
+      <div class="sum-row ${p.trilha.length?'good':'bad'}"><span>Trilha de produção</span><b>${p.trilha.length} etapas</b></div>
+      <div class="sum-row ${p.raciocinios.length?'good':'bad'}"><span>Raciocínios</span><b>${p.raciocinios.length}</b></div>
+      <div class="sum-row ${p.fontes.length?'good':'bad'}"><span>Fontes</span><b>${p.fontes.length}</b></div>
+    </div>
+    <div class="card cardp">
+      <h4 style="font-size:15px;margin-bottom:11px">Ações</h4>
+      <button class="btn btn-primary btn-sm btn-full" style="margin-bottom:8px" onclick="salvarPeca()">Salvar peça</button>
+      <button class="btn btn-ghost btn-sm btn-full" onclick="flash('No protótipo, a pré-visualização abriria a peça como o cliente vê.')">Ver como o cliente vê</button>
+    </div>
+  </div></div>`;
+  $('#view').innerHTML=h;
+  document.querySelectorAll('.blk-b textarea').forEach(autoH);
+}
+function setAba(a){abaEd=a;render();window.scrollTo(0,0);}
+
+/* ---- aba: gancho e ancoragem ---- */
+function abaGancho(p){
+  const g=p.gancho;
+  return `<div class="card cardp">
+    <h3 style="font-size:18px;margin-bottom:5px">Gancho e ancoragem</h3>
+    <p style="font-size:13px;color:var(--ink-3);margin-bottom:18px">O fato, norma ou movimento que sustenta a peça. É o que separa conteúdo com ancoragem de opinião solta — e o que a Síntese classifica como jornalístico ou analítico.</p>
+    <div class="field"><label>Qual é o gancho</label>
+      <textarea class="inp" rows="3" placeholder="Ex.: Entrada em vigor das novas exigências de rotulagem nutricional e o aumento de ações sobre informação em produto de marca própria." oninput="pecaEd.gancho.texto=this.value">${esc(g.texto)}</textarea>
+      <p class="hint">Escreva o fato, não o tema. Se não houver fato externo, a peça é analítica.</p></div>
+    <label>Classificação da ancoragem</label>
+    <label class="radio ${g.tipo==='jornalistico'?'on':''}" onclick="setGanchoTipo('jornalistico')">
+      <input type="radio" name="gtp" ${g.tipo==='jornalistico'?'checked':''}>
+      <span><span class="rt">Jornalístico</span><span class="rd">Ancorado em fato externo datado — norma publicada, decisão, movimento regulatório, evento. A meta da Síntese é 3 de cada 6 peças do mês.</span></span></label>
+    <label class="radio ${g.tipo==='analitico'?'on':''}" onclick="setGanchoTipo('analitico')">
+      <input type="radio" name="gtp" ${g.tipo==='analitico'?'checked':''}>
+      <span><span class="rt">Analítico</span><span class="rd">Sem fato externo datado. A peça se sustenta na leitura própria do escritório sobre um problema recorrente.</span></span></label>
+    <div class="grid2" style="margin-top:18px">
+      <div class="field" style="margin:0"><label>Link da ancoragem</label>
+        <input class="inp" placeholder="https://" value="${esc(g.url)}" oninput="pecaEd.gancho.url=this.value"></div>
+      <div class="field" style="margin:0"><label>Data do fato</label>
+        <input class="inp" placeholder="dd/mm/aaaa" value="${esc(g.data)}" oninput="pecaEd.gancho.data=this.value"></div>
+    </div>
+    ${g.tipo==='jornalistico'&&!g.url?`<div class="blk-warn" style="border:none;border-radius:9px;margin-top:14px">Ancoragem jornalística sem link registrado. A trava da Síntese pede fato verificável — e caso ativo de cliente não pode ser ancoragem sem autorização expressa.</div>`:''}
+  </div>`;
+}
+function setGanchoTipo(t){pecaEd.gancho.tipo=t;render();}
+
+/* ---- aba: trilha ---- */
+function abaTrilha(p){
+  let h=`<div class="card cardp" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px"><h3 style="font-size:18px;margin-bottom:4px">Trilha de produção</h3>
+        <p style="font-size:13px;color:var(--ink-3)">As etapas que geraram a peça, na ordem. O cliente vê esta lista como linha do tempo.</p></div>
+      <button class="btn btn-ghost btn-sm" onclick="carregarTrilhaPadrao()">Carregar as 9 etapas padrão</button>
+      <button class="btn btn-dark btn-sm" onclick="addEtapa()">+ Etapa</button>
+    </div></div>`;
+  if(!p.trilha.length)h+=`<div class="card cardp empty">Nenhuma etapa registrada.<br>Use <b>Carregar as 9 etapas padrão</b> e ajuste as descrições — é o caminho mais rápido.</div>`;
+  p.trilha.forEach((e,i)=>{
+    h+=`<div class="blk"><div class="blk-h">
+        <span class="blk-n">Etapa ${i+1}</span>
+        <div class="tools">
+          <button class="iconbtn" onclick="movEtapa(${i},-1)" ${i===0?'disabled':''}>${svg('<path d="M12 19V5M5 12l7-7 7 7"/>',15)}</button>
+          <button class="iconbtn" onclick="movEtapa(${i},1)" ${i===p.trilha.length-1?'disabled':''}>${svg('<path d="M12 5v14M5 12l7 7 7-7"/>',15)}</button>
+          <button class="iconbtn" onclick="delEtapa(${i})">${svg('<path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/>',15)}</button>
+        </div></div>
+      <div class="blk-b">
+        <input class="t" placeholder="Nome da etapa" value="${esc(e.p)}" oninput="pecaEd.trilha[${i}].p=this.value">
+        <textarea rows="2" placeholder="O que foi feito nesta etapa" oninput="pecaEd.trilha[${i}].d=this.value;autoH(this)">${esc(e.d)}</textarea>
+      </div></div>`;
+  });
+  return h;
+}
+function carregarTrilhaPadrao(){
+  if(pecaEd.trilha.length&&!confirm('Isso substitui as etapas atuais. Continuar?'))return;
+  pecaEd.trilha=TRILHA_PADRAO.map(e=>({...e}));render();flash('9 etapas padrão carregadas',true);
+}
+function addEtapa(){pecaEd.trilha.push({p:'',d:''});render();}
+function delEtapa(i){pecaEd.trilha.splice(i,1);render();}
+function movEtapa(i,d){const j=i+d;if(j<0||j>=pecaEd.trilha.length)return;const e=pecaEd.trilha.splice(i,1)[0];pecaEd.trilha.splice(j,0,e);render();}
+
+/* ---- aba: raciocínios ---- */
+function abaRaciocinios(p){
+  let h=`<div class="card cardp" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px"><h3 style="font-size:18px;margin-bottom:4px">Raciocínios da produção</h3>
+        <p style="font-size:13px;color:var(--ink-3)">Por que este ângulo, que tensão de marca trabalha, o que foi descartado. É a camada que o cliente mais lê quando quer entender o preço do serviço.</p></div>
+      <button class="btn btn-ghost btn-sm" onclick="addRacPadrao()">Usar os 3 títulos padrão</button>
+      <button class="btn btn-dark btn-sm" onclick="addRac()">+ Raciocínio</button>
+    </div></div>`;
+  if(!p.raciocinios.length)h+=`<div class="card cardp empty">Nenhum raciocínio registrado.</div>`;
+  p.raciocinios.forEach((r,i)=>{
+    h+=`<div class="blk"><div class="blk-h">
+        <span class="blk-n">Raciocínio ${i+1}</span>
+        <span class="chars">${r.c.length} car.</span>
+        <div class="tools">
+          <button class="iconbtn" onclick="movRac(${i},-1)" ${i===0?'disabled':''}>${svg('<path d="M12 19V5M5 12l7-7 7 7"/>',15)}</button>
+          <button class="iconbtn" onclick="movRac(${i},1)" ${i===p.raciocinios.length-1?'disabled':''}>${svg('<path d="M12 5v14M5 12l7 7 7-7"/>',15)}</button>
+          <button class="iconbtn" onclick="delRac(${i})">${svg('<path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/>',15)}</button>
+        </div></div>
+      <div class="blk-b">
+        <input class="t" placeholder="Título do raciocínio" value="${esc(r.t)}" oninput="pecaEd.raciocinios[${i}].t=this.value">
+        <textarea rows="4" placeholder="A explicação, do jeito que o cliente vai ler" oninput="pecaEd.raciocinios[${i}].c=this.value;autoH(this)">${esc(r.c)}</textarea>
+      </div></div>`;
+  });
+  return h;
+}
+function addRac(){pecaEd.raciocinios.push({t:'',c:''});render();}
+function addRacPadrao(){
+  ['Por que este ângulo','Que tensão de marca trabalha','O que foi descartado'].forEach(t=>{
+    if(!pecaEd.raciocinios.some(r=>r.t===t))pecaEd.raciocinios.push({t,c:''});
+  });
+  render();flash('Títulos padrão acrescentados',true);
+}
+function delRac(i){pecaEd.raciocinios.splice(i,1);render();}
+function movRac(i,d){const j=i+d;if(j<0||j>=pecaEd.raciocinios.length)return;const r=pecaEd.raciocinios.splice(i,1)[0];pecaEd.raciocinios.splice(j,0,r);render();}
+
+/* ---- aba: fontes ---- */
+function abaFontes(p){
+  let h=`<div class="card cardp" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px"><h3 style="font-size:18px;margin-bottom:4px">Fontes consultadas</h3>
+        <p style="font-size:13px;color:var(--ink-3)">A Síntese pede de 3 a 5 fontes por peça. O cliente vê o título como link.</p></div>
+      <button class="btn btn-dark btn-sm" onclick="addFonte()">+ Fonte</button>
+    </div></div>`;
+  if(!p.fontes.length)h+=`<div class="card cardp empty">Nenhuma fonte registrada.</div>`;
+  if(p.fontes.length&&p.fontes.length<3)h+=`<div class="blk-warn" style="border:none;border-radius:9px;margin-bottom:12px">${p.fontes.length} de 3 a 5 fontes previstas na Síntese.</div>`;
+  p.fontes.forEach((f,i)=>{
+    h+=`<div class="card cardp" style="margin-bottom:11px">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:11px">
+        <span class="blk-n">Fonte ${i+1}</span>
+        <div class="tools" style="margin-left:auto;display:flex;gap:3px">
+          <button class="iconbtn" onclick="movFonte(${i},-1)" ${i===0?'disabled':''}>${svg('<path d="M12 19V5M5 12l7-7 7 7"/>',15)}</button>
+          <button class="iconbtn" onclick="movFonte(${i},1)" ${i===p.fontes.length-1?'disabled':''}>${svg('<path d="M12 5v14M5 12l7 7 7-7"/>',15)}</button>
+          <button class="iconbtn" onclick="delFonte(${i})">${svg('<path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/>',15)}</button>
+        </div></div>
+      <div class="field"><label>Título</label>
+        <input class="inp" placeholder="Ex.: Lei nº 8.078/1990 — Código de Defesa do Consumidor" value="${esc(f.t)}" oninput="pecaEd.fontes[${i}].t=this.value"></div>
+      <div class="field"><label>Link</label>
+        <input class="inp" placeholder="https://" value="${esc(f.u)}" oninput="pecaEd.fontes[${i}].u=this.value"></div>
+      <div class="grid2">
+        <div class="field" style="margin:0"><label>Tipo</label>
+          <select class="inp" onchange="pecaEd.fontes[${i}].tp=this.value">
+            ${TIPOS_FONTE.map(t=>`<option ${f.tp===t?'selected':''}>${t}</option>`).join('')}</select></div>
+        <div class="field" style="margin:0"><label>Data (opcional)</label>
+          <input class="inp" placeholder="dd/mm/aaaa" value="${esc(f.d||'')}" oninput="pecaEd.fontes[${i}].d=this.value"></div>
+      </div></div>`;
+  });
+  return h;
+}
+function addFonte(){pecaEd.fontes.push({t:'',u:'',tp:'Legislação',d:''});render();}
+function delFonte(i){pecaEd.fontes.splice(i,1);render();}
+function movFonte(i,d){const j=i+d;if(j<0||j>=pecaEd.fontes.length)return;const f=pecaEd.fontes.splice(i,1)[0];pecaEd.fontes.splice(j,0,f);render();}
+
+function autoH(t){t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px';}
+function atualizaChars(i,n){
+  const blk=document.querySelector(`.blk[data-i="${i}"] .chars`);
+  if(blk){blk.textContent=n+' car.';blk.classList.toggle('over',pecaEd.formato==='carrossel'&&n>LIM_SLIDE);}
+}
+function mudaCanal(v){pecaEd.canal=v;render();}
+function setModo(m){modoSplit=m;render();}
+
+/* ---- divisão automática ---- */
+function partir(txt){
+  txt=txt.replace(/\r/g,'').trim();
+  if(!txt)return [];
+  let out=[];
+  if(modoSplit==='separador'){
+    out=txt.split(/\n\s*-{3,}\s*\n/).map(s=>({t:'',c:s.trim()}));
+  }else if(modoSplit==='titulo'){
+    const partes=txt.split(/\n(?=#{1,3}\s)/);
+    out=partes.map(s=>{
+      const m=s.match(/^#{1,3}\s*(.+)\n?([\s\S]*)$/);
+      return m?{t:m[1].trim(),c:m[2].trim()}:{t:'',c:s.trim()};
+    });
+  }else{
+    // por parágrafo: quebra em linhas em branco; linha curta sem pontuação final vira título do bloco seguinte
+    const paras=txt.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+    for(let i=0;i<paras.length;i++){
+      const p=paras[i];
+      const curto=p.length<=70&&!/[.!?:;]$/.test(p)&&!p.includes('\n');
+      if(curto&&i<paras.length-1){out.push({t:p,c:paras[++i]});}
+      else out.push({t:'',c:p});
+    }
+  }
+  return out.filter(b=>b.c||b.t);
+}
+function dividir(){
+  const txt=$('#pasteBox').value;
+  const novos=partir(txt);
+  if(!novos.length){flash('Cole um texto antes de dividir.');return;}
+  if(pecaEd.blocos.length&&!confirm('Isso substitui os '+pecaEd.blocos.length+' blocos atuais. Continuar?'))return;
+  pecaEd.blocos=novos;render();
+  flash(novos.length+' blocos criados',true);
+}
+function anexarBlocos(){
+  const novos=partir($('#pasteBox').value);
+  if(!novos.length){flash('Cole um texto antes.');return;}
+  pecaEd.blocos=pecaEd.blocos.concat(novos);render();
+  flash(novos.length+' blocos acrescentados ao final',true);
+}
+function addBloco(){pecaEd.blocos.push({t:'',c:''});render();}
+function remover(i){
+  if(pecaEd.blocos[i].c.length>40&&!confirm('Remover este bloco?'))return;
+  pecaEd.blocos.splice(i,1);render();
+}
+function mover(i,d){
+  const j=i+d;if(j<0||j>=pecaEd.blocos.length)return;
+  const b=pecaEd.blocos.splice(i,1)[0];pecaEd.blocos.splice(j,0,b);render();
+}
+function juntar(i){
+  if(i===0)return;
+  const a=pecaEd.blocos[i-1],b=pecaEd.blocos[i];
+  a.c=(a.c+'\n\n'+(b.t?b.t+'\n':'')+b.c).trim();
+  pecaEd.blocos.splice(i,1);render();flash('Blocos juntados',true);
+}
+function separar(i){
+  const b=pecaEd.blocos[i];
+  const partes=b.c.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+  if(partes.length<2){flash('Este bloco não tem quebra de linha dupla para separar.');return;}
+  const novos=partes.map((c,k)=>({t:k===0?b.t:'',c}));
+  pecaEd.blocos.splice(i,1,...novos);render();flash('Bloco separado em '+novos.length,true);
+}
+let dragI=null;
+function dragStart(e,i){dragI=i;e.currentTarget.classList.add('drag');}
+function dragOver(e,i){e.preventDefault();document.querySelectorAll('.blk').forEach(b=>b.classList.remove('over'));e.currentTarget.classList.add('over');}
+function dragEnd(e){document.querySelectorAll('.blk').forEach(b=>b.classList.remove('drag','over'));}
+function drop(e,i){
+  e.preventDefault();
+  if(dragI===null||dragI===i)return;
+  const b=pecaEd.blocos.splice(dragI,1)[0];pecaEd.blocos.splice(i,0,b);
+  dragI=null;render();
+}
+function salvarPeca(){
+  if(!pecaEd.tema.trim()){flash('Dê um tema à peça antes de salvar.');return;}
+  if(!pecaEd.blocos.length){flash('A peça precisa de pelo menos um bloco.');return;}
+  const falta=[];
+  if(!pecaEd.gancho.texto)falta.push('gancho');
+  if(!pecaEd.trilha.length)falta.push('trilha');
+  if(!pecaEd.raciocinios.length)falta.push('raciocínios');
+  if(pecaEd.fontes.length<3)falta.push('fontes (mínimo 3)');
+  if(falta.length&&!confirm('A peça será salva, mas está sem: '+falta.join(', ')+'.\n\nEssas camadas são o que o cliente vê como prova de processo. Salvar assim mesmo?'))return;
+  delete pecaEd.nova;pecaEd=null;abaEd='conteudo';renderNav();render();
+  flash(falta.length?'Peça salva com pendências':'Peça salva',!falta.length);
+}
+
+/* =====================================================================
+   CENTRAL DE COMENTÁRIOS
+   ===================================================================== */
+function renderComentarios(){
+  const todos=todosCmts();
+  const lista=todos.filter(c=>filtroCmt==='todos'?true:filtroCmt==='pendentes'?!c.tratado:c.tratado);
+  let h=`<div class="phead"><div><h1>Comentários do cliente</h1>
+    <p class="ps">Tudo o que a Fiedra escreveu no ciclo de junho, em um lugar só. Cada comentário vira — ou não — um ajuste registrado.</p></div>
+    <div class="acts"><div class="seg">
+      <button class="${filtroCmt==='pendentes'?'on':''}" onclick="setFC('pendentes')">A tratar (${todos.filter(c=>!c.tratado).length})</button>
+      <button class="${filtroCmt==='tratados'?'on':''}" onclick="setFC('tratados')">Tratados (${todos.filter(c=>c.tratado).length})</button>
+      <button class="${filtroCmt==='todos'?'on':''}" onclick="setFC('todos')">Todos (${todos.length})</button>
+    </div></div></div>
+  <div class="cmt-layout"><div>`;
+  if(!lista.length){h+=`<div class="card cardp empty">Nenhum comentário nesta lista.</div>`;}
+  lista.forEach(c=>{
+    const p=c.peca,bloco=c.b?p.blocos[c.b-1]:null;
+    const rot=c.b?(p.formato==='carrossel'?`Slide ${c.b}`:`Trecho ${c.b}`):'Peça inteira';
+    h+=`<div class="cmt-item${c.tratado?' done':''}${selCmt===c.id?' sel':''}">
+      <div class="cmt-h"><b>${esc(c.autor)}</b><span>·</span><span>${esc(c.dt)}</span>
+        <span class="tag n">${rot}</span>
+        ${c.tratado?'<span class="badge-ok" style="margin-left:auto">'+svg('<path d="M20 6L9 17l-5-5"/>',14)+' tratado</span>':''}</div>
+      <div class="cmt-src"><b>${esc(p.tema)}</b>${bloco?'<br>“'+esc(bloco.c.slice(0,110).replace(/\n/g,' '))+'…”':''}</div>
+      <div class="cmt-txt">${esc(c.txt)}</div>
+      <div class="cmt-f">
+        <button class="btn btn-primary btn-sm" onclick="abrirAjuste('${c.id}')">${svg('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',15)} Registrar ajuste</button>
+        <button class="btn btn-ghost btn-sm" onclick="editar('${p.id}')">Abrir a peça</button>
+        <button class="btn btn-ghost btn-sm" onclick="marcar('${c.id}')">${c.tratado?'Reabrir':'Marcar como tratado sem ajuste'}</button>
+      </div></div>`;
+  });
+  h+=`</div>
+  <div><div class="card cardp" style="position:sticky;top:80px">
+    <h4 style="font-size:15px;margin-bottom:12px">Como isso funciona</h4>
+    <p style="font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-bottom:14px">Todo comentário do cliente termina em uma de três saídas — e nenhuma delas é ficar parado.</p>
+    <div class="sum-row"><span><b style="font-family:Montserrat;font-size:13.5px">Ajuste pontual</b><br><span style="font-size:12px;color:var(--ink-3)">muda só aquela peça</span></span></div>
+    <div class="sum-row"><span><b style="font-family:Montserrat;font-size:13.5px">Ajuste estrutural</b><br><span style="font-size:12px;color:var(--ink-3)">muda a regra-base do cliente e gera documento aditivo</span></span></div>
+    <div class="sum-row"><span><b style="font-family:Montserrat;font-size:13.5px">Tratado sem ajuste</b><br><span style="font-size:12px;color:var(--ink-3)">elogio, confirmação ou observação que não pede mudança</span></span></div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);line-height:1.55">
+      O ajuste estrutural é o que alimenta a base de conhecimento do cliente. É por isso que ele é uma classificação, e não só um texto livre.</div>
+  </div></div></div>`;
+  $('#view').innerHTML=h;
+}
+function setFC(f){filtroCmt=f;renderComentarios();}
+function marcar(id){
+  const c=todosCmts().find(x=>x.id===id);
+  const orig=c.peca.comentarios.find(x=>x.id===id);
+  orig.tratado=!orig.tratado;renderNav();renderComentarios();
+  flash(orig.tratado?'Marcado como tratado':'Reaberto',orig.tratado);
+}
+
+/* ---- modal de ajuste ---- */
+function abrirAjuste(cmtId){
+  const c=todosCmts().find(x=>x.id===cmtId);
+  selCmt=cmtId;
+  $('#modalHost').innerHTML=`<div class="overlay" onclick="if(event.target===this)fecharModal()"><div class="modal">
+    <div class="modal-h">${svg('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',20)}<h3>Registrar ajuste</h3></div>
+    <div class="modal-b">
+      <div class="cmt-src" style="margin-bottom:16px"><b>${esc(c.peca.tema)}</b><br>${esc(c.autor)} · ${esc(c.dt)}</div>
+      <div class="cmt-txt" style="margin-bottom:20px">${esc(c.txt)}</div>
+      <div class="field"><label>Descrição do ajuste</label>
+        <textarea class="inp" id="ajDesc" rows="3" placeholder="O que exatamente será mudado">${esc(sugestao(c.txt))}</textarea>
+        <p class="hint">Escreva a mudança, não o problema. É este texto que o cliente vê na peça.</p></div>
+      <label>Classificação</label>
+      <label class="radio on" id="rp" onclick="selTipo('pontual')"><input type="radio" name="tp" value="pontual" checked>
+        <span><span class="rt">Pontual</span><span class="rd">Muda só esta peça. Não altera a regra-base do cliente.</span></span></label>
+      <label class="radio" id="re" onclick="selTipo('estrutural')"><input type="radio" name="tp" value="estrutural">
+        <span><span class="rt">Estrutural</span><span class="rd">Muda a regra-base do cliente e vale para as próximas peças. Gera um documento aditivo para a base de conhecimento.</span></span></label>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarAjuste('${cmtId}')">Registrar ajuste</button>
+    </div></div></div>`;
+}
+function sugestao(t){return '';}
+let tipoSel='pontual';
+function selTipo(t){
+  tipoSel=t;
+  document.getElementById('rp').classList.toggle('on',t==='pontual');
+  document.getElementById('re').classList.toggle('on',t==='estrutural');
+}
+function fecharModal(){$('#modalHost').innerHTML='';selCmt=null;}
+function salvarAjuste(cmtId){
+  const d=$('#ajDesc').value.trim();
+  if(d.length<10){flash('Descreva o ajuste antes de registrar.');$('#ajDesc').focus();return;}
+  const c=todosCmts().find(x=>x.id===cmtId);
+  const aj={id:'a'+(AJUSTES.length+1),pecaId:c.peca.id,cmtId,d,tp:tipoSel,st:'pendente',enviado:null};
+  AJUSTES.push(aj);
+  c.peca.comentarios.find(x=>x.id===cmtId).tratado=true;
+  fecharModal();renderNav();
+  if(tipoSel==='estrutural'){gerarAditivo(aj);}
+  else{renderComentarios();flash('Ajuste pontual registrado',true);}
+}
+function gerarAditivo(aj){
+  const p=PECAS.find(x=>x.id===aj.pecaId);
+  const md=`# Documento aditivo — Fiedra, Britto & Ferreira Neto\n\n`+
+    `**Origem:** comentário do cliente na peça "${p.tema}"\n`+
+    `**Classificação:** ajuste estrutural\n`+
+    `**Registrado em:** ${new Date().toLocaleDateString('pt-BR')}\n\n`+
+    `## Regra acrescentada\n\n${aj.d}\n\n`+
+    `## Aplicação\n\nVale para todas as peças seguintes deste cliente, nas editorias em que o tema incidir. `+
+    `Este documento passa a integrar a regra-base usada na produção.\n`;
+  const ad={id:'ad'+(ADITIVOS.length+1),ajusteId:aj.id,titulo:'Aditivo — '+aj.d.slice(0,52)+'…',md};
+  ADITIVOS.push(ad);
+  $('#modalHost').innerHTML=`<div class="overlay" onclick="if(event.target===this)fecharModal()"><div class="modal">
+    <div class="modal-h">${svg('<path d="M14 3v4a1 1 0 001 1h4"/><path d="M19 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5z"/>',20)}<h3>Documento aditivo gerado</h3></div>
+    <div class="modal-b">
+      <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:16px">O ajuste foi classificado como estrutural, então ele muda a regra-base da Fiedra. Este documento é o que depois alimenta a base de conhecimento — revise antes de exportar.</p>
+      <div class="field"><label>Título</label><input class="inp" value="${esc(ad.titulo)}" oninput="ADITIVOS.find(a=>a.id==='${ad.id}').titulo=this.value"></div>
+      <label>Conteúdo</label><div class="md-prev">${esc(md)}</div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" onclick="fecharModal();ir('ajustes')">Fechar</button>
+      <button class="btn btn-dark" onclick="baixarMd('${ad.id}')">Exportar .md</button>
+      <button class="btn btn-primary" onclick="fecharModal();ir('ajustes')">Ir para ajustes</button>
+    </div></div></div>`;
+}
+function baixarMd(id){
+  const ad=ADITIVOS.find(a=>a.id===id);
+  const b=new Blob([ad.md],{type:'text/markdown'});
+  const u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='aditivo-fiedra.md';a.click();URL.revokeObjectURL(u);
+  flash('Documento .md exportado',true);
+}
+
+/* =====================================================================
+   AJUSTES E ADITIVOS
+   ===================================================================== */
+function renderAjustes(){
+  let h=`<div class="phead"><div><h1>Ajustes e documentos aditivos</h1>
+    <p class="ps">Os ajustes registrados a partir dos comentários, e os aditivos gerados pelos que mudam a regra-base do cliente.</p></div></div>
+  <h3 style="font-size:18px;margin-bottom:13px">Ajustes registrados (${AJUSTES.length})</h3>`;
+  if(!AJUSTES.length)h+=`<div class="card cardp empty">Nenhum ajuste registrado ainda.</div>`;
+  AJUSTES.forEach(a=>{
+    const p=PECAS.find(x=>x.id===a.pecaId);
+    h+=`<div class="adj-card">
+      <div class="ah"><span class="tag ${a.tp==='estrutural'?'est':'n'}">${a.tp==='estrutural'?'Estrutural':'Pontual'}</span>
+        <span class="pill ${a.st==='aplicado'?'aprovada':'pendente'}">${a.st}</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--ink-3)">${esc(p?p.tema.slice(0,54)+'…':'')}</span></div>
+      <div class="ad">${esc(a.d)}</div>
+      ${a.enviado?`<div class="asrc">Enviado para avaliação em ${esc(a.enviado)}</div>`:''}
+      <div class="adj-f">
+        ${a.st!=='aplicado'?`<button class="btn btn-green btn-sm" onclick="aplicar('${a.id}')">Marcar como aplicado</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="enviarAvaliacao('${a.id}')">${svg('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',15)} Enviar para avaliação</button>
+        <button class="btn btn-ghost btn-sm" onclick="editar('${a.pecaId}')">Abrir a peça</button>
+      </div></div>`;
+  });
+  h+=`<h3 style="font-size:18px;margin:30px 0 13px">Documentos aditivos (${ADITIVOS.length})</h3>`;
+  if(!ADITIVOS.length)h+=`<div class="card cardp empty">Nenhum aditivo ainda.<br>Eles são gerados quando um ajuste é classificado como <b>estrutural</b>.</div>`;
+  ADITIVOS.forEach(ad=>{
+    h+=`<div class="adj-card"><div class="ah"><span class="tag est">Aditivo</span></div>
+      <div class="ad" style="font-weight:600">${esc(ad.titulo)}</div>
+      <div class="adj-f"><button class="btn btn-dark btn-sm" onclick="baixarMd('${ad.id}')">Exportar .md</button>
+      <button class="btn btn-ghost btn-sm" onclick="verMd('${ad.id}')">Ver conteúdo</button></div></div>`;
+  });
+  $('#view').innerHTML=h;
+}
+function aplicar(id){AJUSTES.find(a=>a.id===id).st='aplicado';renderNav();renderAjustes();flash('Ajuste marcado como aplicado',true);}
+function verMd(id){
+  const ad=ADITIVOS.find(a=>a.id===id);
+  $('#modalHost').innerHTML=`<div class="overlay" onclick="if(event.target===this)fecharModal()"><div class="modal">
+    <div class="modal-h"><h3>${esc(ad.titulo)}</h3></div>
+    <div class="modal-b"><div class="md-prev">${esc(ad.md)}</div></div>
+    <div class="modal-f"><button class="btn btn-ghost" onclick="fecharModal()">Fechar</button>
+    <button class="btn btn-dark" onclick="baixarMd('${ad.id}')">Exportar .md</button></div></div></div>`;
+}
+function enviarAvaliacao(id){
+  const a=AJUSTES.find(x=>x.id===id),p=PECAS.find(x=>x.id===a.pecaId);
+  const payload={
+    cliente:{nome:'Fiedra, Britto & Ferreira Neto',slug:'fiedra',
+      tom_de_voz:'Executivo e orientado à decisão; técnico sem tecnicismo excessivo; sóbrio e elegante; focado em riscos, caminhos e consequências.',
+      areas_chave:'Varejo alimentar e cadeia de consumo; incorporação imobiliária; operações de capital com ponto focal Nordeste.',
+      regra_base_ref:'Fiedra_FGX_Sintese_e_Pacote_Completo.docx'},
+    peca:{id:p.id,tema:p.tema,canal:p.canal,formato:p.formato,editoria:p.editoria,pilar:p.pilar,funil:p.funil,area:p.area,
+      conteudo:p.blocos.map((b,i)=>({ordem:i+1,titulo:b.t||null,texto:b.c}))},
+    ajuste:{id:a.id,descricao:a.d,tipo:a.tp,status:a.st}
+  };
+  const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b),el=document.createElement('a');
+  el.href=u;el.download='ajuste-'+a.id+'.json';el.click();URL.revokeObjectURL(u);
+  a.enviado=new Date().toLocaleDateString('pt-BR');
+  renderAjustes();
+  flash('Sem webhook configurado — o JSON foi baixado para levar à ferramenta de IA',true);
+}
+</script>
+</body>
+</html>

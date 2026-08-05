@@ -8,7 +8,6 @@ import ClienteRelatorios from './pages/ClienteRelatorios'
 import ClienteConteudos from './pages/ClienteConteudos'
 import ClientePeca from './pages/ClientePeca'
 import AdminLogin from './pages/AdminLogin'
-import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminClientes from './pages/admin/AdminClientes'
 import AdminClienteEdit from './pages/admin/AdminClienteEdit'
 import AdminEntregaveis from './pages/admin/AdminEntregaveis'
@@ -61,7 +60,7 @@ export default function App() {
       <Route path="/c/:slug/ciclo" element={<RedirectConteudos />} />
       <Route path="/c/:slug/ciclo/:cycleId/peca/:pieceId" element={<RedirectOldPeca />} />
       <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
+      <Route path="/admin/dashboard" element={<Navigate to="/admin/ciclos" replace />} />
       <Route path="/admin/clientes" element={<ProtectedAdmin><AdminClientes /></ProtectedAdmin>} />
       <Route path="/admin/clientes/:id" element={<ProtectedAdmin><AdminClienteEdit /></ProtectedAdmin>} />
       <Route path="/admin/entregaveis" element={<ProtectedAdmin><AdminEntregaveis /></ProtectedAdmin>} />
