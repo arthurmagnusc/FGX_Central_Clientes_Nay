@@ -1,11 +1,11 @@
 # PROMPT SONNET — Correção, UI/UX e deploy Vercel (sem Supabase ainda)
 
-> **Deploy:** GitHub + Vercel (`https://fgx-central-clientes-nay.vercel.app`). API via `api/index.js` + `api/bundle.mjs` (esbuild a partir de `backend/`).  
+> **Deploy já no ar:** https://fgx-central-clientes-nay.vercel.app  
+> GitHub: https://github.com/arthurmagnusc/FGX_Central_Clientes_Nay  
+> API: `api/index.js` (bundle Hono Node via esbuild a partir de `backend/vercel-entry.ts`) + rewrite `/api/*` → `/api`.  
 > Complete UI/UX, uploads reais, testes e polish; mantenha o deploy Vercel **verde**.  
 > **NÃO conecte Supabase nesta rodada.**  
-> Cole este arquivo **inteiro** como única mensagem numa conversa nova com o Sonnet, neste repositório.  
-> Contexto: MVP funcional (React + Vite + Hono + store demo). A auditoria encontrou gaps.  
-> Objetivo: fechar bugs/aceitação, **elevar muito UI/UX**, e deixar o app estável na **Vercel**.
+> Cole este arquivo **inteiro** como única mensagem numa conversa nova com o Sonnet, neste repositório.
 
 Documentos: `docs/PRD.md`, `docs/ARQUITETURA.md`, `docs/IDENTIDADE-VISUAL.md`, `PROMPT-SONNET.md` (brief original).
 
