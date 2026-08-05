@@ -7,7 +7,7 @@
 > **NÃO conecte Supabase nesta rodada.**  
 > Cole este arquivo **inteiro** como única mensagem numa conversa nova com o Sonnet, neste repositório.
 
-Documentos: `docs/PRD.md`, `docs/ARQUITETURA.md`, `docs/IDENTIDADE-VISUAL.md`, `PROMPT-SONNET.md` (brief original).
+Documentos: `docs/PRD.md`, `docs/ARQUITETURA.md`, `docs/IDENTIDADE-VISUAL.md`, `docs/PADRAO-DESIGN.md` (**piso visual**), `PROMPT-SONNET.md` (brief original).
 
 ---
 
@@ -16,7 +16,7 @@ Documentos: `docs/PRD.md`, `docs/ARQUITETURA.md`, `docs/IDENTIDADE-VISUAL.md`, `
 Transforme o Portal do Cliente FGX de “esqueleto utilizável” em **produto demo-ready**:
 
 1. Corrigir todos os bloqueadores e gaps listados abaixo (exceto Supabase).
-2. Redesign sério de UI/UX (ainda na identidade FGX — não inventar outra marca).
+2. Redesign até o **padrão mínimo** de `docs/PADRAO-DESIGN.md` (Central de Entregas SBP) — identidade FGX, acabamento da referência.
 3. Tornar o app deployável e estável na **Vercel** (front + API).
 4. Seed demo rico e utilizável sem setup manual penoso.
 5. Testes e2e que **falham de verdade** se o requisito quebrar.
@@ -111,42 +111,40 @@ Atualizar para: local, Vercel, seed demo, senhas demo, o que ainda falta (Supaba
 
 ---
 
-## Parte B — UI/UX: elevar o produto (prioridade alta)
+## Parte B — UI/UX: padrão mínimo obrigatório (prioridade máxima)
 
-A identidade FGX já existe (`docs/IDENTIDADE-VISUAL.md`). **Não** troque a marca. **Sim**, melhore composição, hierarquia, respiração, microinterações e clareza.
+**Referência de piso visual (não negociável):**  
+[`docs/PADRAO-DESIGN.md`](docs/PADRAO-DESIGN.md) + screenshot [`docs/assets/padrao-central-entregas-sbp.png`](docs/assets/padrao-central-entregas-sbp.png)  
+Artifact: https://claude.ai/public/artifacts/4a11b4f8-b0af-467a-8337-0850046fc77b  
 
-### Princípios
+Tokens de cor/fonte: `docs/IDENTIDADE-VISUAL.md`. **Não** inventar outra marca.  
+Se a UI ficar abaixo desse padrão, a rodada **não está aceita**.
 
-- Portal profissional de escritório jurídico — sóbrio, confiante, limpo.
-- Fundo `--fgx-gray`, cartões brancos, vermelho/laranja só em acentos (topo, CTAs, títulos de seção).
-- Gradiente FGX **só no header** das páginas principais — não em toda tela.
-- Tipografia: Titillium (títulos) + Montserrat (corpo).
-- Mobile first real: tabelas → cards; touch targets ≥ 44px; navegação clara.
-- Estados: loading skeleton (não só spinner genérico), empty states úteis, erros acionáveis, toasts consistentes.
-- Comentário: se falhar, texto permanece + retry explícito.
+### O que copiar da referência (Central de Entregas SBP)
 
-### Telas a redesenhar com capricho
+- Header **branco** + navegação textual + **filete vermelho** fino (não hero vermelho em tela cheia).
+- Fundo cinza claro; cartões brancos com sombra suave e raio ~12px.
+- Título de página grande + contexto (pill/avatar) + status pill + parágrafo curto.
+- **Cards de entregável/peça em duas zonas:**
+  - topo: fundo bege com listras sutis, badge de tipo, ícone + número/etapa em vermelho + rótulo em caixa alta;
+  - corpo: status, título, descrição, meta (tipo/tamanho), **dois botões** (Abrir vermelho + Baixar outline).
+- Grid 3 colunas no desktop; 1 no mobile.
+- Tipografia Titillium (títulos/números) + Montserrat (corpo).
+- Muita respiração — portal jurídico sóbrio, nunca “dashboard lotado”.
 
-1. **Login cliente** (`/c/:slug`) e **login admin** — composição forte, marca presente, formulário impecável, mensagens de “acesso não liberado”.
-2. **Entregáveis** — biblioteca por categoria com ritmo visual; cards com metadados claros; download óbvio; versões anteriores elegantes.
-3. **Home do ciclo** — progresso legível, filtros de canal, cards de peça com hierarquia (tema > canal/formato > status > comentários).
-4. **Página da peça** — a mais importante:
-   - Leitura contínua confortável (não muro de cards pesados).
-   - Comentário por bloco discreto na margem (hover desktop / sempre no mobile).
-   - Painel de histórico lateral no desktop; empilhado no mobile.
-   - Aprovar / solicitar ajuste com confirmação e feedback.
-   - Trilha, raciocínios, fontes, ajustes como seções de primeira classe (recolhíveis, sem vazio).
-5. **Admin** — sidebar clara, densidade boa sem parecer planilha crua; formulário de peça (blocos / dividir automático) usável; dashboard com atalho para seed demo e apagar demo.
+### Telas a redesenhar até bater o padrão
 
-### Micro UX obrigatório
+1. **Login cliente/admin** — composição limpa; credenciais demo visíveis e elegantes.  
+2. **Entregáveis** — **deve parecer a referência** (cards Abrir/Baixar).  
+3. **Ciclo + cards de peça** — mesma linguagem visual.  
+4. **Página da peça** — leitura editorial; comentário por bloco discreto; histórico lateral no desktop.  
+5. **Admin** — mesmos tokens/botões; densidade ok, sem planilha crua.
 
-- “Não sou eu” fluido  
-- Navegação anterior/próxima de peças sem perder contexto  
-- Contador chars vs limite com semântica visual (ok / atenção / estourou)  
-- Confirmações destrutivas (apagar demo, etc.)  
-- Foco/teclado e labels acessíveis  
+### Micro UX
 
-Motion: 2–3 animações sutis (entrada de página, toast, expandir seção) — sem excesso.
+- “Não sou eu”, navegação anterior/próxima, contador de chars com semântica visual  
+- Loading skeleton, empty states, toasts, retry de comentário  
+- 2–3 motions sutis (entrada, toast, expandir) — sem excesso  
 
 ---
 
@@ -209,8 +207,9 @@ Não invente features fora do PRD. Aprofunde o que já está no escopo.
 - [ ] Isolamento: teste e2e falha se vazar dado entre clientes  
 - [ ] Fidelidade e persistência: e2e sérios verdes  
 - [ ] Cookie Secure em produção  
-- [ ] UI/UX claramente acima do MVP atual (login, ciclo, peça, admin)  
-- [ ] Identidade FGX respeitada  
+- [ ] UI/UX no **piso** de `docs/PADRAO-DESIGN.md` (comparar com `docs/assets/padrao-central-entregas-sbp.png`)  
+- [ ] Header branco + filete vermelho; cards com zona visual + Abrir/Baixar  
+- [ ] Identidade FGX respeitada (Titillium + Montserrat, `--fgx-red`)  
 - [ ] README atualizado; Supabase listado como **próxima fase**  
 - [ ] Sem secrets commitados  
 

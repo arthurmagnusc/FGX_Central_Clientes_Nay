@@ -19,29 +19,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-fgx-gray">
-      <header className="fgx-gradient-header px-6 py-3 flex items-center justify-between text-white">
+      <header className="fgx-header px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Logo />
-          <span className="font-titillium font-semibold text-lg">Admin FGX</span>
+          <span className="font-titillium font-semibold text-lg text-ink">Admin FGX</span>
         </div>
-        <button className="btn-ghost text-white" onClick={logout}>Sair</button>
+        <button type="button" className="fgx-nav-link" onClick={logout}>
+          Sair
+        </button>
       </header>
       <div className="flex flex-col md:flex-row">
-        <nav className="md:w-56 bg-white md:border-r border-line md:min-h-[calc(100vh-56px)] p-4 flex md:flex-col flex-row flex-wrap gap-1">
-          {NAV.map(item => (
-            <Link key={item.to} to={item.to}
-              className={`px-3 py-2 rounded text-sm font-montserrat font-medium transition-colors whitespace-nowrap ${
-                location.pathname === item.to || (item.to !== '/admin/dashboard' && location.pathname.startsWith(item.to))
-                  ? 'bg-fgx-red text-white'
-                  : 'text-ink-2 hover:bg-fgx-gray'
-              }`}>
-              {item.label}
-            </Link>
-          ))}
+        <nav className="md:w-56 bg-white md:border-r border-line md:min-h-[calc(100vh-58px)] p-4 flex md:flex-col flex-row flex-wrap gap-1">
+          {NAV.map((item) => {
+            const active =
+              location.pathname === item.to ||
+              (item.to !== '/admin/dashboard' && location.pathname.startsWith(item.to))
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`px-3 py-2 rounded-lg text-sm font-montserrat font-medium transition-colors whitespace-nowrap ${
+                  active ? 'bg-fgx-red text-white' : 'text-ink-2 hover:bg-fgx-gray'
+                }`}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
-        <main className="flex-1 p-6 max-w-6xl">
-          {children}
-        </main>
+        <main className="flex-1 p-6 max-w-6xl">{children}</main>
       </div>
     </div>
   )

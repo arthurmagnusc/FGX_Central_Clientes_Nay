@@ -4,19 +4,19 @@ import { Logo } from '../components/Shared'
 export default function Home() {
   return (
     <div className="min-h-screen bg-fgx-gray">
-      <header className="fgx-gradient-header px-6 py-10 text-white">
+      <header className="fgx-header px-6 py-5">
         <div className="max-w-3xl mx-auto flex items-center gap-4">
-          <Logo />
+          <Logo size={48} />
           <div>
-            <p className="font-titillium font-black text-3xl tracking-wide">FGX</p>
-            <p className="font-montserrat text-sm opacity-90">Portal do Cliente</p>
+            <p className="font-titillium font-black text-2xl tracking-wide text-ink">FGX</p>
+            <p className="font-montserrat text-sm text-ink-3">Portal do Cliente · Central de Entregas</p>
           </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto p-6 -mt-4">
-        <div className="card p-8">
-          <h1 className="font-titillium font-bold text-2xl text-ink mb-2">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+        <div className="card p-8 overflow-visible animate-fade-up">
+          <h1 className="font-titillium font-bold text-2xl sm:text-3xl text-ink mb-2">
             Bem-vindo ao Portal do Cliente FGX
           </h1>
           <p className="font-montserrat text-ink-2 mb-8 leading-relaxed">
@@ -24,7 +24,10 @@ export default function Home() {
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Link to="/c/fiedra" className="card p-5 border border-line hover:border-fgx-red transition-colors">
+            <Link
+              to="/c/fiedra"
+              className="rounded-xl border border-line bg-white p-5 hover:border-fgx-red hover:shadow-md transition-all"
+            >
               <p className="font-titillium font-semibold text-lg text-ink">Entrar como cliente</p>
               <p className="text-sm text-ink-3 font-montserrat mt-1">Demo Fiedra</p>
               <p className="text-xs text-ink-2 font-montserrat mt-3 leading-relaxed">
@@ -33,7 +36,10 @@ export default function Home() {
                 Senha: <span className="font-semibold text-fgx-red">fiedra123</span>
               </p>
             </Link>
-            <Link to="/admin" className="card p-5 border border-line hover:border-fgx-orange transition-colors">
+            <Link
+              to="/admin"
+              className="rounded-xl border border-line bg-white p-5 hover:border-fgx-orange hover:shadow-md transition-all"
+            >
               <p className="font-titillium font-semibold text-lg text-ink">Área administrativa</p>
               <p className="text-sm text-ink-3 font-montserrat mt-1">Equipe FGX</p>
               <p className="text-xs text-ink-2 font-montserrat mt-3 leading-relaxed">

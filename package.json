@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.0",
+    "@vercel/blob": "^2.6.1",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.4.0",
     "dompurify": "^3.4.13",
@@ -48,4 +49,3 @@
     "vitest": "^4.0.0"
   }
 }
-

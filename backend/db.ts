@@ -4,7 +4,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const DB_FILE = path.join(process.cwd(), 'server', 'db.json')
+const UPLOADS_DIR = path.join(process.cwd(), 'server', 'uploads')
 let db: any = null
+
+// In-memory file store for serverless fallback
+const memoryStore: Map<string, { buffer: Buffer; mimeType: string }> = new Map()
 
 try {
   if (fs.existsSync(DB_FILE)) {
@@ -48,6 +52,52 @@ function save() {
 
 export function getDB() { return db }
 export function persist() { save() }
+
+export async function storeFile(key: string, buffer: Buffer, mimeType: string): Promise<void> {
+  // Vercel: Vercel Blob (if env configured)
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const { put } = await import('@vercel/blob')
+      await put(key, buffer, { access: 'public', contentType: mimeType })
+      return
+    } catch { /* fall through to memory */ }
+  }
+  // Local: disk
+  if (!process.env.VERCEL) {
+    try {
+      const dir = path.join(UPLOADS_DIR, path.dirname(key))
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+      fs.writeFileSync(path.join(UPLOADS_DIR, key), buffer)
+      return
+    } catch { /* fall through to memory */ }
+  }
+  // Memory fallback
+  memoryStore.set(key, { buffer, mimeType })
+}
+
+export async function getFile(key: string): Promise<Buffer> {
+  // Vercel Blob
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const { head } = await import('@vercel/blob')
+      const blob = await head(key)
+      if (blob) {
+        const res = await fetch(blob.url)
+        const ab = await res.arrayBuffer()
+        return Buffer.from(ab)
+      }
+    } catch { /* fall through */ }
+  }
+  // Local disk
+  const filePath = path.join(UPLOADS_DIR, key)
+  if (!process.env.VERCEL && fs.existsSync(filePath)) {
+    return fs.readFileSync(filePath)
+  }
+  // Memory
+  const entry = memoryStore.get(key)
+  if (entry) return entry.buffer
+  throw new Error('File not found')
+}
 
 export function hashPassword(pwd: string): string {
   return bcrypt.hashSync(pwd, 10)

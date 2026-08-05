@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serve } from '@hono/node-server'
-import { getDB, persist, hashPassword, verifyPassword, createSession, getSession, deleteSession, updateSessionName, seed } from './db'
+import { getDB, persist, hashPassword, verifyPassword, createSession, getSession, deleteSession, updateSessionName, seed, storeFile, getFile } from './db'
 import { v4 as uuidv4 } from 'uuid'
 
 seed()
@@ -161,7 +161,39 @@ app.get('/api/cliente/deliverables/:id/download', async (c) => {
   const id = c.req.param('id')
   const del = getDB().deliverables.find((d: any) => d.id === id && d.client_id === auth.client.id)
   if (!del) return c.json({ error: 'Não encontrado' }, 404)
-  return c.json({ url: `https://placeholder.example.com/${del.storage_path}` })
+
+  try {
+    const buffer = await getFile(del.storage_path)
+    const headers: Record<string, string> = {
+      'Content-Type': del.mime_type || 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(del.titulo)}"`,
+      'Content-Length': String(buffer.byteLength),
+      'Cache-Control': 'private, no-cache',
+    }
+    return new Response(buffer, { headers })
+  } catch {
+    return c.json({ error: 'Arquivo não disponível' }, 404)
+  }
+})
+
+app.get('/api/admin/deliverables/:id/download', async (c) => {
+  const auth = await requireAdmin(c)
+  if (!auth.session) return auth
+  const id = c.req.param('id')
+  const del = getDB().deliverables.find((d: any) => d.id === id)
+  if (!del) return c.json({ error: 'Não encontrado' }, 404)
+
+  try {
+    const buffer = await getFile(del.storage_path)
+    const headers: Record<string, string> = {
+      'Content-Type': del.mime_type || 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(del.titulo)}"`,
+      'Content-Length': String(buffer.byteLength),
+    }
+    return new Response(buffer, { headers })
+  } catch {
+    return c.json({ error: 'Arquivo não disponível' }, 404)
+  }
 })
 
 app.get('/api/cliente/cycles', async (c) => {
@@ -213,10 +245,11 @@ app.get('/api/cliente/pieces/:id', async (c) => {
 
   const allPieces = getDB().pieces.filter((p: any) => p.cycle_id === cycle.id).sort((a: any, b: any) => a.ordem - b.ordem)
   const nearbyPieces = allPieces
+  const adjustments = getDB().adjustments.filter((a: any) => a.piece_id === id)
 
   return c.json({
     ...piece, channel, contents, comments, approvals,
-    reasonings, trail, sources, nearbyPieces,
+    reasonings, trail, sources, adjustments, nearbyPieces,
   })
 })
 
@@ -346,6 +379,20 @@ app.post('/api/admin/deliverables', async (c) => {
   if (!auth.session) return auth
   const formData = await c.req.formData()
   const file = formData.get('file') as File | null
+
+  let storagePath = `deliverables/placeholder.pdf`
+  let mimeType = 'application/pdf'
+  let tamanhoBytes = 102400
+
+  if (file) {
+    mimeType = file.type || 'application/octet-stream'
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    tamanhoBytes = buffer.byteLength
+    storagePath = `deliverables/${uuidv4()}_${file.name}`
+    await storeFile(storagePath, buffer, mimeType)
+  }
+
   const del: any = {
     id: uuidv4(),
     client_id: formData.get('client_id'),
@@ -353,9 +400,9 @@ app.post('/api/admin/deliverables', async (c) => {
     titulo: formData.get('titulo'),
     descricao: formData.get('descricao') || null,
     versao: formData.get('versao') || '1.0',
-    storage_path: file ? `deliverables/${uuidv4()}_${file.name}` : 'deliverables/placeholder.pdf',
-    mime_type: file?.type || 'application/pdf',
-    tamanho_bytes: file?.size || 0,
+    storage_path: storagePath,
+    mime_type: mimeType,
+    tamanho_bytes: tamanhoBytes,
     status: 'em_validacao',
     created_at: new Date().toISOString(),
   }

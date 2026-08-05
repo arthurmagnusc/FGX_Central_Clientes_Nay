@@ -1,99 +1,171 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { api } from '../lib/api'
-import { Header, Loading, ErrorMessage } from '../components/Shared'
-import { StatusPill, CATEGORY_LABELS, formatDate, formatBytes } from '../lib/utils'
+import {
+  ClientChrome,
+  PageIntro,
+  ContextPill,
+  DeliverableCard,
+  ErrorMessage,
+  Skeleton,
+  EmptyState,
+  mimeBadge,
+} from '../components/Shared'
+import { CATEGORY_LABELS, formatDate, formatBytes } from '../lib/utils'
 import type { Deliverable } from '../types'
+
+const CAT_ORDER = [
+  'diagnostico',
+  'planejamento',
+  'apresentacao',
+  'proposta',
+  'politica',
+  'material_institucional',
+  'relatorio_resultado',
+]
 
 export default function ClienteEntregaveis() {
   const { slug } = useParams<{ slug: string }>()
-  const { pessoaNome, clientRename, logout } = useAuth()
+  const { pessoaNome } = useAuth()
   const [deliverables, setDeliverables] = useState<Deliverable[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [showRename, setShowRename] = useState(false)
-  const [newName, setNewName] = useState('')
-  const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set())
+  const [toastMsg, setToastMsg] = useState('')
 
   const load = () => {
     setLoading(true)
-    api.getClientDeliverables().then(setDeliverables).catch(e => setError(e.message)).finally(() => setLoading(false))
+    api
+      .getClientDeliverables()
+      .then(setDeliverables)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false))
   }
   useEffect(load, [])
 
-  const handleDownload = async (id: string) => {
-    try {
-      const data = await api.downloadDeliverable(id)
-      if (data.url) window.open(data.url, '_blank')
-    } catch (e: any) { setError(e.message) }
+  const fetchBlob = async (del: Deliverable) => {
+    const res = await fetch(`/api/cliente/deliverables/${del.id}/download`, { credentials: 'include' })
+    if (!res.ok) throw new Error('Erro ao obter arquivo')
+    return res.blob()
   }
 
-  const handleRename = async () => {
-    if (!newName.trim()) return
-    await clientRename(newName.trim())
-    setShowRename(false)
+  const handleOpen = async (del: Deliverable) => {
+    try {
+      const blob = await fetchBlob(del)
+      const url = URL.createObjectURL(blob)
+      window.open(url, '_blank', 'noopener,noreferrer')
+      setTimeout(() => URL.revokeObjectURL(url), 60_000)
+      setToastMsg(`Abrindo "${del.titulo}"`)
+      setTimeout(() => setToastMsg(''), 2500)
+    } catch {
+      setToastMsg('Erro ao abrir arquivo')
+      setTimeout(() => setToastMsg(''), 3000)
+    }
+  }
+
+  const handleDownload = async (del: Deliverable) => {
+    try {
+      const blob = await fetchBlob(del)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = del.titulo
+      a.click()
+      URL.revokeObjectURL(url)
+      setToastMsg(`Download de "${del.titulo}" iniciado`)
+      setTimeout(() => setToastMsg(''), 3000)
+    } catch {
+      setToastMsg('Erro ao baixar arquivo')
+      setTimeout(() => setToastMsg(''), 3000)
+    }
   }
 
   const grouped: Record<string, Deliverable[]> = {}
-  deliverables.forEach(d => {
+  deliverables.forEach((d) => {
     if (!grouped[d.categoria]) grouped[d.categoria] = []
     grouped[d.categoria].push(d)
   })
 
-  const catOrder = ['diagnostico', 'planejamento', 'apresentacao', 'proposta', 'politica', 'material_institucional', 'relatorio_resultado']
+  const initial = (pessoaNome || slug || 'C').charAt(0).toUpperCase()
 
   return (
-    <div className="min-h-screen bg-fgx-gray">
-      <Header>
-        <span className="text-sm opacity-90 font-montserrat">Olá, {pessoaNome}</span>
-        {!showRename ? (
-          <button className="text-xs underline opacity-80 hover:opacity-100" onClick={() => { setShowRename(true); setNewName(pessoaNome || '') }}>
-            Não sou eu
-          </button>
-        ) : (
-          <div className="flex items-center gap-2">
-            <input value={newName} onChange={e => setNewName(e.target.value)} className="input-field text-sm py-1 w-28 text-ink" />
-            <button className="text-xs bg-white text-fgx-red px-2 py-1 rounded font-semibold" onClick={handleRename}>OK</button>
-            <button className="text-xs underline" onClick={() => setShowRename(false)}>Cancelar</button>
-          </div>
-        )}
-        <Link to={`/c/${slug}/ciclo`} className="text-sm underline opacity-80 hover:opacity-100 font-montserrat">Ciclo Editorial</Link>
-        <button className="text-sm underline opacity-80 hover:opacity-100" onClick={logout}>Sair</button>
-      </Header>
+    <ClientChrome active="entregaveis">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <PageIntro
+          eyebrow={
+            <ContextPill
+              letter={initial}
+              label={`${pessoaNome || 'Cliente'} · Entregáveis do contrato`}
+            />
+          }
+          title="Biblioteca de entregáveis"
+          status={
+            deliverables.length > 0 ? (
+              <span className="pill pill-status-aprovado">
+                <span className="pill-dot" />
+                {deliverables.length} arquivos
+              </span>
+            ) : undefined
+          }
+          description="Relatórios e materiais macro do contrato. Abra para visualizar ou baixe o arquivo original."
+        />
 
-      <div className="max-w-5xl mx-auto p-6">
-        <h2 className="font-titillium font-bold text-2xl text-ink mb-6">Entregáveis do contrato</h2>
-        {loading ? <Loading /> :
-         error ? <ErrorMessage message={error} onRetry={load} /> :
-         catOrder.map(cat => {
-           const items = grouped[cat]
-           if (!items || items.length === 0) return null
-           return (
-             <div key={cat} className="mb-8">
-               <h3 className="font-titillium font-semibold text-lg text-ink mb-3">{CATEGORY_LABELS[cat]}</h3>
-               <div className="grid gap-4">
-                 {items.map(d => (
-                   <div key={d.id} className="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                     <div>
-                       <h4 className="font-montserrat font-semibold text-ink">{d.titulo}</h4>
-                       {d.descricao && <p className="text-ink-3 text-sm mt-1">{d.descricao}</p>}
-                       <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-ink-3 font-montserrat">
-                         <span>v{d.versao}</span>
-                         <span>{formatDate(d.created_at)}</span>
-                         <span>{d.mime_type}</span>
-                         <span>{formatBytes(d.tamanho_bytes)}</span>
-                         <StatusPill status={d.status} />
-                       </div>
-                     </div>
-                     <button className="btn-primary text-sm shrink-0" onClick={() => handleDownload(d.id)}>Baixar</button>
-                   </div>
-                 ))}
-               </div>
-             </div>
-           )
-         })}
+        {loading ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="card">
+                <Skeleton className="h-40 w-full rounded-none" />
+                <div className="p-5 space-y-3">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-6 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <ErrorMessage message={error} onRetry={load} />
+        ) : deliverables.length === 0 ? (
+          <EmptyState
+            icon="📦"
+            title="Nenhum entregável disponível"
+            description="Os entregáveis aparecerão aqui quando forem publicados pela equipe FGX."
+          />
+        ) : (
+          CAT_ORDER.map((cat) => {
+            const items = grouped[cat]
+            if (!items || items.length === 0) return null
+            return (
+              <section key={cat} className="mb-12">
+                <h2 className="font-titillium font-semibold text-lg text-ink mb-5">
+                  {CATEGORY_LABELS[cat]}
+                  <span className="text-sm text-ink-3 font-montserrat ml-2 font-normal">({items.length})</span>
+                </h2>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map((d, idx) => (
+                    <DeliverableCard
+                      key={d.id}
+                      badge={mimeBadge(d.mime_type, d.titulo)}
+                      stage={d.versao || String(idx + 1)}
+                      stageLabel={CATEGORY_LABELS[cat] || cat}
+                      status={d.status}
+                      statusPrefix={`v${d.versao}`}
+                      title={d.titulo}
+                      description={d.descricao}
+                      meta={`Relatório · ${formatBytes(d.tamanho_bytes)} · ${formatDate(d.created_at)}`}
+                      onOpen={() => handleOpen(d)}
+                      onDownload={() => handleDownload(d)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )
+          })
+        )}
+
+        {toastMsg && <div className="toast toast-success">{toastMsg}</div>}
       </div>
-    </div>
+    </ClientChrome>
   )
 }

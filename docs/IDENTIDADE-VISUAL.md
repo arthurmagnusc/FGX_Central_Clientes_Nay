@@ -32,12 +32,20 @@ Fonte: tokens do prompt do Portal do Cliente + design system do Livro do Projeto
 
 Carregar via Google Fonts.
 
-## Cabeçalho principal
+## Cabeçalho (padrão mínimo atualizado)
+
+**Piso visual:** ver [`PADRAO-DESIGN.md`](./PADRAO-DESIGN.md) (Central de Entregas SBP).
+
+- Header **branco** + logo FGX + navegação textual.
+- Filete fino vermelho (`--fgx-red`) sob o header.
+- **Não** usar gradiente vermelho em tela cheia nas páginas internas.
+- Gradiente vermelho→laranja permanece no **mark/logo** (quadrado FGX).
 
 ```css
-background:
-  radial-gradient(900px 420px at 12% -10%, rgba(231,121,56,.32), transparent 60%),
-  linear-gradient(150deg, #7E131C 0%, #B12119 55%, #C4331F 100%);
+/* mark / logo apenas */
+.fgx-logo {
+  background: linear-gradient(135deg, #B12119, #E77938);
+}
 ```
 
 - Gradiente **apenas no topo** das páginas principais — não em toda a tela.
