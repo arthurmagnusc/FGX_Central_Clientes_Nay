@@ -7,8 +7,9 @@ export default function ClienteLogin() {
   const { slug } = useParams<{ slug: string }>()
   const { type, clientLogin, loading, slug: loggedSlug } = useAuth()
   const navigate = useNavigate()
-  const [senha, setSenha] = useState('')
-  const [nome, setNome] = useState('')
+  const isFiedraDemo = slug === 'fiedra'
+  const [senha, setSenha] = useState(isFiedraDemo ? 'fiedra123' : '')
+  const [nome, setNome] = useState(isFiedraDemo ? 'Maria Teste' : '')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -37,7 +38,25 @@ export default function ClienteLogin() {
           <Logo />
         </div>
         <h1 className="font-titillium font-bold text-2xl text-center text-ink mb-1">Portal do Cliente</h1>
-        <p className="text-center text-ink-3 text-sm mb-6 font-montserrat">{slug}</p>
+        <p className="text-center text-ink-3 text-sm mb-5 font-montserrat">
+          Cliente: <span className="text-ink font-medium">{slug}</span>
+        </p>
+
+        {isFiedraDemo && (
+          <div className="rounded-lg border border-line bg-fgx-beige-light/60 px-4 py-3 mb-5 font-montserrat text-sm">
+            <p className="font-semibold text-ink mb-2">Como entrar (demo Fiedra)</p>
+            <ul className="space-y-1 text-ink-2">
+              <li>
+                Nome: <code className="font-titillium font-bold text-fgx-red">Maria Teste</code>
+                <span className="text-ink-3"> (ou qualquer nome)</span>
+              </li>
+              <li>
+                Senha: <code className="font-titillium font-bold text-fgx-red">fiedra123</code>
+              </li>
+            </ul>
+            <p className="text-ink-3 text-xs mt-2">Os campos já vêm preenchidos — basta clicar em Entrar.</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
@@ -47,7 +66,7 @@ export default function ClienteLogin() {
           </div>
           <div>
             <label className="block text-sm font-medium text-ink-2 mb-1">Senha do escritório</label>
-            <input type="password" className="input-field" value={senha} onChange={e => setSenha(e.target.value)}
+            <input type="text" className="input-field" value={senha} onChange={e => setSenha(e.target.value)}
               placeholder="Senha compartilhada" />
           </div>
           {error && <p className="text-fgx-red text-sm font-montserrat font-medium">{error}</p>}

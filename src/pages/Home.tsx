@@ -26,11 +26,19 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2">
             <Link to="/c/fiedra" className="card p-5 border border-line hover:border-fgx-red transition-colors">
               <p className="font-titillium font-semibold text-lg text-ink">Entrar como cliente</p>
-              <p className="text-sm text-ink-3 font-montserrat mt-1">Demo: Fiedra (`/c/fiedra`)</p>
+              <p className="text-sm text-ink-3 font-montserrat mt-1">Demo Fiedra</p>
+              <p className="text-xs text-ink-2 font-montserrat mt-3 leading-relaxed">
+                Nome: <span className="font-semibold text-fgx-red">Maria Teste</span>
+                <br />
+                Senha: <span className="font-semibold text-fgx-red">fiedra123</span>
+              </p>
             </Link>
             <Link to="/admin" className="card p-5 border border-line hover:border-fgx-orange transition-colors">
               <p className="font-titillium font-semibold text-lg text-ink">Área administrativa</p>
               <p className="text-sm text-ink-3 font-montserrat mt-1">Equipe FGX</p>
+              <p className="text-xs text-ink-2 font-montserrat mt-3 leading-relaxed">
+                Senha: <span className="font-semibold text-fgx-red">fgxadmin2026</span>
+              </p>
             </Link>
           </div>
         </div>
