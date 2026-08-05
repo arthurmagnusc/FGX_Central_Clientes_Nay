@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+﻿import { test, expect } from '@playwright/test'
 
 const API = 'http://localhost:3001/api'
 
@@ -14,7 +14,7 @@ test.describe('Fidelidade de Conteudo', () => {
     await request.post(`${API}/admin/seed-demo`)
 
     const loginRes = await request.post(`${API}/auth/cliente/login`, {
-      data: { slug: 'fiedra', senha: 'fiedra123', nome: 'Teste Fidelidade' },
+      data: { slug: 'fiedra', senha: 'fiedra2026', nome: 'Teste Fidelidade' },
     })
     expect(loginRes.ok()).toBeTruthy()
     const cookies = loginRes.headers()['set-cookie']!
@@ -43,7 +43,7 @@ test.describe('Fidelidade de Conteudo', () => {
     })
 
     // 4. Navigate to the cycle page
-    await page.goto('/c/fiedra/ciclo')
+    await page.goto('/c/fiedra/conteudos')
     await page.waitForLoadState('networkidle')
 
     // 5. If there are pieces, click the first one
@@ -85,3 +85,5 @@ test.describe('Fidelidade de Conteudo', () => {
     }
   })
 })
+
+

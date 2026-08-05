@@ -19,7 +19,7 @@ Plataforma onde clientes de recorrência da FGX Gestão (comunicação jurídica
 
 **Admin:** `/admin` — senha: `fgxadmin2026`
 
-**Cliente Fiedra:** `/c/fiedra` — senha: `fiedra123` (nome livre)
+**Cliente Fiedra:** `/c/fiedra` — senha: `fiedra2026` (nome livre)
 
 A Fiedra já vem ativa com ciclo demo publicado (junho/2026, 6 peças, 7 entregáveis). Os demais clientes (`fgb`, `rsta`) estão criados mas sem senha e inativos — configure no admin.
 
@@ -43,7 +43,7 @@ npm run dev
 
 # 5. Acessar
 # Admin: http://localhost:5173/admin (senha: fgxadmin2026)
-# Cliente: http://localhost:5173/c/fiedra (senha: fiedra123)
+# Cliente: http://localhost:5173/c/fiedra (senha: fiedra2026)
 ```
 
 ## Deploy Vercel
@@ -57,7 +57,7 @@ npm run dev
 | `COOKIE_SECURE` | `true` em produção (força cookie Secure) |
 | `WEBHOOK_AVALIACAO_AJUSTE` | URL do webhook (opcional) |
 | `BLOB_READ_WRITE_TOKEN` | Token do Vercel Blob para upload/download de arquivos |
-| `DEMO_CLIENT_SENHA` | Senha do cliente demo (ex.: `fiedra123`) |
+| `DEMO_CLIENT_SENHA` | Senha do cliente demo (ex.: `fiedra2026`) |
 
 ### Build
 

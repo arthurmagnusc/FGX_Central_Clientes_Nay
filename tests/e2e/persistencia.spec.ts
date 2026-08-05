@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+﻿import { test, expect } from '@playwright/test'
 
 const API = 'http://localhost:3001/api'
 
@@ -14,7 +14,7 @@ test.describe('Persistencia de Comentario', () => {
     await request.post(`${API}/admin/seed-demo`)
 
     const loginRes = await request.post(`${API}/auth/cliente/login`, {
-      data: { slug: 'fiedra', senha: 'fiedra123', nome: 'Persistencia QA' },
+      data: { slug: 'fiedra', senha: 'fiedra2026', nome: 'Persistencia QA' },
     })
     expect(loginRes.ok()).toBeTruthy()
     const cookies = loginRes.headers()['set-cookie']!
@@ -46,7 +46,7 @@ test.describe('Persistencia de Comentario', () => {
     const firstPiece = pieces[0]
 
     // 3. Navigate to piece page
-    await page.goto(`/c/fiedra/ciclo/${cycles[0].id}/peca/${firstPiece.id}`)
+    await page.goto(`/c/fiedra/conteudos/${cycles[0].id}/peca/${firstPiece.id}`)
     await page.waitForLoadState('networkidle')
 
     // 4. Find comment section and write a comment
@@ -89,7 +89,9 @@ test.describe('Persistencia de Comentario', () => {
     } else {
       // If comment text missing (maybe form didn't submit), still check
       // that the page didn't lose the existing comments that were there
-      expect(pageContent).toContain('Histórico')
+      expect(pageContent).toContain('HistÃ³rico')
     }
   })
 })
+
+

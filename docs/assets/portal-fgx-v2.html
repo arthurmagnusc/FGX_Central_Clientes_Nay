@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal do Cliente FGX — Fiedra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Titillium+Web:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fgx-red:#B12119; --fgx-orange:#E77938; --fgx-red-dark:#7E131C;
+  --fgx-beige:#D9BCAA; --fgx-beige-light:#FAE7CF;
+  --fgx-green:#527F3E; --fgx-gold:#FAB826; --fgx-blue:#356FA9;
+  --ink:#1C1A19; --ink-2:#4A4341; --ink-3:#7A716D;
+  --line:#E7E1DD; --white:#FFFFFF;
+  --bg:#F6F3F1;
+  --sh:0 1px 2px rgba(28,26,25,.03), 0 3px 14px rgba(28,26,25,.05);
+  --sh-lg:0 4px 30px rgba(28,26,25,.10);
+  --side:298px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Montserrat,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.tt{font-family:'Titillium Web',system-ui,sans-serif}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+a{color:var(--fgx-red);text-decoration:none}
+a:hover{text-decoration:underline}
+.hidden{display:none !important}
+svg{flex:none}
+
+#demoBar{background:var(--ink);color:#EDE8E5;font-size:12px;padding:6px 20px;text-align:center;letter-spacing:.2px;position:relative;z-index:60}
+#demoBar b{color:var(--fgx-gold)}
+
+/* ============ LOGIN ============ */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(900px 520px at 12% -10%, rgba(231,121,56,.32), transparent 60%),
+             linear-gradient(150deg,#7E131C 0%,#B12119 55%,#C4331F 100%)}
+.login-card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.logo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(140deg,var(--fgx-red) 0%,var(--fgx-orange) 100%);
+  font-family:'Titillium Web';font-weight:900;color:#fff;font-size:17px;letter-spacing:.5px;flex:none}
+.login-card .logo{margin-bottom:22px}
+.login-card h1{font-size:26px;font-weight:700;letter-spacing:-.4px}
+.login-card .sub{color:var(--ink-3);font-size:14px;margin:6px 0 28px}
+label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+.field{margin-bottom:17px}
+.field input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:9px;background:#FCFBFA;outline:none;transition:.15s}
+.field input:focus{border-color:var(--fgx-orange);background:#fff;box-shadow:0 0 0 3px rgba(231,121,56,.13)}
+.hint{font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.45;text-transform:none;font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:9px;font-weight:600;font-size:14px;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--fgx-red);color:#fff}
+.btn-primary:hover{background:var(--fgx-red-dark)}
+.btn-full{width:100%}
+.btn-ghost{border:1.5px solid var(--line);color:var(--ink-2);background:#fff}
+.btn-ghost:hover{border-color:var(--ink-3)}
+.btn-green{background:var(--fgx-green);color:#fff}
+.btn-green:hover{filter:brightness(.92)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:8px}
+.err{background:rgba(177,33,25,.08);color:var(--fgx-red);font-size:13px;padding:10px 13px;border-radius:8px;margin-bottom:15px}
+.demo-creds{margin-top:24px;padding-top:19px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.demo-creds code{background:var(--bg);padding:2px 7px;border-radius:5px;font-size:12px;color:var(--ink-2)}
+
+/* ============ SHELL ============ */
+#app{display:flex;min-height:100vh}
+aside.side{width:var(--side);flex:none;color:#fff;display:flex;flex-direction:column;padding:22px 18px;position:sticky;top:0;height:100vh;
+  background:linear-gradient(168deg,#8E1A18 0%,#7E131C 45%,#5E0E15 100%)}
+.brand{display:flex;align-items:center;gap:13px;padding:0 4px 24px}
+.brand .logo{width:46px;height:46px;font-size:15px;border-radius:11px;background:linear-gradient(140deg,#C4331F,#E77938)}
+.brand .bn{font-family:'Titillium Web';font-weight:700;font-size:17px;line-height:1.15}
+.brand .bs{font-size:9.5px;letter-spacing:1.4px;opacity:.62;text-transform:uppercase;margin-top:2px}
+.proj{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:.15s}
+.proj:hover{background:rgba(255,255,255,.15)}
+.proj .ini{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-family:'Titillium Web';font-weight:700;font-size:13px;flex:none}
+.proj .pl{font-size:9.5px;letter-spacing:1.2px;opacity:.6;text-transform:uppercase}
+.proj .pn{font-family:'Titillium Web';font-weight:700;font-size:15px;line-height:1.2;margin-top:1px}
+.navlabel{font-size:9.5px;letter-spacing:1.5px;opacity:.5;text-transform:uppercase;margin:26px 4px 10px}
+nav.main{display:flex;flex-direction:column;gap:3px}
+nav.main button{display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:11px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.78);transition:.15s;position:relative;text-align:left;width:100%}
+nav.main button:hover{background:rgba(255,255,255,.09);color:#fff}
+nav.main button.on{background:rgba(255,255,255,.13);color:#fff;font-weight:600}
+nav.main button.on:before{content:'';position:absolute;left:-18px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--fgx-orange)}
+nav.main .cnt{margin-left:auto;font-size:11.5px;font-weight:600;background:rgba(255,255,255,.16);padding:1px 8px;border-radius:20px;min-width:24px;text-align:center}
+.side-bottom{margin-top:auto;display:flex;flex-direction:column;gap:3px}
+.prot{background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:13px 14px;display:flex;gap:11px;align-items:flex-start;margin-bottom:12px}
+.prot .pt{font-size:13px;font-weight:600}
+.prot .ps{font-size:11px;opacity:.6;line-height:1.4;margin-top:2px}
+.side-bottom>button{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;font-size:13.5px;color:rgba(255,255,255,.65);width:100%;text-align:left}
+.side-bottom>button:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main.content{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;gap:14px;padding:16px 34px;background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+.crumb{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--ink-3)}
+.crumb b{color:var(--ink);font-weight:600}
+.crumb button{color:var(--ink-3)}
+.crumb button:hover{color:var(--fgx-red)}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.bell{position:relative;color:var(--ink-3);padding:4px}
+.bell:hover{color:var(--ink)}
+.bell i{position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--fgx-red);border:1.5px solid #fff}
+.userchip{display:flex;align-items:center;gap:11px;padding:5px 12px 5px 5px;border-radius:30px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.userchip:hover{border-color:var(--ink-3)}
+.userchip .av{width:34px;height:34px;border-radius:50%;background:var(--fgx-beige-light);color:#8A4A22;display:flex;align-items:center;justify-content:center;font-family:'Titillium Web';font-weight:700;font-size:13px;flex:none}
+.userchip .un{font-size:13.5px;font-weight:600;line-height:1.2}
+.userchip .uo{font-size:11px;color:var(--ink-3)}
+.pad{padding:34px 34px 80px;max-width:1320px}
+
+/* ============ HERO ============ */
+.hero{display:flex;gap:34px;align-items:flex-start;margin-bottom:30px;flex-wrap:wrap}
+.hero-l{flex:1;min-width:320px}
+.eyebrow{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--fgx-red);margin-bottom:14px}
+.hero h1{font-size:44px;font-weight:700;line-height:1.08;letter-spacing:-1.2px;margin-bottom:16px}
+.hero p{font-size:16px;color:var(--ink-2);max-width:600px;line-height:1.65}
+.hero p b{color:var(--fgx-red);font-weight:500}
+.progress-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:21px 24px;box-shadow:var(--sh-lg);width:340px;flex:none}
+.progress-card .ph{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:13px}
+.progress-card .pl{font-size:13.5px;color:var(--ink-2);font-weight:500}
+.progress-card .pv{font-family:'Titillium Web';font-size:29px;font-weight:700;color:var(--fgx-red);line-height:1}
+.track{height:7px;border-radius:5px;background:var(--bg);overflow:hidden}
+.track span{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--fgx-red),var(--fgx-orange))}
+.progress-card .pf{display:flex;justify-content:space-between;gap:10px;margin-top:13px;font-size:12px;color:var(--ink-3)}
+.progress-card .pf span{display:flex;align-items:center;gap:6px}
+
+.statrow{display:flex;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:38px}
+.statrow .s{flex:1;min-width:200px;display:flex;align-items:center;gap:14px;padding:20px 26px;border-right:1px solid var(--line)}
+.statrow .s:last-child{border-right:none}
+.statrow .ic{width:38px;height:38px;border-radius:10px;background:var(--fgx-beige-light);color:#B2531D;display:flex;align-items:center;justify-content:center;flex:none}
+.statrow .sv{font-family:'Titillium Web';font-size:22px;font-weight:700;line-height:1}
+.statrow .sl{font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-3);margin-top:3px}
+.statrow .link{margin-left:auto;color:var(--fgx-red);font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px}
+
+/* ============ SECTIONS ============ */
+.sechead{display:flex;align-items:center;gap:17px;margin-bottom:22px;flex-wrap:wrap}
+.secnum{width:50px;height:50px;border-radius:50%;background:var(--fgx-red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Titillium Web';font-weight:700;font-size:15px;flex:none}
+.sechead h2{font-size:25px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
+.sechead .ss{font-size:13.5px;color:var(--ink-3);margin-top:2px}
+.sechead .tools{margin-left:auto;display:flex;gap:10px;align-items:center}
+.search{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;width:280px;color:var(--ink-3)}
+.search input{border:none;outline:none;background:none;width:100%;font-size:13.5px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chips button{display:flex;align-items:center;gap:8px;padding:8px 15px;border:1px solid var(--line);background:#fff;border-radius:30px;font-size:13px;font-weight:600;color:var(--ink-2);transition:.15s}
+.chips button:hover{border-color:var(--ink-3)}
+.chips button.on{border-color:var(--fgx-red);color:var(--fgx-red);background:rgba(177,33,25,.05)}
+.chips .c{font-size:11px;background:var(--bg);padding:1px 7px;border-radius:20px;color:var(--ink-3);font-weight:600}
+.chips button.on .c{background:rgba(177,33,25,.11);color:var(--fgx-red)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:17px}
+.card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:20px;box-shadow:var(--sh);transition:.16s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.card.hl{border-color:rgba(177,33,25,.35)}
+.ribbon{position:absolute;top:0;right:0;background:var(--fgx-red);color:#fff;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 13px;border-radius:0 0 0 10px}
+.ftype{width:44px;height:52px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:none;font-size:8.5px;font-weight:700;letter-spacing:.4px}
+.ftype.pdf{background:rgba(177,33,25,.09);color:#B12119}
+.ftype.docx{background:rgba(53,111,169,.10);color:#2A5A8C}
+.ftype.pptx{background:rgba(231,121,56,.12);color:#B2531D}
+.ftype.xlsx{background:rgba(82,127,62,.11);color:#3F6530}
+.card-top{display:flex;gap:15px;margin-bottom:14px}
+.card-cat{font-size:10.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.card h3{font-size:16.5px;font-weight:700;line-height:1.32}
+.card .desc{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-bottom:15px}
+.card-foot{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px;margin-top:auto}
+.mini{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.3px}
+.mini.final{background:rgba(82,127,62,.11);color:#3F6530}
+.mini.novo{background:rgba(53,111,169,.11);color:#2A5A8C}
+.mini.rev{background:rgba(231,121,56,.13);color:#B2531D}
+.mini.val{background:rgba(250,184,38,.16);color:#8A6208}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill.pendente{color:#7A716D;background:#F0EEEC}
+.pill.em_revisao{color:#2A5A8C;background:rgba(53,111,169,.11)}
+.pill.ajustada{color:#B2531D;background:rgba(231,121,56,.13)}
+.pill.aprovada{color:#3F6530;background:rgba(82,127,62,.11)}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:var(--fgx-beige-light);color:#8A4A22}
+.tag.n{background:var(--bg);color:var(--ink-3)}
+.versions{margin-top:12px;font-size:12px}
+.versions summary{cursor:pointer;color:var(--ink-3);font-weight:600}
+.versions ul{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:5px}
+.versions li{display:flex;justify-content:space-between;color:var(--ink-3);padding:6px 10px;background:var(--bg);border-radius:6px}
+
+/* ============ VISÃO GERAL — escopo ============ */
+.scope{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);overflow:hidden;margin-bottom:20px}
+.scope-row{display:flex;align-items:center;gap:20px;padding:19px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.scope-row:last-child{border-bottom:none}
+.scope-row .nm{min-width:230px;flex:1}
+.scope-row .nm b{font-size:15.5px;font-weight:600;display:block}
+.scope-row .nm span{font-size:12px;color:var(--ink-3)}
+.scope-row .bars{flex:2;min-width:210px}
+.scope-row .tk{height:8px;border-radius:5px;background:var(--bg);overflow:hidden}
+.scope-row .tk span{display:block;height:100%;border-radius:5px}
+.scope-row .num{font-family:'Titillium Web';font-size:20px;font-weight:700;width:78px;text-align:right}
+.scope-row .st{width:130px;text-align:right;font-size:12px;font-weight:600}
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.extra .e{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px 19px;box-shadow:var(--sh)}
+.extra .ev{font-family:'Titillium Web';font-size:24px;font-weight:700;color:var(--fgx-green);line-height:1}
+.extra .et{font-size:13.5px;margin-top:7px;line-height:1.5;color:var(--ink-2)}
+.note{font-size:12.5px;color:var(--ink-3);line-height:1.6;margin-top:16px;padding:14px 17px;background:rgba(231,121,56,.06);border-left:3px solid var(--fgx-orange);border-radius:0 9px 9px 0}
+
+/* ============ RELATÓRIOS ============ */
+.rep{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);overflow:hidden;margin-bottom:17px}
+.rep-h{padding:22px 26px;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.rep-h h3{font-size:19px;font-weight:700;line-height:1.3}
+.rep-h .per{font-size:13px;color:var(--ink-3);margin-top:3px}
+.rep-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.rep-kpis .k{background:#fff;padding:17px 20px}
+.rep-kpis .kv{font-family:'Titillium Web';font-size:25px;font-weight:700;line-height:1}
+.rep-kpis .kl{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.4}
+.rep-f{padding:16px 26px;background:#FBFAF9;border-top:1px solid var(--line);display:flex;gap:11px;align-items:center;flex-wrap:wrap}
+
+/* ============ PAINEL DE CONTEÚDOS ============ */
+.cycle-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 26px;box-shadow:var(--sh);margin-bottom:24px}
+.cycle-top{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.cycle-top h2{font-size:22px;font-weight:700;margin-top:8px}
+.cycle-sel{margin-left:auto}
+.cycle-sel select{padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;background:#fff;font-size:13px;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:16px;margin-bottom:19px}
+.stat .n{font-family:'Titillium Web';font-size:28px;font-weight:700;line-height:1}
+.stat .l{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.bar{display:flex;height:9px;border-radius:6px;overflow:hidden;background:var(--bg)}
+.bar-legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:12px;font-size:11.5px;color:var(--ink-3)}
+.bar-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.piece-card{cursor:pointer;text-align:left;width:100%}
+.piece-card:hover{border-color:var(--fgx-orange);transform:translateY(-2px);box-shadow:0 5px 22px rgba(28,26,25,.11)}
+
+.piece-layout{display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:start}
+.piece-main{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);overflow:hidden}
+.piece-hd{padding:26px 30px 22px;border-bottom:1px solid var(--line)}
+.piece-hd h1{font-size:24px;font-weight:700;line-height:1.28;letter-spacing:-.4px;margin:11px 0 13px}
+.piece-tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-3)}
+.charcount{font-size:12px;color:var(--ink-3);margin-top:13px}
+.charcount b{color:var(--ink-2)}
+.charcount.over b{color:var(--fgx-red)}
+.approved-note{margin-top:14px;font-size:12.5px;color:#3F6530;background:rgba(82,127,62,.09);padding:9px 13px;border-radius:8px}
+.blocks{padding:8px 30px 26px}
+.block{position:relative;padding:17px 0;border-bottom:1px dashed var(--line)}
+.block:last-child{border-bottom:none}
+.block-label{font-family:'Titillium Web';font-size:11.5px;font-weight:700;color:var(--fgx-orange);letter-spacing:.7px;text-transform:uppercase;margin-bottom:8px}
+.block-title{font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.35}
+.block-body{white-space:pre-wrap;font-size:15px;line-height:1.74}
+.block-foot{display:flex;align-items:center;gap:12px;margin-top:11px;min-height:26px}
+.block-chars{font-size:11.5px;color:var(--ink-3)}
+.block-chars.over{color:var(--fgx-red);font-weight:600}
+.cmt-btn{font-size:12px;font-weight:600;color:var(--fgx-red);opacity:0;transition:.15s;padding:5px 11px;border-radius:7px;border:1px solid transparent}
+.block:hover .cmt-btn{opacity:1;border-color:rgba(177,33,25,.25)}
+.cmt-btn:hover{background:rgba(177,33,25,.06)}
+.cmt-mark{font-size:11.5px;font-weight:600;color:var(--fgx-blue);background:rgba(53,111,169,.11);padding:3px 10px;border-radius:20px}
+.inline-form{margin-top:13px;background:var(--bg);border-radius:10px;padding:14px}
+.inline-form textarea{width:100%;min-height:80px;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;resize:vertical;background:#fff;outline:none;line-height:1.55}
+.inline-form textarea:focus{border-color:var(--fgx-orange);box-shadow:0 0 0 3px rgba(231,121,56,.13)}
+.inline-form .row{display:flex;gap:9px;margin-top:10px;align-items:center}
+.inline-form .as{font-size:11.5px;color:var(--ink-3);margin-left:auto}
+.block-cmts{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.mini-cmt{background:rgba(53,111,169,.06);border-left:3px solid var(--fgx-blue);padding:10px 13px;border-radius:0 8px 8px 0;font-size:13.5px}
+.mini-cmt .mh{font-size:11.5px;color:var(--ink-3);margin-bottom:3px}
+.mini-cmt .mh b{color:var(--ink-2)}
+section.acc{border-top:1px solid var(--line)}
+section.acc>button{width:100%;display:flex;align-items:center;gap:10px;padding:17px 30px;font-weight:700;font-size:15px;text-align:left;font-family:'Titillium Web'}
+section.acc>button:hover{background:#FBFAF9}
+section.acc .chev{margin-left:auto;color:var(--ink-3);font-size:12px;transition:.2s}
+section.acc.open .chev{transform:rotate(180deg)}
+section.acc .body{padding:0 30px 24px}
+.trail{list-style:none;position:relative;padding-left:27px}
+.trail:before{content:'';position:absolute;left:10px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.trail li{position:relative;padding-bottom:16px}
+.trail li:last-child{padding-bottom:0}
+.trail .dot{position:absolute;left:-27px;top:1px;width:21px;height:21px;border-radius:50%;background:var(--fgx-beige-light);color:#8A4A22;font-family:'Titillium Web';font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center}
+.trail .st{font-weight:600;font-size:14px}
+.trail .sd{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.reason{border:1px solid var(--line);border-radius:10px;margin-bottom:9px;overflow:hidden}
+.reason>button{width:100%;text-align:left;padding:13px 16px;font-weight:600;font-size:14px}
+.reason>button:hover{background:#FBFAF9}
+.reason .rb{padding:0 16px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.68;white-space:pre-wrap}
+.sources{list-style:none;display:flex;flex-direction:column;gap:9px}
+.sources li{display:flex;gap:11px;align-items:baseline;padding:11px 14px;background:var(--bg);border-radius:9px;font-size:13.5px}
+.sources .stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-3);background:#fff;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.sources .sdate{margin-left:auto;font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.adjust{border-left:3px solid var(--fgx-orange);background:rgba(231,121,56,.06);padding:13px 16px;border-radius:0 9px 9px 0;margin-bottom:9px;font-size:13.5px}
+.adjust .ah{font-size:11.5px;color:#8A4A22;font-weight:600;margin-bottom:4px}
+.adjust .src{font-size:12px;color:var(--ink-3);font-style:italic;margin-top:6px}
+.piece-actions{padding:21px 30px;border-top:1px solid var(--line);display:flex;gap:11px;flex-wrap:wrap;align-items:center;background:#FBFAF9}
+.piece-nav{display:flex;justify-content:space-between;gap:10px;margin-top:17px}
+.side-p{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);position:sticky;top:88px;max-height:calc(100vh - 110px);display:flex;flex-direction:column}
+.side-h{padding:17px 19px;border-bottom:1px solid var(--line);font-family:'Titillium Web';font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.side-h .badge{margin-left:auto;font-size:11.5px;background:var(--bg);color:var(--ink-3);padding:2px 10px;border-radius:20px;font-family:Montserrat;font-weight:600}
+.side-list{overflow-y:auto;padding:15px 19px;flex:1;display:flex;flex-direction:column;gap:12px}
+.cmt{border-radius:10px;padding:12px 14px;font-size:13.5px;line-height:1.55}
+.cmt.cliente{background:rgba(53,111,169,.07)}
+.cmt.editor{background:rgba(231,121,56,.08)}
+.cmt .ch{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-3);margin-bottom:5px;flex-wrap:wrap}
+.cmt .ch b{color:var(--ink-2);font-size:12px}
+.cmt .role{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 7px;border-radius:5px}
+.cmt.cliente .role{background:rgba(53,111,169,.16);color:#2A5A8C}
+.cmt.editor .role{background:rgba(231,121,56,.2);color:#8A4A22}
+.cmt .anchor{width:100%;text-align:left;font-size:11.5px;color:var(--fgx-blue);margin-top:6px;text-decoration:underline}
+.side-empty{color:var(--ink-3);font-size:13px;text-align:center;padding:28px 8px;line-height:1.6}
+.side-f{padding:15px 19px;border-top:1px solid var(--line)}
+.side-f textarea{width:100%;min-height:72px;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;resize:vertical;outline:none;font-size:13.5px;line-height:1.5}
+.side-f textarea:focus{border-color:var(--fgx-orange);box-shadow:0 0 0 3px rgba(231,121,56,.13)}
+
+.flash{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 10px 34px rgba(0,0,0,.3);transition:.28s;z-index:80;opacity:0;max-width:88vw;text-align:center}
+.flash.on{transform:translateX(-50%) translateY(0);opacity:1}
+.flash.ok{background:#3F6530}
+
+.mobtoggle{display:none}
+@media (max-width:1120px){
+  .piece-layout{grid-template-columns:1fr}
+  .side-p{position:static;max-height:none}
+  .side-list{max-height:400px}
+  .hero h1{font-size:36px}
+}
+@media (max-width:900px){
+  aside.side{position:fixed;left:0;top:0;z-index:70;transform:translateX(-100%);transition:.25s;box-shadow:0 0 60px rgba(0,0,0,.4)}
+  aside.side.open{transform:translateX(0)}
+  .mobtoggle{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-2)}
+  .pad{padding:24px 18px 70px}
+  .topbar{padding:13px 18px}
+  .hero h1{font-size:30px;letter-spacing:-.7px}
+  .progress-card{width:100%}
+  .userchip .un,.userchip .uo{display:none}
+  .userchip{padding:5px}
+  .piece-hd,.blocks,.piece-actions,section.acc>button,section.acc .body{padding-left:20px;padding-right:20px}
+  .cmt-btn{opacity:1;border-color:rgba(177,33,25,.25)}
+  .statrow .s{border-right:none;border-bottom:1px solid var(--line)}
+  .search{width:100%}
+  .sechead .tools{width:100%;margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<div id="demoBar">PROTÓTIPO PARA VALIDAÇÃO — dados de <b>demonstração</b>, a partir da Síntese Editorial e do Relatório de Escopo da Fiedra.</div>
+
+<!-- ================= LOGIN ================= -->
+<div id="login">
+  <div class="login-card">
+    <div class="logo">FGX</div>
+    <h1>Portal do Cliente</h1>
+    <p class="sub">Fiedra, Britto &amp; Ferreira Neto Advocacia Empresarial</p>
+    <div id="loginErr" class="err hidden"></div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="pw">Senha de acesso</label>
+        <input id="pw" type="password" autocomplete="off" placeholder="Senha compartilhada do escritório">
+      </div>
+      <div class="field">
+        <label for="nm">Seu nome</label>
+        <input id="nm" type="text" autocomplete="off" placeholder="Como você quer aparecer nos comentários">
+        <p class="hint">Usamos seu nome para identificar automaticamente cada comentário e cada aprovação.</p>
+      </div>
+      <button class="btn btn-primary btn-full" type="submit">Entrar</button>
+    </form>
+    <div class="demo-creds">No protótipo, a senha é <code>fiedra2026</code>.</div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+  <aside class="side" id="sidebar">
+    <div class="brand">
+      <div class="logo">FGX</div>
+      <div><div class="bn">Portal do Cliente</div><div class="bs">Strategic Solutions</div></div>
+    </div>
+    <div class="proj" onclick="flash('No protótipo só a Fiedra está carregada.')">
+      <div class="ini">FB</div>
+      <div style="min-width:0">
+        <div class="pl">Contrato ativo</div>
+        <div class="pn">Fiedra</div>
+      </div>
+      <svg style="margin-left:auto" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="navlabel">Workspace</div>
+    <nav class="main" id="nav"></nav>
+    <div class="side-bottom">
+      <div class="prot">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="opacity:.75;margin-top:1px"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div><div class="pt">Ambiente protegido</div><div class="ps">Conteúdo exclusivo deste contrato</div></div>
+      </div>
+      <button onclick="flash('No protótipo, o suporte é ilustrativo.')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 113.5 2.3c-.6.3-1 .9-1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>
+        Ajuda e suporte</button>
+      <button id="logout">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M15 17l5-5-5-5M20 12H9M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h5"/></svg>
+        Sair</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <button class="mobtoggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="crumb" id="crumb"></div>
+      <div class="right">
+        <button class="bell" onclick="flash('2 avisos: 1 peça aguardando validação e 1 relatório novo.')">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 10-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 003 0"/></svg><i></i>
+        </button>
+        <div class="userchip" onclick="trocarNome()">
+          <div class="av" id="userAv"></div>
+          <div><div class="un" id="userName"></div><div class="uo">Fiedra · Britto &amp; Ferreira Neto</div></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="color:var(--ink-3)"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="pad" id="view"></div>
+  </main>
+</div>
+
+<div id="flash" class="flash"></div>
+
+<script>
+/* =====================================================================
+   DADOS — demonstração
+   Fontes: Síntese Editorial Fiedra (Plano 2026) e
+   Relatório de Escopo Fiedra 07/05–23/07/2026.
+   ===================================================================== */
+
+const ESCOPO=[
+  {nm:'Posts em redes sociais', meta:'meta 8/mês', prev:22, real:23, pct:104, st:'meta superada', cor:'#527F3E'},
+  {nm:'Newsletter / e-mail marketing', meta:'meta 1/mês', prev:2, real:2, pct:100, st:'meta cumprida', cor:'#527F3E'},
+  {nm:'Blog / Área de Publicações', meta:'meta 1/mês', prev:2, real:2, pct:100, st:'meta cumprida', cor:'#527F3E'}
+];
+const EXTRAS=[
+  {v:'+1', t:'Reestruturação de perfil — capa e bio (LinkedIn e Instagram), destaques, linktree e 3 posts institucionais fixados'},
+  {v:'+2', t:'Apresentação institucional e modelo de proposta comercial revisados e entregues'},
+  {v:'+2', t:'Atualização de informações no site e base de governança'},
+  {v:'+1', t:'Endomarketing — card de comunicação interna'}
+];
+
+const ENTREGAVEIS=[
+  {cat:'Estratégia', itens:[
+    {t:'Diagnóstico de Comunicação e Posicionamento', d:'Leitura consolidada da presença atual, mapeamento de concorrentes por patamar e identificação dos territórios próprios, disputados e abertos.', v:2, dt:'12/03/2026', arq:'pdf', kb:'4,8 MB', mini:'final', hl:true, hist:[{v:1,dt:'04/02/2026'}]},
+    {t:'Síntese Editorial — Camada 1', d:'Consolidação dos oito blocos de identidade, negócio, audiência, linguagem, arquitetura editorial e travas de governança.', v:3, dt:'11/05/2026', arq:'docx', kb:'1,8 MB', mini:'final', hist:[{v:2,dt:'28/04/2026'},{v:1,dt:'15/04/2026'}]},
+    {t:'Plano de Comunicação 2026', d:'Pilares editoriais, editorias, volumetria contratada, hierarquia de canais e modelo de progressão trimestral.', v:1, dt:'20/03/2026', arq:'pdf', kb:'6,7 MB', mini:'final', hist:[]}
+  ]},
+  {cat:'Conteúdo', itens:[
+    {t:'Apresentação institucional — revisão', d:'Revisão e adaptação da apresentação institucional geral, de documento denso a narrativa visual.', v:2, dt:'03/07/2026', arq:'pptx', kb:'22,4 MB', mini:'rev', hist:[{v:1,dt:'08/05/2026'}]},
+    {t:'Modelo de proposta comercial — revisão', d:'Revisão do modelo de proposta, de carta em texto corrido a peça de apresentação.', v:1, dt:'03/07/2026', arq:'pptx', kb:'9,1 MB', mini:'novo', hist:[]},
+    {t:'Calendário editorial estruturado', d:'Calendário do ciclo com temas, canais, formatos e responsáveis, cruzado com o fluxo de aprovação.', v:4, dt:'01/07/2026', arq:'xlsx', kb:'892 KB', mini:'rev', hist:[{v:3,dt:'01/06/2026'},{v:2,dt:'02/05/2026'}]}
+  ]},
+  {cat:'Operação', itens:[
+    {t:'Diretriz de comunicação e tom de voz', d:'Tom de voz, o que dizer e o que não dizer, regras de menção a clientes e fluxo de aprovação interna.', v:1, dt:'06/05/2026', arq:'pdf', kb:'1,1 MB', mini:'final', hist:[]},
+    {t:'Documento de governança — escopo e SLA', d:'Escopo contratado, prazos de aprovação, responsabilidades de cada lado e critérios de contagem de entrega.', v:1, dt:'06/05/2026', arq:'pdf', kb:'780 KB', mini:'final', hist:[]},
+    {t:'Política de uso de casos e anonimização', d:'Critérios para citar atuação sem expor cliente, com árvore de decisão para casos ativos e encerrados.', v:1, dt:'25/02/2026', arq:'pdf', kb:'640 KB', mini:'final', hist:[]}
+  ]}
+];
+
+const RELATORIOS=[
+  {t:'Relatório de Escopo — Maio a Julho de 2026', per:'Período de 07/05 a 23/07/2026 · emitido em 24/07/2026', novo:true,
+   res:'Onze semanas de operação com todas as metas contratuais cumpridas. A frente de posts fechou acima do previsto e a produção total superou o volume publicado, incluindo peças que aguardaram validação.',
+   kpis:[{v:'100%',l:'do volume com meta definida foi publicado'},{v:'23/22',l:'posts de feed publicados sobre previstos'},{v:'31',l:'peças produzidas no período'},{v:'2',l:'materiais estruturais entregues'}],
+   secoes:['Resumo executivo','Cumprimento de escopo','Destaque do período','Desempenho e audiência','Eventos e reconhecimentos','Próximos passos']},
+  {t:'Relatório de Escopo — Março a Abril de 2026', per:'Período de 01/03 a 30/04/2026 · emitido em 05/05/2026', novo:false,
+   res:'Ciclo de estruturação: diagnóstico, síntese editorial e plano de comunicação entregues antes da ativação da operação de conteúdo, iniciada em 07/05.',
+   kpis:[{v:'3',l:'entregas estruturais concluídas'},{v:'—',l:'operação de conteúdo ainda não ativada'},{v:'6',l:'reuniões de imersão realizadas'},{v:'100%',l:'do cronograma de imersão cumprido'}],
+   secoes:['Resumo executivo','Entregas da imersão','Próximos passos']}
+];
+
+const CANAIS={redes_sociais:{nome:'Redes Sociais',limite:2200},blog:{nome:'Blog',limite:null},newsletter:{nome:'Newsletter',limite:null}};
+
+const PECAS=[
+  {id:'p1',status:'em_revisao',canal:'redes_sociais',formato:'carrossel',editoria:'Cenários do Varejo',pilar:'Profundidade no Varejo Alimentar',funil:'Topo',area:'Relações de Consumo',
+   tema:'Marca própria e o risco de rotulagem que o varejo herda sem perceber',
+   blocos:[
+    {t:null,c:'A etiqueta é do fabricante.\nA ação chega no supermercado.\n\nE o contrato entre os dois quase nunca resolve isso.'},
+    {t:null,c:'Rede regional lança linha de marca própria. O fornecedor entrega o produto com o rótulo que ele mesmo aprovou.\n\nSeis meses depois, a ação por informação nutricional divergente cita a rede — não a indústria.'},
+    {t:null,c:'Quem responde quando a informação ao consumidor falha em produto de marca própria?'},
+    {t:null,c:'O Código de Defesa do Consumidor não pergunta quem imprimiu o rótulo.\n\nEle pergunta quem se apresenta ao consumidor como responsável pelo produto.'},
+    {t:null,c:'Na marca própria, a rede aparece como fabricante.\n\nNome, logo e identidade visual da rede na embalagem constroem a confiança — e, com ela, a responsabilidade.'},
+    {t:null,c:'A cláusula de regresso contra o fornecedor continua válida.\n\nMas ela resolve depois, entre as partes. Não impede que a ação chegue primeiro na rede.'},
+    {t:null,c:'Antes da próxima negociação de marca própria:\n\n• quem valida o rótulo\n• quem responde pelo laudo\n• quem arca com recolhimento\n\nO consumidor vai escolher quem acionar. O contrato define quem paga no fim.'}],
+   trilha:[
+    {p:'Scan setorial mensal',d:'Varredura de 30 a 45 dias em atos normativos, jurisprudência e imprensa setorial do varejo alimentar e cadeia de consumo.'},
+    {p:'Seleção da ancoragem',d:'Identificação do movimento regulatório de rotulagem como ancoragem [JORNALÍSTICO], sem uso de caso ativo de cliente.'},
+    {p:'Checagem da trava de confidencialidade',d:'Confirmação de que o tema não toca caso ativo identificável de cliente do escritório.'},
+    {p:'Geração de ângulos',d:'Cinco ângulos gerados; três descartados por serem óbvios para o leitor Cluster 2.'},
+    {p:'Curadoria estratégica',d:'Ângulo escolhido por deslocar o risco para onde o leitor não olha: a fronteira entre distribuir e fabricar.'},
+    {p:'Aprofundamento factual',d:'Verificação dos dispositivos do CDC aplicáveis e da norma de rotulagem nutricional vigente.'},
+    {p:'Redação em formato carrossel',d:'Sete slides no padrão Topo, entre 100 e 230 caracteres, com estrutura capa-tensão → contexto → pergunta-chave → desenvolvimento → fechamento.'},
+    {p:'Revisão de tom',d:'Ajuste para registro executivo e sóbrio, sem alarmismo e sem criação artificial de urgência.'},
+    {p:'Revisão técnica interna',d:'Conferência da precisão jurídica antes do envio para validação do escritório.'}],
+   raciocinios:[
+    {t:'Por que este ângulo',c:'O leitor Cluster 2 já sabe que existe responsabilidade solidária na cadeia de consumo. O que ele não costuma ter mapeado é o momento exato em que a rede deixa de ser comerciante e passa a ser fabricante aparente — e esse momento é uma decisão comercial, tomada na mesa de negociação da marca própria, não no jurídico.'},
+    {t:'Que tensão de marca trabalha',c:'A peça opera a tensão entre "descrever o problema" e "entregar caminho", que é a frase-síntese da Apresentação Institucional. Ela não termina em alerta: termina em três perguntas que o leitor leva para a próxima negociação.'},
+    {t:'O que foi descartado',c:'Descartamos o ângulo de multa administrativa por rotulagem irregular. É verdadeiro, mas é o ângulo que qualquer escritório escreveria. Descartamos também qualquer referência a caso ativo de rede supermercadista, por trava de confidencialidade.'}],
+   fontes:[
+    {t:'Lei nº 8.078/1990 — Código de Defesa do Consumidor',u:'https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm',tp:'Legislação',d:'11/09/1990'},
+    {t:'RDC ANVISA nº 429/2020 — Rotulagem nutricional de alimentos embalados',u:'https://www.gov.br/anvisa/pt-br',tp:'Norma regulatória',d:'08/10/2020'},
+    {t:'Instrução Normativa ANVISA nº 75/2020',u:'https://www.gov.br/anvisa/pt-br',tp:'Norma regulatória',d:'08/10/2020'}],
+   ajustes:[],aprovacao:null,
+   comentarios:[
+    {b:4,autor:'Lara Britto',tipo:'cliente',dt:'26/06/2026 09:14',txt:'Esse slide é o coração da peça. Só trocaria "se apresenta ao consumidor como responsável" por algo mais direto — o leitor Cluster 1 pode não pegar de primeira.'},
+    {b:null,autor:'Equipe FGX',tipo:'editor',dt:'26/06/2026 11:02',txt:'Anotado. Vamos testar "quem o consumidor entende que está por trás do produto" e devolvemos na próxima versão.'}]},
+
+  {id:'p2',status:'pendente',canal:'redes_sociais',formato:'carrossel',editoria:'Frente Imobiliária',pilar:'Conexão Acadêmico-Empresarial em Imobiliário',funil:'Meio',area:'Direito Civil / Imobiliário',
+   tema:'Patrimônio de afetação: a pergunta que o comprador aprendeu a fazer',
+   blocos:[
+    {t:null,c:'O comprador de unidade na planta mudou.\n\nEle pergunta agora o que só o jurídico perguntava dez anos atrás.'},
+    {t:null,c:'Incorporadora regional com três empreendimentos simultâneos. Um deles atrasa por questão de licenciamento.\n\nA pergunta que chega da carteira não é sobre o prazo. É sobre onde está o dinheiro dos outros dois.'},
+    {t:null,c:'O regime de afetação separa o patrimônio de cada incorporação do patrimônio da incorporadora.\n\nO que entra na obra de um empreendimento não responde pelas dívidas dos demais.'},
+    {t:null,c:'É facultativo por lei.\n\nMas deixou de ser facultativo na conversa comercial: para parte da carteira, a ausência de afetação virou sinal de risco.'},
+    {t:null,c:'Para a incorporadora, a decisão tem dois lados: a afetação restringe a livre movimentação de caixa entre empreendimentos — e, ao mesmo tempo, é o argumento mais concreto de segurança que ela tem a oferecer.'},
+    {t:null,c:'A pergunta não é se a afetação protege o comprador.\n\nÉ se a sua estrutura de capital comporta a disciplina que ela impõe — e se a resposta comercial para quem perguntar já está pronta.'}],
+   trilha:[
+    {p:'Scan setorial mensal',d:'Monitoramento de decisões e movimentos regulatórios do mercado imobiliário com operação na Bahia.'},
+    {p:'Cruzamento com a MEP-M',d:'Confirmação de que o eixo do mês comporta uma peça de Meio na Frente Imobiliária.'},
+    {p:'Geração de ângulos',d:'Quatro ângulos gerados a partir da mudança de comportamento do comprador, e não da norma em si.'},
+    {p:'Curadoria estratégica',d:'Escolha do ângulo que fala com o decisor da incorporadora, não com o advogado da incorporadora.'},
+    {p:'Aprofundamento factual',d:'Revisão do regime de afetação na Lei nº 10.931/2004 e da disciplina de incorporação da Lei nº 4.591/1964.'},
+    {p:'Redação em formato carrossel',d:'Seis slides no padrão Meio, com fechamento em terreno de decisão do leitor.'},
+    {p:'Revisão de tom',d:'Remoção de tom prescritivo; a peça apresenta trade-off, não recomendação única.'},
+    {p:'Revisão técnica interna',d:'Conferência de precisão antes do envio.'},
+    {p:'Preparo para validação',d:'Marcação dos pontos que pedem confirmação do sócio-âncora da frente.'}],
+   raciocinios:[
+    {t:'Por que este ângulo',c:'Escrever sobre o que é patrimônio de afetação seria didática de método consolidado — exatamente o que a persona primária rejeita. O ângulo desloca o eixo: não é o que a lei diz, é o que mudou no comportamento de quem compra.'},
+    {t:'Que tensão de marca trabalha',c:'Profundidade técnica com leitura de negócio. A peça só funciona se o leitor sentir que quem escreveu entende a restrição de caixa que a afetação impõe, e não apenas o dispositivo legal.'},
+    {t:'O que foi descartado',c:'Descartamos o ângulo de comparação entre regimes tributários aplicáveis, que puxaria a peça para o Tributário — área operada, mas não prioritária editorialmente em 2026.'}],
+   fontes:[
+    {t:'Lei nº 10.931/2004 — Patrimônio de afetação na incorporação imobiliária',u:'https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.931.htm',tp:'Legislação',d:'02/08/2004'},
+    {t:'Lei nº 4.591/1964 — Condomínio e incorporações imobiliárias',u:'https://www.planalto.gov.br/ccivil_03/leis/l4591.htm',tp:'Legislação',d:'16/12/1964'}],
+   ajustes:[],aprovacao:null,comentarios:[]},
+
+  {id:'p3',status:'aprovada',canal:'blog',formato:'artigo',editoria:'Frente Imobiliária',pilar:'Conexão Acadêmico-Empresarial em Imobiliário',funil:'Fundo',area:'Direito Civil / Imobiliário',
+   tema:'Resilição pelo comprador na incorporação: o que a Lei do Distrato resolveu e o que ela empurrou para o contencioso de massa',
+   blocos:[
+    {t:'A promessa de previsibilidade',c:'Quando a Lei nº 13.786/2018 entrou em vigor, a leitura corrente no mercado foi de que o contencioso de distrato tinha encontrado seu limite. O texto trouxe percentuais expressos de retenção, disciplinou o prazo de tolerância na entrega e estabeleceu deveres de informação no próprio instrumento contratual. Para uma indústria que vinha de anos de decisões dispersas sobre quanto a incorporadora poderia reter, a chegada de números na lei pareceu o fim de uma discussão.\n\nSete anos depois, a experiência do contencioso de massa mostra um quadro mais nuançado. A lei de fato reduziu a dispersão sobre o percentual. Mas o percentual nunca foi, sozinho, o centro do litígio — e a discussão migrou para as três perguntas que a lei não fechou.'},
+    {t:'Primeira pergunta: sobre o que incide o percentual',c:'A retenção incide sobre o valor efetivamente pago pelo adquirente. A formulação é simples até o momento em que se pergunta o que compõe esse valor em um contrato real.\n\nComissão de corretagem paga diretamente à imobiliária, taxa de assessoria técnico-imobiliária, valores pagos a título de sinal, parcelas de mobiliário contratado em instrumento apartado, encargos de financiamento associado — cada um desses itens tem um regime próprio de discussão, e a soma deles muda materialmente a base de cálculo.\n\nO efeito prático no contencioso de massa é direto: duas ações com o mesmo percentual de retenção e o mesmo valor de contrato podem terminar com valores de restituição significativamente distintos, conforme o que o juízo entenda por valor efetivamente pago. A previsibilidade que a lei entregou no percentual não se transferiu automaticamente para o resultado financeiro da carteira.'},
+    {t:'Segunda pergunta: quem resiliu, e por quê',c:'A lei disciplina a resilição por iniciativa do adquirente. Ela não transforma em resilição voluntária toda extinção contratual que a incorporadora classifique como tal.\n\nQuando o adquirente alega descumprimento — atraso além do prazo de tolerância, alteração de projeto, ausência de habite-se, divergência de área privativa —, a controvérsia deixa de ser sobre quanto reter e passa a ser sobre a causa da extinção. Se a causa for imputada à incorporadora, o regime aplicável é outro, e o percentual de retenção deixa de operar.\n\nÉ nesse ponto que a documentação da obra deixa de ser assunto de engenharia e passa a ser peça de defesa. Registro de cronograma, comunicação formal de alteração, prova de comunicação ao adquirente, guarda dos aditivos assinados: são esses elementos que definem em qual regime a ação será julgada — e essa definição, não o percentual, é o que move o resultado.'},
+    {t:'Terceira pergunta: o que o contrato informou',c:'A lei criou deveres de informação sobre as consequências do desfazimento do negócio, com destaque no instrumento. O descumprimento desses deveres tem sido usado como fundamento para afastar a aplicação da cláusula de retenção pactuada.\n\nPara uma incorporadora com carteira relevante, isso significa que o passivo potencial não depende apenas da redação da cláusula de retenção, mas do padrão gráfico e da localização dessa informação no contrato assinado anos antes. Contratos de uma mesma incorporadora, celebrados em empreendimentos diferentes, com modelos diferentes, podem receber tratamentos diversos por essa razão.'},
+    {t:'O que isso muda na gestão da carteira',c:'A leitura de risco de uma carteira de distratos costuma ser feita por percentual médio de retenção e volume de ações. Esse é o indicador mais visível e o menos informativo.\n\nUma leitura mais útil parte de três cortes: qual proporção da carteira discute causa da extinção, e não valor; qual proporção foi celebrada sob modelo contratual anterior ao padrão atual de informação; e qual proporção envolve empreendimento com histórico documentado de alteração de prazo ou de projeto.\n\nEsses três cortes explicam a variação de resultado melhor do que o percentual de retenção, e são acionáveis: o primeiro orienta a estratégia processual, o segundo define prioridade de revisão dos modelos vigentes, o terceiro indica onde a documentação da obra precisa ser reconstituída antes de virar prova.'},
+    {t:'Uma nota sobre o que a lei não pretendeu fazer',c:'Vale registrar o que não é crítica ao texto legal. A Lei nº 13.786/2018 tratou do que podia tratar em abstrato: percentuais, prazos e deveres formais. As três perguntas acima não são lacunas de redação — são questões de fato, que dependem do contrato concreto e da execução concreta da obra.\n\nA conclusão prática, portanto, não é aguardar aperfeiçoamento legislativo. É reconhecer que a previsibilidade nessa matéria se constrói na fase contratual e na fase de obra, e que o contencioso apenas revela, anos depois, a qualidade das decisões tomadas naquelas duas fases.'}],
+   trilha:[
+    {p:'Scan setorial mensal',d:'Levantamento de decisões e produção doutrinária recente sobre resilição na incorporação imobiliária.'},
+    {p:'Cruzamento com a MEP-M',d:'Confirmação do slot de Fundo do mês na Frente Imobiliária.'},
+    {p:'Definição da tese central',d:'Escolha da tese de que o litígio migrou do percentual para a causa da extinção e para o dever de informação.'},
+    {p:'Geração de ângulos',d:'Três estruturas testadas; escolhida a que organiza o texto por perguntas em aberto, e não por dispositivos.'},
+    {p:'Aprofundamento factual',d:'Revisão da Lei nº 13.786/2018 e da Lei nº 4.591/1964 nos pontos citados.'},
+    {p:'Redação',d:'Artigo em seis blocos, com fechamento em leitura de carteira acionável.'},
+    {p:'Revisão de tom',d:'Remoção de adjetivação e de qualquer sugestão de urgência artificial.'},
+    {p:'Revisão técnica interna',d:'Conferência de precisão e de aderência à trava pró-empresa.'},
+    {p:'Validação do sócio-âncora',d:'Leitura final antes da publicação assinada.'}],
+   raciocinios:[
+    {t:'Por que este ângulo',c:'A produção sobre a Lei do Distrato é abundante e quase toda organizada por dispositivo. Para o Diretor Jurídico que já leu tudo isso, a única contribuição possível é deslocar o eixo: mostrar que a variável que explica resultado não é a que ele está medindo.'},
+    {t:'Por que termina em leitura de carteira',c:'O artigo é peça de Fundo. Ele precisa terminar em algo que o leitor possa executar na segunda-feira. Os três cortes de carteira são a tradução operacional da tese.'},
+    {t:'A nota final não é concessão',c:'Fechar reconhecendo o que a lei não pretendeu fazer evita que a peça soe como crítica legislativa, registro que as Diretrizes 2026 não autorizam. Além disso, é tecnicamente correto.'}],
+   fontes:[
+    {t:'Lei nº 13.786/2018 — Resolução do contrato por inadimplemento do adquirente',u:'https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13786.htm',tp:'Legislação',d:'27/12/2018'},
+    {t:'Lei nº 4.591/1964 — Condomínio e incorporações imobiliárias',u:'https://www.planalto.gov.br/ccivil_03/leis/l4591.htm',tp:'Legislação',d:'16/12/1964'},
+    {t:'Lei nº 10.406/2002 — Código Civil',u:'https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm',tp:'Legislação',d:'10/01/2002'}],
+   ajustes:[],aprovacao:{nome:'Ermiro Ferreira Neto',dt:'24/06/2026'},
+   comentarios:[
+    {b:2,autor:'Ermiro Ferreira Neto',tipo:'cliente',dt:'23/06/2026 16:40',txt:'A lista de itens que compõem o valor pago está correta e é a parte mais útil do texto. Manter exatamente como está.'},
+    {b:5,autor:'Ermiro Ferreira Neto',tipo:'cliente',dt:'23/06/2026 16:47',txt:'Os três cortes de carteira são o que eu levaria para uma reunião de diretoria. Aprovado.'}]},
+
+  {id:'p4',status:'ajustada',canal:'blog',formato:'analise_tecnica',editoria:'Cenários do Varejo',pilar:'Profundidade no Varejo Alimentar',funil:'Fundo',area:'Relações de Consumo',
+   tema:'O dever de informar do art. 10 do CDC e o momento em que a rede perde a discricionariedade sobre o recolhimento',
+   tese:'A decisão de recolher um produto deixa de ser comercial no instante em que a empresa toma conhecimento da nocividade — e o que o Judiciário examina depois não é a decisão, é o intervalo entre o conhecimento e a comunicação.',
+   blocos:[
+    {t:'O intervalo que interessa',c:'Discussões sobre recolhimento de produto costumam ser conduzidas como decisão de gestão de crise: avalia-se extensão do lote, custo logístico, exposição de imagem e só então se decide comunicar. Essa sequência descreve bem a prática e descreve mal o regime jurídico.\n\nO art. 10 do Código de Defesa do Consumidor não condiciona o dever de comunicar a uma avaliação de conveniência. Ele o vincula ao conhecimento posterior da periculosidade. A partir daí, a comunicação às autoridades competentes e aos consumidores é devida, e o que resta de discricionário é a forma, não o se.\n\nO efeito prático é que a análise, quando chega ao contencioso, não se concentra na qualidade da decisão tomada. Concentra-se no intervalo entre o momento em que a empresa soube e o momento em que comunicou — e na prova documental de ambos.'},
+    {t:'Quando a rede sabe',c:'Definir o momento do conhecimento é a questão de fato mais disputada nesse tipo de litígio, e é onde a estrutura interna da rede produz ou destrói a própria defesa.\n\nReclamação isolada em canal de atendimento não costuma equivaler a conhecimento de nocividade. Recorrência de reclamações com o mesmo padrão, laudo interno, notificação de fornecedor, comunicação de órgão de vigilância — cada um desses eventos desloca a data.\n\nRedes que operam canal de atendimento sem trilha de escalonamento documentada enfrentam um problema probatório específico: não conseguem demonstrar quando souberam, e a ausência dessa demonstração tende a ser lida contra quem tinha o dever de organizar a informação.'},
+    {t:'O que a comunicação precisa conter',c:'A comunicação prevista no art. 10 tem função de evitar dano, não de registrar diligência. Isso orienta o conteúdo: identificação precisa do produto e do lote, descrição do risco em linguagem compreensível pelo consumidor médio, orientação clara sobre o que fazer e canal de contato efetivo.\n\nComunicações redigidas para minimizar percepção de gravidade produzem um resultado adverso duplo: não cumprem a função preventiva e, quando examinadas depois, evidenciam que a empresa conhecia o risco e optou por descrevê-lo abaixo do que sabia.'},
+    {t:'A cadeia não dilui o dever',c:'Em produto fornecido por terceiro, é natural que a rede aguarde posicionamento do fabricante antes de agir. Essa espera é comercialmente razoável e juridicamente arriscada.\n\nO dever de informar do art. 10 alcança quem introduziu o produto no mercado de consumo. A existência de fornecedor identificado organiza o regresso entre as partes, mas não suspende o dever da rede perante o consumidor. Em marca própria, a questão sequer se coloca da mesma forma, porque a rede figura como responsável aparente.\n\nO ponto operacional: o protocolo interno precisa prever ação da rede independentemente da resposta do fornecedor, com prazo próprio.'},
+    {t:'O que documentar antes de precisar',c:'Três registros costumam decidir esse tipo de disputa, e nenhum deles pode ser construído depois.\n\nO primeiro é a trilha de escalonamento do atendimento, com data e hora de cada nível. O segundo é o registro da análise técnica que qualificou o risco, mesmo quando conclui pela ausência de nocividade — a análise que conclui pela ausência protege mais do que a ausência de análise. O terceiro é a prova de comunicação, incluindo alcance efetivo.\n\nNenhum desses três é caro. Todos são difíceis de reconstituir sob pressão.'},
+    {t:'Referências normativas',c:'Lei nº 8.078/1990, art. 8º — dever de não colocar no mercado produto que acarrete riscos além dos previsíveis.\nLei nº 8.078/1990, art. 9º — dever de informação ostensiva sobre nocividade ou periculosidade.\nLei nº 8.078/1990, art. 10 e §1º — vedação de colocação de produto com alto grau de nocividade e dever de comunicação após conhecimento posterior da periculosidade.\nLei nº 8.078/1990, art. 12 e art. 13 — responsabilidade pelo fato do produto e hipóteses de responsabilidade do comerciante.'}],
+   trilha:[
+    {p:'Scan setorial mensal',d:'Monitoramento de atos de vigilância sanitária e de comunicações de recolhimento no setor de alimentos.'},
+    {p:'Checagem da trava de confidencialidade',d:'Verificação expressa de que o tema não reproduz caso ativo de cliente do escritório; ancoragem construída apenas sobre norma.'},
+    {p:'Definição da tese central',d:'Deslocamento do exame da decisão de recolher para o intervalo entre conhecimento e comunicação.'},
+    {p:'Geração de ângulos',d:'Quatro ângulos; descartados os que tratavam de responsabilidade civil indenizatória, já saturados.'},
+    {p:'Aprofundamento factual',d:'Revisão dos arts. 8º a 13 do CDC e da disciplina administrativa de recolhimento.'},
+    {p:'Redação em formato de análise técnica',d:'Tese central em destaque, cinco blocos de desenvolvimento e bloco final de referências normativas.'},
+    {p:'Revisão de tom',d:'Ajuste para eliminar leitura de alarmismo e manter registro executivo.'},
+    {p:'Revisão técnica interna',d:'Conferência dos dispositivos citados um a um.'},
+    {p:'Aplicação dos ajustes solicitados',d:'Incorporação do pedido de tratamento explícito da cadeia de fornecimento.'}],
+   raciocinios:[
+    {t:'Por que este ângulo',c:'Quase toda produção sobre recolhimento trata de responsabilidade indenizatória depois do dano. O ângulo aqui é anterior e mais útil para quem decide: o que a empresa precisa ter registrado antes, para que a decisão que ela tomar seja defensável qualquer que tenha sido.'},
+    {t:'Por que a peça não usa caso concreto',c:'O tema toca área em que o escritório tem atuação relevante e casos ativos. A trava de confidencialidade recomenda ancoragem exclusivamente normativa, e a peça foi construída para funcionar sem nenhum caso.'},
+    {t:'Por que o fechamento é uma lista de três registros',c:'A persona primária rejeita conteúdo que termina em recomendação genérica. Três registros nomeados entregam decisão em vez de conselho.'}],
+   fontes:[
+    {t:'Lei nº 8.078/1990 — Código de Defesa do Consumidor',u:'https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm',tp:'Legislação',d:'11/09/1990'},
+    {t:'ANVISA — orientações sobre recolhimento de alimentos',u:'https://www.gov.br/anvisa/pt-br',tp:'Órgão regulador',d:null},
+    {t:'Secretaria Nacional do Consumidor — Ministério da Justiça',u:'https://www.gov.br/mj/pt-br',tp:'Órgão regulador',d:null}],
+   ajustes:[
+    {d:'Incluir tratamento explícito da situação em que o produto é fornecido por terceiro, deixando claro que a espera pelo posicionamento do fabricante não suspende o dever da rede.',tp:'pontual',st:'aplicado',src:'Comentário de Lara Britto no bloco "A cadeia não dilui o dever"'},
+    {d:'Padronizar, em todas as peças de Relações de Consumo, o fechamento com registros documentais nomeados em vez de recomendação genérica.',tp:'estrutural',st:'avaliado',src:'Comentário de Lara Britto na peça inteira'}],
+   aprovacao:null,
+   comentarios:[
+    {b:3,autor:'Lara Britto',tipo:'cliente',dt:'21/06/2026 10:22',txt:'Falta o cenário mais comum na prática: produto de fornecedor, e a rede esperando o fabricante se posicionar. Precisa estar no texto, é onde a maioria erra.'},
+    {b:null,autor:'Equipe FGX',tipo:'editor',dt:'21/06/2026 15:08',txt:'Ajuste aplicado — incluímos o bloco "A cadeia não dilui o dever" tratando exatamente essa situação, com o ponto do prazo próprio da rede.'},
+    {b:null,autor:'Lara Britto',tipo:'cliente',dt:'22/06/2026 08:31',txt:'Ficou bom. E aproveitem: esse formato de fechar com registros nomeados deveria virar padrão para todas as peças de consumo.'}]},
+
+  {id:'p5',status:'aprovada',canal:'newsletter',formato:'texto_email',editoria:'Negócios',pilar:'Ponto Focal Nordeste',funil:'Fundo',area:'Direito Societário / Empresarial',
+   tema:'Newsletter executiva de junho — três movimentos que mudam a leitura de risco de quem opera no Nordeste',
+   assunto:'Três movimentos do trimestre que mudam a leitura de risco regional',
+   precab:'Leitura executiva em 4 minutos · Fiedra, Britto & Ferreira Neto',
+   blocos:[
+    {t:'Abertura',c:'Esta edição reúne três movimentos do último trimestre que alteram, de forma concreta, a leitura de risco de quem opera na Bahia e no Nordeste. Nenhum deles é novidade isolada; o que muda é a combinação.'},
+    {t:'1. A operação regional deixou de ser detalhe na diligência',c:'Operações conduzidas por escritórios do eixo Sul-Sudeste com ativos no Nordeste vêm ampliando o escopo da diligência regional. O que antes se resolvia com certidões passou a exigir leitura de contencioso local, exposição administrativa perante órgãos estaduais e municipais e mapeamento de passivo ambiental de operação.\n\nPara a empresa-alvo, isso significa que a organização da informação regional deixou de ser tarefa de fechamento e passou a ser condição de cronograma.'},
+    {t:'2. Contencioso de massa como variável de valuation',c:'Carteiras de contencioso repetitivo — consumidor, imobiliário, trabalhista — vêm sendo tratadas menos como provisão contábil e mais como indicador de qualidade operacional.\n\nA leitura que se consolida não pergunta apenas quanto custa a carteira, mas o que ela revela sobre o processo que a gerou. Duas empresas com provisão equivalente recebem tratamentos distintos conforme a dispersão de causas de pedir.'},
+    {t:'3. O regulatório setorial voltou ao centro',c:'Depois de um período em que a discussão regulatória se concentrou em temas nacionais, normas estaduais e municipais voltaram a produzir efeito material sobre operação — licenciamento, vigilância sanitária, posturas e publicidade.\n\nPara operação multiestadual, o custo não está na norma isolada, e sim na ausência de uma leitura consolidada do conjunto.'},
+    {t:'Fechamento',c:'Os três movimentos apontam para a mesma direção: a informação regional organizada passou a ter valor econômico direto, não apenas defensivo.\n\nSe você quiser discutir como isso se aplica à sua operação, respondemos a este e-mail.'}],
+   trilha:[
+    {p:'Scan setorial mensal',d:'Consolidação dos movimentos do trimestre com ressonância para operação regional.'},
+    {p:'Seleção dos três movimentos',d:'Critério de seleção: efeito material sobre decisão empresarial, não relevância jurídica abstrata.'},
+    {p:'Redação em formato executivo',d:'Blocos curtos, cada movimento com consequência prática explícita.'},
+    {p:'Revisão de tom',d:'Remoção de CTA agressivo; convite final mantido em registro sóbrio, admitido por ser peça de Fundo.'},
+    {p:'Revisão técnica interna',d:'Conferência antes do envio para base segmentada.'}],
+   raciocinios:[
+    {t:'Por que apenas três movimentos',c:'Newsletter executiva com mais de três blocos temáticos perde a função. O critério de corte foi consequência material sobre decisão, não abrangência.'},
+    {t:'Por que o CTA existe aqui',c:'CTA comercial é admitido apenas no Fundo. Esta é peça de Fundo, e o convite está em registro de resposta ao e-mail, não de captura.'}],
+   fontes:[
+    {t:'Lei nº 6.404/1976 — Sociedades por Ações',u:'https://www.planalto.gov.br/ccivil_03/leis/l6404compilada.htm',tp:'Legislação',d:'15/12/1976'},
+    {t:'Lei nº 10.406/2002 — Código Civil',u:'https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm',tp:'Legislação',d:'10/01/2002'}],
+   ajustes:[],aprovacao:{nome:'Camilla Galvão',dt:'19/06/2026'},
+   comentarios:[{b:3,autor:'Camilla Galvão',tipo:'cliente',dt:'18/06/2026 14:05',txt:'O ponto sobre dispersão de causas de pedir é exatamente a conversa que tivemos com a diretoria semana passada. Manter.'}]},
+
+  {id:'p6',status:'pendente',canal:'redes_sociais',formato:'carrossel',editoria:'Fiedra em Destaque',pilar:'Ponto Focal Nordeste',funil:'Topo',area:'Institucional',
+   tema:'Reconhecimento Legal 500 — Firm to Watch, City Focus Salvador',
+   blocos:[
+    {t:null,c:'O Fiedra foi reconhecido pelo Legal 500 como Firm to Watch no City Focus Salvador.'},
+    {t:null,c:'O reconhecimento olha para operação, não para tamanho: casos conduzidos, complexidade envolvida e avaliação de clientes.'},
+    {t:null,c:'É a leitura externa de algo que a operação já vinha mostrando — profundidade técnica aplicada a decisões empresariais relevantes na Bahia.'},
+    {t:null,c:'Obrigado aos clientes que confiaram operações significativas a um escritório baiano sem precisar de validação de fora.'},
+    {t:null,c:'26 anos em Salvador.\n\nA régua continua sendo a mesma: entregar respostas e caminhos.'}],
+   trilha:[
+    {p:'Captura do marco institucional',d:'Registro do reconhecimento na editoria Fiedra em Destaque conforme calendário institucional.'},
+    {p:'Definição do ângulo',d:'Escolha de tratar o reconhecimento como leitura externa da operação, evitando registro autopromocional.'},
+    {p:'Redação em formato carrossel',d:'Cinco slides no padrão Topo institucional.'},
+    {p:'Revisão de tom',d:'Conferência contra a diretriz que veda tom comercial agressivo ou autopromocional.'},
+    {p:'Revisão técnica interna',d:'Conferência da denominação exata do reconhecimento.'}],
+   raciocinios:[
+    {t:'Por que o ângulo não é o prêmio',c:'Peça de premiação que celebra o prêmio soa autopromocional, registro vedado pelas Diretrizes. O ângulo desloca para o que o prêmio observa — operação — e fecha na frase-síntese institucional.'},
+    {t:'Por que o agradecimento vem antes do fechamento',c:'Colocar o agradecimento no penúltimo slide impede que a peça termine em cortesia. O último slide devolve o eixo para a promessa institucional.'}],
+   fontes:[{t:'The Legal 500 — Latin America',u:'https://www.legal500.com/',tp:'Ranking',d:null}],
+   ajustes:[],aprovacao:null,comentarios:[]}
+];
+
+/* =====================================================================
+   ESTADO E HELPERS
+   ===================================================================== */
+const STATUS_LABEL={pendente:'Pendente',em_revisao:'Em revisão',ajustada:'Ajustada',aprovada:'Aprovada'};
+const STATUS_COLOR={pendente:'#C9C3BF',em_revisao:'#356FA9',ajustada:'#E77938',aprovada:'#527F3E'};
+const FORMATO_LABEL={carrossel:'Carrossel',artigo:'Artigo',analise_tecnica:'Análise técnica',texto_email:'Texto de e-mail'};
+const NAV=[
+  {id:'visao',  n:'Visão geral',        ic:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'},
+  {id:'entregas',n:'Entregas',          ic:'<path d="M4 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2z"/>'},
+  {id:'relatorios',n:'Relatórios',      ic:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'},
+  {id:'conteudos',n:'Painel de Conteúdos',ic:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h8"/>'}
+];
+
+let USER='',view='visao',filtroEnt='Todos',filtroCanal='todos',pecaAberta=null,comentandoBloco=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function flash(m,ok){const f=$('#flash');f.textContent=m;f.className='flash on'+(ok?' ok':'');clearTimeout(f._t);f._t=setTimeout(()=>f.className='flash',2600);}
+function agora(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;}
+function chars(p){return p.blocos.reduce((a,b)=>a+b.c.length+(b.t?b.t.length:0),0);}
+function rotuloBloco(p,i){
+  if(p.formato==='carrossel')return `Slide ${i+1} de ${p.blocos.length}`;
+  return p.blocos[i].t||`Trecho ${i+1}`;
+}
+function botaoBloco(p){return p.formato==='carrossel'?'Comentar neste slide':'Comentar neste trecho';}
+function iniciais(n){return n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+function svg(inner,sz){return `<svg width="${sz||19}" height="${sz||19}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;}
+
+/* ============ LOGIN ============ */
+$('#loginForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const pw=$('#pw').value.trim(),nm=$('#nm').value.trim(),err=$('#loginErr');
+  if(pw!=='fiedra2026'){err.textContent='Senha incorreta. No protótipo, use fiedra2026.';err.classList.remove('hidden');return;}
+  if(nm.length<2){err.textContent='Informe seu nome para entrarmos.';err.classList.remove('hidden');return;}
+  err.classList.add('hidden');USER=nm;
+  $('#userName').textContent=nm;$('#userAv').textContent=iniciais(nm);
+  $('#login').classList.add('hidden');$('#app').classList.remove('hidden');
+  renderNav();ir('visao');
+});
+$('#logout').addEventListener('click',()=>{USER='';$('#pw').value='';$('#nm').value='';$('#app').classList.add('hidden');$('#login').classList.remove('hidden');});
+function trocarNome(){
+  const n=prompt('Quem está usando o portal agora?',USER);
+  if(n&&n.trim().length>1){USER=n.trim();$('#userName').textContent=USER;$('#userAv').textContent=iniciais(USER);flash('Agora você é '+USER,true);render();}
+}
+
+/* ============ NAV ============ */
+function renderNav(){
+  const cnt={visao:null,entregas:ENTREGAVEIS.reduce((a,g)=>a+g.itens.length,0),relatorios:RELATORIOS.length,
+             conteudos:PECAS.filter(p=>p.status!=='aprovada').length};
+  $('#nav').innerHTML=NAV.map(n=>`<button class="${view===n.id?'on':''}" onclick="ir('${n.id}')">
+    ${svg(n.ic,20)}<span>${n.n}</span>${cnt[n.id]?`<span class="cnt">${cnt[n.id]}</span>`:''}</button>`).join('');
+}
+function ir(v){
+  view=v;pecaAberta=null;comentandoBloco=null;
+  document.getElementById('sidebar').classList.remove('open');
+  renderNav();render();window.scrollTo(0,0);
+}
+function render(){
+  const nome=(NAV.find(n=>n.id===view)||{}).n||'';
+  $('#crumb').innerHTML=pecaAberta
+    ? `<button onclick="ir('conteudos')">Painel de Conteúdos</button><span>/</span><b>Peça ${PECAS.indexOf(pecaAberta)+1} de ${PECAS.length}</b>`
+    : `<span>Fiedra</span><span>/</span><b>${esc(nome)}</b>`;
+  if(pecaAberta){renderPeca();return;}
+  if(view==='visao')renderVisao();
+  else if(view==='entregas')renderEntregas();
+  else if(view==='relatorios')renderRelatorios();
+  else renderConteudos();
+}
+
+/* ============ VISÃO GERAL ============ */
+function renderVisao(){
+  const totalEnt=ENTREGAVEIS.reduce((a,g)=>a+g.itens.length,0);
+  let h=`<div class="hero">
+    <div class="hero-l">
+      <div class="eyebrow">${svg('<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>',15)} Contrato de recorrência 2026</div>
+      <h1>Clareza para decidir.<br>Material para avançar.</h1>
+      <p>Tudo o que foi contratado e tudo o que foi entregue, lado a lado — com os documentos do projeto, os relatórios do período e os conteúdos em validação em um só lugar.</p>
+    </div>
+    <div class="progress-card">
+      <div class="ph"><span class="pl">Cumprimento do escopo</span><span class="pv">100%</span></div>
+      <div class="track"><span style="width:100%"></span></div>
+      <div class="pf">
+        <span>${svg('<path d="M20 6L9 17l-5-5"/>',14)} 26 de 26 entregas com meta</span>
+        <span>${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',14)} até 23/07</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="statrow">
+    <div class="s"><div class="ic">${svg('<path d="M14 3v4a1 1 0 001 1h4"/><path d="M19 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5z"/>')}</div>
+      <div><div class="sv">${totalEnt}</div><div class="sl">Entregas disponíveis</div></div></div>
+    <div class="s"><div class="ic">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>')}</div>
+      <div><div class="sv">31</div><div class="sl">Peças produzidas</div></div></div>
+    <div class="s"><div class="ic">${svg('<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16"/>')}</div>
+      <div><div class="sv">12 ago.</div><div class="sl">Próxima reunião</div></div>
+      <button class="link" onclick="ir('relatorios')">Ver relatório ${svg('<path d="M5 12h14M13 6l6 6-6 6"/>',15)}</button></div>
+  </div>
+
+  <div class="sechead"><div class="secnum">01</div>
+    <div><h2>Escopo contratado × realizado</h2><div class="ss">Frentes com meta de volume definida, no período de 07/05 a 23/07/2026.</div></div>
+  </div>
+  <div class="scope">`;
+  ESCOPO.forEach(e=>{
+    h+=`<div class="scope-row">
+      <div class="nm"><b>${esc(e.nm)}</b><span>${esc(e.meta)} · previsto ${e.prev} · realizado ${e.real}</span></div>
+      <div class="bars"><div class="tk"><span style="width:${Math.min(100,e.pct)}%;background:${e.cor}"></span></div></div>
+      <div class="num" style="color:${e.cor}">${e.pct}%</div>
+      <div class="st" style="color:${e.cor}">${esc(e.st)}</div>
+    </div>`;
+  });
+  h+=`</div>
+  <div class="extra">${EXTRAS.map(x=>`<div class="e"><div class="ev">${x.v}</div><div class="et">${esc(x.t)}</div></div>`).join('')}</div>
+  <div class="note"><b>Como o percentual é calculado:</b> volume publicado ÷ volume previsto no período, com maio e junho como meses cheios e julho proporcional até o corte de 23/07. Super-entregas de uma frente compensam déficits de outra. O realizado é apurado pelo status de publicação no calendário editorial, cruzado com o ekyte e o mLabs.</div>
+
+  <div class="sechead" style="margin-top:44px"><div class="secnum">02</div>
+    <div><h2>Onde continuar</h2><div class="ss">Os três atalhos mais usados neste contrato.</div></div></div>
+  <div class="grid">
+    <button class="card" onclick="ir('conteudos')" style="text-align:left">
+      <div class="card-cat">Painel de Conteúdos</div>
+      <h3>${PECAS.filter(p=>p.status!=='aprovada').length} peças aguardando sua validação</h3>
+      <p class="desc" style="margin-top:9px">Leia, comente trecho a trecho e aprove o conteúdo do ciclo de junho.</p>
+      <div class="card-foot"><span style="color:var(--fgx-red);font-weight:600">Abrir painel →</span></div></button>
+    <button class="card" onclick="ir('relatorios')" style="text-align:left">
+      <div class="card-cat">Relatórios <span class="mini novo">Novo</span></div>
+      <h3>Relatório de Escopo — maio a julho</h3>
+      <p class="desc" style="margin-top:9px">Volume previsto, publicado e produzido em cada frente, com desempenho e audiência.</p>
+      <div class="card-foot"><span style="color:var(--fgx-red);font-weight:600">Ver relatório →</span></div></button>
+    <button class="card" onclick="ir('entregas')" style="text-align:left">
+      <div class="card-cat">Entregas</div>
+      <h3>${totalEnt} documentos do contrato</h3>
+      <p class="desc" style="margin-top:9px">Diagnóstico, planejamento, apresentação institucional, proposta comercial e políticas.</p>
+      <div class="card-foot"><span style="color:var(--fgx-red);font-weight:600">Ver entregas →</span></div></button>
+  </div>`;
+  $('#view').innerHTML=h;
+}
+
+/* ============ ENTREGAS ============ */
+function renderEntregas(){
+  const total=ENTREGAVEIS.reduce((a,g)=>a+g.itens.length,0);
+  let h=`<div class="hero"><div class="hero-l">
+      <div class="eyebrow">${svg('<path d="M4 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2z"/>',15)} Documentos do contrato</div>
+      <h1>Entregas do projeto</h1>
+      <p>Os materiais estruturantes do contrato, organizados por frente. Cada documento fica disponível na versão mais recente, com o histórico das anteriores.</p>
+    </div></div>
+
+  <div class="sechead"><div class="secnum">01</div>
+    <div><h2>Entregas do projeto</h2><div class="ss">Documentos mais recentes e materiais consolidados.</div></div>
+    <div class="tools"><div class="search">${svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',17)}<input placeholder="Buscar documento" oninput="buscar(this.value)"></div></div>
+  </div>
+  <div class="chips">
+    <button class="${filtroEnt==='Todos'?'on':''}" onclick="setEnt('Todos')">Todos <span class="c">${total}</span></button>
+    ${ENTREGAVEIS.map(g=>`<button class="${filtroEnt===g.cat?'on':''}" onclick="setEnt('${g.cat}')">${g.cat} <span class="c">${g.itens.length}</span></button>`).join('')}
+  </div>
+  <div class="grid" id="entGrid">`;
+  ENTREGAVEIS.forEach(g=>{
+    if(filtroEnt!=='Todos'&&filtroEnt!==g.cat)return;
+    g.itens.forEach(it=>{
+      h+=`<article class="card${it.hl?' hl':''}" data-t="${esc((it.t+' '+it.d).toLowerCase())}">
+        ${it.hl?'<div class="ribbon">Entrega principal</div>':''}
+        <div class="card-top">
+          <div class="ftype ${it.arq}">${svg('<path d="M14 3v4a1 1 0 001 1h4"/><path d="M19 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5z"/>',17)}${it.arq.toUpperCase()}</div>
+          <div style="min-width:0">
+            <div class="card-cat">${esc(g.cat)} <span class="mini ${it.mini}">${it.mini==='final'?'Final':it.mini==='novo'?'Novo':it.mini==='rev'?'Revisado':'Em validação'}</span></div>
+            <h3>${esc(it.t)}</h3>
+          </div>
+        </div>
+        <p class="desc">${esc(it.d)}</p>
+        ${it.hist.length?`<details class="versions"><summary>Versões anteriores (${it.hist.length})</summary><ul>${it.hist.map(v=>`<li><span>Versão ${v.v}</span><span>${v.dt}</span></li>`).join('')}</ul></details>`:''}
+        <div class="card-foot"><span>${esc(it.dt)}</span><span>·</span><span>${esc(it.kb)}</span><span>·</span><span>v${it.v}</span>
+          <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="flash('No protótipo o download é simulado.')">Baixar</button></div>
+      </article>`;
+    });
+  });
+  h+='</div>';
+  $('#view').innerHTML=h;
+}
+function setEnt(c){filtroEnt=c;renderEntregas();}
+function buscar(q){
+  q=q.trim().toLowerCase();
+  document.querySelectorAll('#entGrid .card').forEach(c=>{
+    c.style.display=(!q||c.dataset.t.includes(q))?'':'none';
+  });
+}
+
+/* ============ RELATÓRIOS ============ */
+function renderRelatorios(){
+  let h=`<div class="hero"><div class="hero-l">
+      <div class="eyebrow">${svg('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6"/>',15)} Prestação de contas</div>
+      <h1>Relatórios do contrato</h1>
+      <p>A leitura frente a frente entre o escopo contratado e o realizado em cada período, com o volume previsto, o publicado e o total produzido em cada frente de trabalho.</p>
+    </div></div>
+  <div class="sechead"><div class="secnum">01</div>
+    <div><h2>Relatórios emitidos</h2><div class="ss">Do mais recente para o mais antigo.</div></div></div>`;
+  RELATORIOS.forEach((r,i)=>{
+    h+=`<div class="rep">
+      <div class="rep-h">
+        <div style="flex:1;min-width:260px">
+          <div class="card-cat" style="margin-bottom:7px">Relatório de escopo ${r.novo?'<span class="mini novo">Novo</span>':''}</div>
+          <h3>${esc(r.t)}</h3><div class="per">${esc(r.per)}</div>
+          <p class="desc" style="margin:12px 0 0;max-width:640px">${esc(r.res)}</p>
+        </div>
+      </div>
+      <div class="rep-kpis">${r.kpis.map(k=>`<div class="k"><div class="kv">${esc(k.v)}</div><div class="kl">${esc(k.l)}</div></div>`).join('')}</div>
+      <div class="rep-f">
+        <button class="btn btn-primary btn-sm" onclick="flash('No protótipo, aqui abriria o relatório completo em nova aba.')">Abrir relatório completo</button>
+        <button class="btn btn-ghost btn-sm" onclick="flash('No protótipo o download é simulado.')">Baixar PDF</button>
+        <span style="margin-left:auto;font-size:12px;color:var(--ink-3)">${r.secoes.length} seções · ${esc(r.secoes.join(' · '))}</span>
+      </div></div>`;
+  });
+  $('#view').innerHTML=h;
+}
+
+/* ============ PAINEL DE CONTEÚDOS ============ */
+function renderConteudos(){
+  const total=PECAS.length,cont={pendente:0,em_revisao:0,ajustada:0,aprovada:0};
+  PECAS.forEach(p=>cont[p.status]++);
+  const nCom=PECAS.reduce((a,p)=>a+p.comentarios.length,0);
+  let h=`<div class="hero"><div class="hero-l">
+      <div class="eyebrow">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>',15)} Ciclo de junho de 2026</div>
+      <h1>Painel de Conteúdos</h1>
+      <p>Os conteúdos técnicos do mês, para leitura e validação. O que se valida aqui é o <b>texto</b> — a arte segue no fluxo de sempre.</p>
+    </div></div>
+  <div class="cycle-head">
+    <div class="cycle-top">
+      <div><span class="tag">Ciclo publicado</span><h2>Junho de 2026</h2></div>
+      <div class="cycle-sel"><label>Ciclo</label>
+        <select onchange="flash('No protótipo só o ciclo de junho está carregado.')">
+          <option>Junho de 2026</option><option>Maio de 2026</option><option>Abril de 2026</option></select></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">${total}</div><div class="l">Peças no ciclo</div></div>
+      <div class="stat"><div class="n" style="color:var(--fgx-green)">${cont.aprovada}</div><div class="l">Aprovadas</div></div>
+      <div class="stat"><div class="n" style="color:var(--fgx-blue)">${total-cont.aprovada}</div><div class="l">Aguardando você</div></div>
+      <div class="stat"><div class="n">${nCom}</div><div class="l">Comentários</div></div>
+    </div>
+    <div class="bar">${['aprovada','ajustada','em_revisao','pendente'].map(s=>cont[s]?`<span style="width:${cont[s]/total*100}%;background:${STATUS_COLOR[s]}"></span>`:'').join('')}</div>
+    <div class="bar-legend">${['aprovada','ajustada','em_revisao','pendente'].map(s=>`<span><i style="background:${STATUS_COLOR[s]}"></i>${STATUS_LABEL[s]} (${cont[s]})</span>`).join('')}</div>
+  </div>
+
+  <div class="sechead"><div class="secnum">01</div>
+    <div><h2>Peças do ciclo</h2><div class="ss">Clique para ler, comentar trecho a trecho e aprovar.</div></div></div>
+  <div class="chips">
+    <button class="${filtroCanal==='todos'?'on':''}" onclick="setCanal('todos')">Todos <span class="c">${total}</span></button>
+    ${[...new Set(PECAS.map(p=>p.canal))].map(c=>`<button class="${filtroCanal===c?'on':''}" onclick="setCanal('${c}')">${CANAIS[c].nome} <span class="c">${PECAS.filter(p=>p.canal===c).length}</span></button>`).join('')}
+  </div>
+  <div class="grid">`;
+  PECAS.filter(p=>filtroCanal==='todos'||p.canal===filtroCanal).forEach(p=>{
+    h+=`<button class="card piece-card" onclick="abrirPeca('${p.id}')">
+      <div class="card-cat" style="margin-bottom:9px">${esc(p.editoria)}
+        <span class="pill ${p.status}" style="margin-left:auto">${STATUS_LABEL[p.status]}</span></div>
+      <h3>${esc(p.tema)}</h3>
+      <div class="piece-tags" style="margin:12px 0 14px">
+        <span class="tag">${CANAIS[p.canal].nome}</span><span class="tag n">${FORMATO_LABEL[p.formato]}</span><span class="tag n">Funil: ${esc(p.funil)}</span></div>
+      <div class="card-foot"><span>${esc(p.area)}</span>
+        <span style="margin-left:auto">${p.comentarios.length} ${p.comentarios.length===1?'comentário':'comentários'}</span></div>
+    </button>`;
+  });
+  h+='</div>';
+  $('#view').innerHTML=h;
+}
+function setCanal(c){filtroCanal=c;renderConteudos();}
+
+/* ============ PEÇA ============ */
+function abrirPeca(id){pecaAberta=PECAS.find(x=>x.id===id);comentandoBloco=null;render();window.scrollTo(0,0);}
+function renderPeca(){
+  const p=pecaAberta,idx=PECAS.indexOf(p),lim=CANAIS[p.canal].limite,tot=chars(p),over=lim&&tot>lim;
+  let h=`<div class="piece-layout"><div>
+    <article class="piece-main">
+      <div class="piece-hd">
+        <div class="piece-tags">
+          <span class="tag">${CANAIS[p.canal].nome}</span><span class="tag n">${FORMATO_LABEL[p.formato]}</span>
+          <span class="tag n">${esc(p.editoria)}</span><span class="tag n">Funil: ${esc(p.funil)}</span>
+          <span class="pill ${p.status}" style="margin-left:auto">${STATUS_LABEL[p.status]}</span>
+        </div>
+        <h1>${esc(p.tema)}</h1>
+        <div class="meta"><span><b>Área:</b> ${esc(p.area)}</span><span><b>Pilar:</b> ${esc(p.pilar)}</span></div>`;
+  if(p.assunto)h+=`<div style="margin-top:15px;background:var(--bg);border-radius:10px;padding:13px 16px">
+        <div style="font-size:11px;color:var(--ink-3);font-weight:700;letter-spacing:.6px;margin-bottom:4px">ASSUNTO DO E-MAIL</div>
+        <div style="font-weight:700;font-size:15.5px">${esc(p.assunto)}</div>
+        <div style="font-size:12.5px;color:var(--ink-3);margin-top:5px">${esc(p.precab)}</div></div>`;
+  if(p.tese)h+=`<div style="margin-top:15px;border-left:3px solid var(--fgx-red);background:rgba(177,33,25,.05);padding:13px 17px;border-radius:0 10px 10px 0">
+        <div style="font-size:11px;color:var(--fgx-red);font-weight:700;letter-spacing:.6px;margin-bottom:5px">TESE CENTRAL</div>
+        <div style="font-size:14.5px;line-height:1.6">${esc(p.tese)}</div></div>`;
+  h+=`<div class="charcount${over?' over':''}">${lim?`<b>${tot.toLocaleString('pt-BR')}</b> caracteres de <b>${lim.toLocaleString('pt-BR')}</b> do canal${over?' — acima do limite':''}`:`<b>${tot.toLocaleString('pt-BR')}</b> caracteres · sem limite definido para este canal`}</div>`;
+  if(p.aprovacao)h+=`<div class="approved-note">Aprovada por <b>${esc(p.aprovacao.nome)}</b> em ${esc(p.aprovacao.dt)}.</div>`;
+  h+=`</div><div class="blocks">`;
+
+  p.blocos.forEach((b,i)=>{
+    const cms=p.comentarios.filter(c=>c.b===i+1);
+    h+=`<div class="block" id="blk${i}">
+      <div class="block-label">${esc(rotuloBloco(p,i))}</div>
+      ${b.t&&p.formato!=='carrossel'?`<div class="block-title">${esc(b.t)}</div>`:''}
+      <div class="block-body">${esc(b.c)}</div>
+      <div class="block-foot">
+        ${p.formato==='carrossel'?`<span class="block-chars${b.c.length>230?' over':''}">${b.c.length} caracteres</span>`:''}
+        ${cms.length?`<span class="cmt-mark">${cms.length} ${cms.length===1?'comentário':'comentários'}</span>`:''}
+        <button class="cmt-btn" onclick="comentarBloco(${i+1})">${botaoBloco(p)}</button></div>`;
+    if(cms.length)h+=`<div class="block-cmts">${cms.map(c=>`<div class="mini-cmt"><div class="mh"><b>${esc(c.autor)}</b> · ${esc(c.dt)}</div>${esc(c.txt)}</div>`).join('')}</div>`;
+    if(comentandoBloco===i+1)h+=`<div class="inline-form">
+        <textarea id="txtBloco" placeholder="O que você quer apontar neste trecho?"></textarea>
+        <div class="row"><button class="btn btn-primary btn-sm" onclick="salvarBloco(${i+1})">Enviar comentário</button>
+        <button class="btn btn-ghost btn-sm" onclick="cancelarBloco()">Cancelar</button>
+        <span class="as">como <b>${esc(USER)}</b></span></div></div>`;
+    h+=`</div>`;
+  });
+  h+=`</div>`;
+
+  if(p.ajustes.length)h+=acc('Ajustes registrados',p.ajustes.map(a=>`<div class="adjust">
+      <div class="ah">${a.tp==='estrutural'?'Ajuste estrutural':'Ajuste pontual'} · ${a.st}</div>
+      ${esc(a.d)}<div class="src">Origem: ${esc(a.src)}</div></div>`).join(''),true);
+  h+=acc('Trilha de produção',`<ul class="trail">${p.trilha.map((t,i)=>`<li><span class="dot">${i+1}</span>
+      <div class="st">${esc(t.p)}</div><div class="sd">${esc(t.d)}</div></li>`).join('')}</ul>`);
+  h+=acc('Raciocínios da produção',p.raciocinios.map(r=>`<div class="reason">
+      <button onclick="this.nextElementSibling.classList.toggle('hidden')">${esc(r.t)}</button>
+      <div class="rb hidden">${esc(r.c)}</div></div>`).join(''));
+  h+=acc('Fontes consultadas',`<ul class="sources">${p.fontes.map(f=>`<li>
+      <span class="stype">${esc(f.tp)}</span><a href="${esc(f.u)}" target="_blank" rel="noopener">${esc(f.t)}</a>
+      ${f.d?`<span class="sdate">${esc(f.d)}</span>`:''}</li>`).join('')}</ul>`);
+
+  h+=`<div class="piece-actions">`;
+  if(p.status==='aprovada'){
+    h+=`<span style="color:var(--fgx-green);font-weight:600;font-size:14px">✓ Peça aprovada</span>
+        <button class="btn btn-ghost btn-sm" onclick="reabrir()">Reabrir para ajuste</button>`;
+  }else{
+    h+=`<button class="btn btn-green" onclick="aprovar()">Aprovar peça</button>
+        <button class="btn btn-ghost" onclick="solicitar()">Solicitar ajuste</button>
+        <span style="font-size:12px;color:var(--ink-3);margin-left:auto">registrado como <b>${esc(USER)}</b></span>`;
+  }
+  h+=`</div></article>
+    <div class="piece-nav">
+      <button class="btn btn-ghost btn-sm" ${idx===0?'disabled style="opacity:.4"':''} onclick="abrirPeca('${PECAS[Math.max(0,idx-1)].id}')">← Peça anterior</button>
+      <button class="btn btn-ghost btn-sm" ${idx===PECAS.length-1?'disabled style="opacity:.4"':''} onclick="abrirPeca('${PECAS[Math.min(PECAS.length-1,idx+1)].id}')">Próxima peça →</button>
+    </div></div>
+    <aside class="side-p">
+      <div class="side-h">Histórico de comentários <span class="badge">${p.comentarios.length}</span></div>
+      <div class="side-list">`;
+  if(!p.comentarios.length){
+    h+=`<div class="side-empty">Nenhum comentário nesta peça ainda.<br><br>Use o botão em cada ${p.formato==='carrossel'?'slide':'trecho'} para apontar exatamente onde está a observação.</div>`;
+  }else{
+    p.comentarios.forEach(c=>{
+      h+=`<div class="cmt ${c.tipo}">
+        <div class="ch"><b>${esc(c.autor)}</b><span class="role">${c.tipo}</span><span>${esc(c.dt)}</span></div>${esc(c.txt)}
+        ${c.b?`<button class="anchor" onclick="irBloco(${c.b-1})">↳ ${esc(rotuloBloco(p,c.b-1))}: “${esc(p.blocos[c.b-1].c.slice(0,42).replace(/\n/g,' '))}…”</button>`:''}</div>`;
+    });
+  }
+  h+=`</div>
+      <div class="side-f"><label for="txtGeral">Comentar a peça inteira</label>
+        <textarea id="txtGeral" placeholder="Observação geral sobre esta peça"></textarea>
+        <button class="btn btn-primary btn-sm btn-full" style="margin-top:9px" onclick="salvarGeral()">Enviar como ${esc(USER)}</button>
+      </div></aside></div>`;
+  $('#view').innerHTML=h;
+}
+function acc(t,c,open){
+  return `<section class="acc${open?' open':''}">
+    <button onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.classList.toggle('hidden')">
+      ${t}<span class="chev">▾</span></button><div class="body${open?'':' hidden'}">${c}</div></section>`;
+}
+function comentarBloco(n){comentandoBloco=n;renderPeca();
+  setTimeout(()=>{const t=$('#txtBloco');if(t){t.focus();t.scrollIntoView({block:'center',behavior:'smooth'});}},60);}
+function cancelarBloco(){comentandoBloco=null;renderPeca();}
+function salvarBloco(n){
+  const t=$('#txtBloco'),v=t.value.trim();
+  if(!v){flash('Escreva o comentário antes de enviar.');t.focus();return;}
+  pecaAberta.comentarios.push({b:n,autor:USER,tipo:'cliente',dt:agora(),txt:v});
+  comentandoBloco=null;renderPeca();flash('Comentário registrado no '+rotuloBloco(pecaAberta,n-1).toLowerCase(),true);
+}
+function salvarGeral(){
+  const t=$('#txtGeral'),v=t.value.trim();
+  if(!v){flash('Escreva o comentário antes de enviar.');t.focus();return;}
+  pecaAberta.comentarios.push({b:null,autor:USER,tipo:'cliente',dt:agora(),txt:v});
+  renderPeca();flash('Comentário registrado na peça',true);
+}
+function irBloco(i){
+  const el=document.getElementById('blk'+i);
+  if(el){el.scrollIntoView({block:'center',behavior:'smooth'});
+    el.style.transition='background .3s';el.style.background='rgba(250,184,38,.18)';
+    setTimeout(()=>el.style.background='',1400);}
+}
+function aprovar(){pecaAberta.status='aprovada';pecaAberta.aprovacao={nome:USER,dt:agora().split(' ')[0]};renderNav();renderPeca();flash('Peça aprovada por '+USER,true);}
+function solicitar(){pecaAberta.status='em_revisao';renderNav();renderPeca();flash('Pedido de ajuste registrado — a equipe FGX foi notificada',true);}
+function reabrir(){pecaAberta.status='em_revisao';pecaAberta.aprovacao=null;renderNav();renderPeca();flash('Peça reaberta para ajuste');}
+</script>
+</body>
+</html>

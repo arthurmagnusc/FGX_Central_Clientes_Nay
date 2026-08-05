@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { api } from '../lib/api'
-import { ClientChrome, ErrorMessage, Skeleton, StatusPill, PageIntro, ContextPill } from '../components/Shared'
+import { ClientShell } from '../components/ClientShell'
+import { ErrorMessage, Skeleton, StatusPill, PageIntro, ContextPill } from '../components/Shared'
 import { FORMAT_LABELS, formatDateTime } from '../lib/utils'
 import type { Piece, Comment, Adjustment } from '../types'
 import DOMPurify from 'dompurify'
@@ -72,11 +73,11 @@ function ArtigoView({ contents }: { contents: any[] }) {
 function AnaliseTecnicaView({ contents }: { contents: any[] }) {
   const fullText = contents.map(c => c.conteudo).join('\n\n')
   const teseMatch = fullText.match(/##\s*Tese Central[^#]+/s)
-  const refsMatch = fullText.match(/##\s*Referências[^#]+$/s)
+  const refsMatch = fullText.match(/##\s*ReferÃªncias[^#]+$/s)
   const tese = teseMatch ? teseMatch[0] : ''
   const bodyWithoutRefs = teseMatch && refsMatch
     ? fullText.replace(tese, '').replace(refsMatch[0], '')
-    : fullText.replace(/##\s*Referências[^#]+$/s, '')
+    : fullText.replace(/##\s*ReferÃªncias[^#]+$/s, '')
   const refs = refsMatch ? refsMatch[0] : ''
 
   return (
@@ -101,7 +102,7 @@ function AnaliseTecnicaView({ contents }: { contents: any[] }) {
 
 function TextoEmailView({ contents }: { contents: any[] }) {
   const assunto = contents.find(c => c.titulo_bloco?.toLowerCase() === 'assunto')
-  const preheader = contents.find(c => c.titulo_bloco?.toLowerCase().includes('pré-cabeçalho') || c.titulo_bloco?.toLowerCase().includes('preheader'))
+  const preheader = contents.find(c => c.titulo_bloco?.toLowerCase().includes('prÃ©-cabeÃ§alho') || c.titulo_bloco?.toLowerCase().includes('preheader'))
   const corpo = contents.filter(c => c !== assunto && c !== preheader)
   return (
     <div className="space-y-4">
@@ -113,7 +114,7 @@ function TextoEmailView({ contents }: { contents: any[] }) {
       )}
       {preheader && (
         <div>
-          <p className="text-xs text-ink-3 font-montserrat uppercase tracking-wide mb-1">Pré-cabeçalho</p>
+          <p className="text-xs text-ink-3 font-montserrat uppercase tracking-wide mb-1">PrÃ©-cabeÃ§alho</p>
           <p className="text-sm text-ink-3 italic font-montserrat">{preheader.conteudo}</p>
         </div>
       )}
@@ -154,7 +155,7 @@ function CollapsibleSection({ title, count, defaultOpen, children }: { title: st
       <button onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-5 py-3 text-left font-titillium font-semibold text-ink hover:bg-fgx-gray/30 transition-colors">
         <span>{title}{count !== undefined ? ` (${count})` : ''}</span>
-        <span className="text-sm text-ink-3 transition-transform duration-200" style={{ transform: open ? 'rotate(90deg)' : '' }}>▸</span>
+        <span className="text-sm text-ink-3 transition-transform duration-200" style={{ transform: open ? 'rotate(90deg)' : '' }}>â–¸</span>
       </button>
       {open && <div className="px-5 pb-4">{children}</div>}
     </div>
@@ -206,7 +207,7 @@ export default function ClientePeca() {
         piece_content_id: activeCommentBlock || null,
         trecho: comentarioTrecho || null,
       })
-      toast('Comentário salvo!')
+      toast('ComentÃ¡rio salvo!')
       setComentarioTexto('')
       setComentarioTrecho('')
       setActiveCommentBlock(null)
@@ -214,7 +215,7 @@ export default function ClientePeca() {
       load()
     } catch (e: any) {
       setCommentFailText(savedText)
-      toast('Falha ao salvar. O texto foi mantido — tente novamente.', 'error')
+      toast('Falha ao salvar. O texto foi mantido â€” tente novamente.', 'error')
     } finally {
       setSubmittingComment(false)
     }
@@ -231,7 +232,7 @@ export default function ClientePeca() {
     setSubmittingApproval(true)
     try {
       await api.createApproval(pieceId!, tipo)
-      toast(tipo === 'aprovou' ? 'Peça aprovada!' : 'Ajuste solicitado!')
+      toast(tipo === 'aprovou' ? 'PeÃ§a aprovada!' : 'Ajuste solicitado!')
       load()
     } catch (e: any) {
       toast(e.message || 'Erro', 'error')
@@ -255,24 +256,24 @@ export default function ClientePeca() {
   const navTo = (delta: number) => {
     if (currentIdx < 0) return
     const target = navPieces[currentIdx + delta]
-    if (target) navigate(`/c/${slug}/ciclo/${cycleId}/peca/${target.id}`)
+    if (target) navigate(`/c/${slug}/conteudos/${cycleId}/peca/${target.id}`)
   }
 
   const blockComments = (contentId: string) => comments.filter(c => c.piece_content_id === contentId)
   const generalComments = comments.filter(c => !c.piece_content_id)
 
   if (loading) return (
-    <ClientChrome active="peca">
+    <ClientShell>
       <div className="max-w-4xl mx-auto p-6 space-y-4">
         <Skeleton className="h-12 w-2/3" />
         <Skeleton className="h-6 w-1/3" />
         <Skeleton className="h-64 w-full" />
         <Skeleton className="h-48 w-full" />
       </div>
-    </ClientChrome>
+    </ClientShell>
   )
-  if (error) return <ClientChrome active="peca"><ErrorMessage message={error} onRetry={load} /></ClientChrome>
-  if (!piece) return <ClientChrome active="peca"><ErrorMessage message="Peça não encontrada" /></ClientChrome>
+  if (error) return <ClientShell><ErrorMessage message={error} onRetry={load} /></ClientShell>
+  if (!piece) return <ClientShell><ErrorMessage message="Peça não encontrada" /></ClientShell>
 
   const FormatRenderer = {
     carrossel: CarrosselView,
@@ -286,7 +287,7 @@ export default function ClientePeca() {
   const initial = (pessoaNome || slug || 'C').charAt(0).toUpperCase()
 
   return (
-    <ClientChrome active="peca">
+    <ClientShell>
       {toastMsg && (
         <div className={`toast ${toastType === 'success' ? 'toast-success' : 'toast-error'}`}>
           {toastMsg}
@@ -301,9 +302,9 @@ export default function ClientePeca() {
           <button type="button" className="btn-secondary text-sm px-4" onClick={() => navTo(-1)} disabled={!hasPrev}>
             &larr; Anterior
           </button>
-          <Link to={`/c/${slug}/ciclo`} className="fgx-nav-link text-sm">Voltar ao ciclo</Link>
+          <Link to={`/c/${slug}/conteudos`} className="fgx-nav-link text-sm">Voltar ao ciclo</Link>
           <button type="button" className="btn-secondary text-sm px-4" onClick={() => navTo(1)} disabled={!hasNext}>
-            Próxima &rarr;
+            PrÃ³xima &rarr;
           </button>
         </div>
 
@@ -311,7 +312,7 @@ export default function ClientePeca() {
           eyebrow={
             <ContextPill
               letter={initial}
-              label={`${FORMAT_LABELS[piece.formato]} · ${piece.channel?.nome || ''} · ${piece.area_direito || ''}`}
+              label={`${FORMAT_LABELS[piece.formato]} Â· ${piece.channel?.nome || ''} Â· ${piece.area_direito || ''}`}
             />
           }
           title={piece.tema}
@@ -322,7 +323,7 @@ export default function ClientePeca() {
           <CharCounter current={totalChars} limit={channelLimit} />
         </div>
 
-        {/* Content area — format-specific */}
+        {/* Content area â€” format-specific */}
         <div className="card p-6 md:p-8 mb-8 overflow-visible">
           <FormatRenderer contents={contents} pieceId={piece.id} />
         </div>
@@ -332,19 +333,19 @@ export default function ClientePeca() {
           {isApproved && lastApproval ? (
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-fgx-green/10 flex items-center justify-center">
-                <span className="text-fgx-green font-bold">✓</span>
+                <span className="text-fgx-green font-bold">âœ“</span>
               </div>
               <div>
-                <p className="font-montserrat font-semibold text-fgx-green">Peça aprovada</p>
+                <p className="font-montserrat font-semibold text-fgx-green">PeÃ§a aprovada</p>
                 <p className="text-sm text-ink-3">por {lastApproval.autor_nome} em {formatDateTime(lastApproval.created_at)}</p>
               </div>
             </div>
           ) : (
             <div>
-              <h3 className="font-titillium font-semibold text-lg text-ink mb-4">Validação da peça</h3>
+              <h3 className="font-titillium font-semibold text-lg text-ink mb-4">ValidaÃ§Ã£o da peÃ§a</h3>
               <div className="flex flex-wrap gap-3">
                 <button className="btn-primary" onClick={() => setShowConfirmApprove(true)} disabled={submittingApproval}>
-                  Aprovar peça
+                  Aprovar peÃ§a
                 </button>
                 <button className="btn-secondary" onClick={() => setShowConfirmAdjust(true)} disabled={submittingApproval}>
                   Solicitar ajuste
@@ -358,7 +359,7 @@ export default function ClientePeca() {
         {showConfirmApprove && (
           <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
-              <p className="font-montserrat text-ink mb-4">Confirmar aprovação de <strong>{piece.tema}</strong>?</p>
+              <p className="font-montserrat text-ink mb-4">Confirmar aprovaÃ§Ã£o de <strong>{piece.tema}</strong>?</p>
               <div className="flex gap-3 justify-end">
                 <button className="btn-secondary" onClick={() => setShowConfirmApprove(false)}>Cancelar</button>
                 <button className="btn-primary" onClick={() => handleApproval('aprovou')}>Confirmar</button>
@@ -408,11 +409,11 @@ export default function ClientePeca() {
 
               {activeCommentBlock === bloco.id && (
                 <div className="mt-3 space-y-2">
-                  <input className="input-field text-sm" placeholder="Trecho específico (opcional)"
+                  <input className="input-field text-sm" placeholder="Trecho especÃ­fico (opcional)"
                     value={comentarioTrecho} onChange={e => setComentarioTrecho(e.target.value)} />
                   <textarea className="input-field text-sm" rows={3}
                     value={comentarioTexto}
-                    placeholder="Escreva seu comentário..."
+                    placeholder="Escreva seu comentÃ¡rio..."
                     onChange={e => setComentarioTexto(e.target.value)} />
                   <button className="btn-primary text-sm" onClick={handleComment}
                     disabled={!comentarioTexto.trim() || submittingComment}>
@@ -427,7 +428,7 @@ export default function ClientePeca() {
         {/* General comment */}
         <div className="card p-5 mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-titillium font-semibold text-lg text-ink">Comentário geral</h3>
+            <h3 className="font-titillium font-semibold text-lg text-ink">ComentÃ¡rio geral</h3>
             <button className="btn-ghost text-xs"
               onClick={() => setActiveCommentBlock(activeCommentBlock === 'general' ? null : 'general')}>
               Escrever
@@ -447,7 +448,7 @@ export default function ClientePeca() {
           {activeCommentBlock === 'general' && (
             <div className="space-y-2">
               <textarea className="input-field text-sm" rows={3}
-                value={comentarioTexto} placeholder="Seu comentário sobre a peça..."
+                value={comentarioTexto} placeholder="Seu comentÃ¡rio sobre a peÃ§a..."
                 onChange={e => setComentarioTexto(e.target.value)} />
               <button className="btn-primary text-sm" onClick={handleComment}
                 disabled={!comentarioTexto.trim() || submittingComment}>
@@ -459,7 +460,7 @@ export default function ClientePeca() {
 
         {/* History */}
         <div className="card p-5 mb-6">
-          <h3 className="font-titillium font-semibold text-lg text-ink mb-4">Histórico</h3>
+          <h3 className="font-titillium font-semibold text-lg text-ink mb-4">HistÃ³rico</h3>
           {comments.length === 0 && (!piece.approvals || piece.approvals.length === 0) ? (
             <p className="text-ink-3 text-sm font-montserrat">Nenhuma atividade registrada.</p>
           ) : (
@@ -509,7 +510,7 @@ export default function ClientePeca() {
 
         {/* Trail, reasonings, sources */}
         {piece.trail && piece.trail.length > 0 && (
-          <CollapsibleSection title="Trilha de produção" count={piece.trail.length}>
+          <CollapsibleSection title="Trilha de produÃ§Ã£o" count={piece.trail.length}>
             <div className="space-y-2">
               {piece.trail.sort((a: any, b: any) => a.ordem - b.ordem).map((t: any) => (
                 <div key={t.id} className="flex gap-3 text-sm">
@@ -525,7 +526,7 @@ export default function ClientePeca() {
         )}
         <div className="h-3" />
         {piece.reasonings && piece.reasonings.length > 0 && (
-          <CollapsibleSection title="Raciocínios" count={piece.reasonings.length}>
+          <CollapsibleSection title="RaciocÃ­nios" count={piece.reasonings.length}>
             <div className="space-y-3">
               {piece.reasonings.sort((a: any, b: any) => a.ordem - b.ordem).map((r: any) => (
                 <div key={r.id} className="bg-fgx-gray/50 rounded p-3">
@@ -555,6 +556,7 @@ export default function ClientePeca() {
           </CollapsibleSection>
         )}
       </div>
-    </ClientChrome>
+    </ClientShell>
   )
 }
+

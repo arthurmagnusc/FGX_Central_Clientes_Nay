@@ -21,13 +21,13 @@ export function getBuildMeta() {
 }
 
 /** Versão + data/hora do build — exibida sob a logo no cabeçalho. */
-export function BuildStamp({ className = '' }: { className?: string }) {
+export function BuildStamp({ className = '', light = false }: { className?: string; light?: boolean }) {
   const { version, buildTime, commit, when } = getBuildMeta()
   const label = commit ? `v${version} · ${when} · ${commit}` : `v${version} · ${when}`
 
   return (
     <p
-      className={`build-stamp-inline ${className}`.trim()}
+      className={`build-stamp-inline ${light ? 'build-stamp-light' : ''} ${className}`.trim()}
       title={`Versão em produção\nBuild: ${buildTime || 'n/d'}${commit ? `\nCommit: ${commit}` : ''}`}
       aria-label={`Versão ${version}, build em ${when}`}
     >

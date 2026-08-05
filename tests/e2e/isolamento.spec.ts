@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+﻿import { test, expect } from '@playwright/test'
 
 const API = 'http://localhost:3001/api'
 
@@ -14,7 +14,7 @@ test.describe('Isolamento entre Clientes', () => {
 
     // 2. Login as fiedra (client A)
     const loginA = await request.post(`${API}/auth/cliente/login`, {
-      data: { slug: 'fiedra', senha: 'fiedra123', nome: 'Cliente A Test' },
+      data: { slug: 'fiedra', senha: 'fiedra2026', nome: 'Cliente A Test' },
     })
     expect(loginA.ok()).toBeTruthy()
     const cookiesA = loginA.headers()['set-cookie']!
@@ -27,7 +27,7 @@ test.describe('Isolamento entre Clientes', () => {
     expect(Array.isArray(cyclesData)).toBeTruthy()
 
     // 4. Try to access fgb's data directly via manipulate client_id in URL
-    //    (client_id is always from session — so even if we guess IDs, it must fail)
+    //    (client_id is always from session â€” so even if we guess IDs, it must fail)
 
     // Get a piece id belonging to fiedra
     if (cyclesData.length > 0) {
@@ -82,3 +82,4 @@ test.describe('Isolamento entre Clientes', () => {
     }
   })
 })
+

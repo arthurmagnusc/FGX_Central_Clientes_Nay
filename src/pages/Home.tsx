@@ -36,7 +36,7 @@ export default function Home() {
               <p className="text-xs text-ink-2 font-montserrat mt-3 leading-relaxed">
                 Nome: <span className="font-semibold text-fgx-red">Maria Teste</span>
                 <br />
-                Senha: <span className="font-semibold text-fgx-red">fiedra123</span>
+                Senha: <span className="font-semibold text-fgx-red">fiedra2026</span>
               </p>
             </Link>
             <Link

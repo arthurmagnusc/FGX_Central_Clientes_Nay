@@ -1,9 +1,11 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import Home from './pages/Home'
 import ClienteLogin from './pages/ClienteLogin'
-import ClienteEntregaveis from './pages/ClienteEntregaveis'
-import ClienteCiclo from './pages/ClienteCiclo'
+import ClienteVisao from './pages/ClienteVisao'
+import ClienteEntregas from './pages/ClienteEntregas'
+import ClienteRelatorios from './pages/ClienteRelatorios'
+import ClienteConteudos from './pages/ClienteConteudos'
 import ClientePeca from './pages/ClientePeca'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -32,14 +34,32 @@ function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function RedirectEntregas() {
+  const { slug } = useParams()
+  return <Navigate to={`/c/${slug}/entregas`} replace />
+}
+function RedirectConteudos() {
+  const { slug } = useParams()
+  return <Navigate to={`/c/${slug}/conteudos`} replace />
+}
+function RedirectOldPeca() {
+  const { slug, cycleId, pieceId } = useParams()
+  return <Navigate to={`/c/${slug}/conteudos/${cycleId}/peca/${pieceId}`} replace />
+}
+
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/c/:slug" element={<ClienteLogin />} />
-      <Route path="/c/:slug/entregaveis" element={<ProtectedCliente><ClienteEntregaveis /></ProtectedCliente>} />
-      <Route path="/c/:slug/ciclo" element={<ProtectedCliente><ClienteCiclo /></ProtectedCliente>} />
-      <Route path="/c/:slug/ciclo/:cycleId/peca/:pieceId" element={<ProtectedCliente><ClientePeca /></ProtectedCliente>} />
+      <Route path="/c/:slug/visao" element={<ProtectedCliente><ClienteVisao /></ProtectedCliente>} />
+      <Route path="/c/:slug/entregas" element={<ProtectedCliente><ClienteEntregas /></ProtectedCliente>} />
+      <Route path="/c/:slug/relatorios" element={<ProtectedCliente><ClienteRelatorios /></ProtectedCliente>} />
+      <Route path="/c/:slug/conteudos" element={<ProtectedCliente><ClienteConteudos /></ProtectedCliente>} />
+      <Route path="/c/:slug/conteudos/:cycleId/peca/:pieceId" element={<ProtectedCliente><ClientePeca /></ProtectedCliente>} />
+      <Route path="/c/:slug/entregaveis" element={<RedirectEntregas />} />
+      <Route path="/c/:slug/ciclo" element={<RedirectConteudos />} />
+      <Route path="/c/:slug/ciclo/:cycleId/peca/:pieceId" element={<RedirectOldPeca />} />
       <Route path="/admin" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
       <Route path="/admin/clientes" element={<ProtectedAdmin><AdminClientes /></ProtectedAdmin>} />

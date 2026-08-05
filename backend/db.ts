@@ -183,7 +183,7 @@ export function seed() {
   // Demo validation phase: fiedra already usable without manual setup
   const fiedra = db.clients.find((c: any) => c.slug === 'fiedra')
   if (fiedra) {
-    fiedra.senha_hash = hashPassword(process.env.DEMO_CLIENT_SENHA || 'fiedra123')
+    fiedra.senha_hash = hashPassword(process.env.DEMO_CLIENT_SENHA || 'fiedra2026')
     fiedra.ativo = true
   }
 
