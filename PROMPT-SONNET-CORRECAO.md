@@ -1,6 +1,6 @@
 # PROMPT SONNET — Correção, UI/UX e deploy Vercel (sem Supabase ainda)
 
-> **Deploy:** o repo já está no GitHub e com esqueleto Vercel (`vercel.json` + `api/[[...route]].ts`).  
+> **Deploy:** GitHub + Vercel (`https://fgx-central-clientes-nay.vercel.app`). API via `api/index.js` + `api/bundle.mjs` (esbuild a partir de `backend/`).  
 > Complete UI/UX, uploads reais, testes e polish; mantenha o deploy Vercel **verde**.  
 > **NÃO conecte Supabase nesta rodada.**  
 > Cole este arquivo **inteiro** como única mensagem numa conversa nova com o Sonnet, neste repositório.  
