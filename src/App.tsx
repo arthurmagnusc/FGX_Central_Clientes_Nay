@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import Home from './pages/Home'
 import ClienteLogin from './pages/ClienteLogin'
 import ClienteEntregaveis from './pages/ClienteEntregaveis'
 import ClienteCiclo from './pages/ClienteCiclo'
@@ -18,9 +19,9 @@ import AdminAditivos from './pages/admin/AdminAditivos'
 import AdminSenha from './pages/admin/AdminSenha'
 
 function ProtectedCliente({ children }: { children: React.ReactNode }) {
-  const { type, loading } = useAuth()
+  const { type, loading, slug } = useAuth()
   if (loading) return <div className="p-8 text-center text-ink-3">Carregando...</div>
-  if (type !== 'cliente') return <Navigate to="/" replace />
+  if (type !== 'cliente') return <Navigate to={slug ? `/c/${slug}` : '/'} replace />
   return <>{children}</>
 }
 
@@ -34,6 +35,7 @@ function ProtectedAdmin({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/c/:slug" element={<ClienteLogin />} />
       <Route path="/c/:slug/entregaveis" element={<ProtectedCliente><ClienteEntregaveis /></ProtectedCliente>} />
       <Route path="/c/:slug/ciclo" element={<ProtectedCliente><ClienteCiclo /></ProtectedCliente>} />

@@ -1,9 +1,11 @@
 # PROMPT SONNET — Correção, UI/UX e deploy Vercel (sem Supabase ainda)
 
+> **Deploy:** o repo já está no GitHub e com esqueleto Vercel (`vercel.json` + `api/[[...route]].ts`).  
+> Complete UI/UX, uploads reais, testes e polish; mantenha o deploy Vercel **verde**.  
+> **NÃO conecte Supabase nesta rodada.**  
 > Cole este arquivo **inteiro** como única mensagem numa conversa nova com o Sonnet, neste repositório.  
-> Contexto: já existe um MVP funcional (React + Vite + Hono + JSON local). A auditoria encontrou gaps.  
-> **NÃO conecte Supabase nesta rodada.** Persistência continua em memória/JSON local (ou equivalente serverless).  
-> Objetivo: fechar bugs/aceitação, **elevar muito UI/UX**, e deixar o app **rodando na Vercel** para validação do front e fluxos.
+> Contexto: MVP funcional (React + Vite + Hono + store demo). A auditoria encontrou gaps.  
+> Objetivo: fechar bugs/aceitação, **elevar muito UI/UX**, e deixar o app estável na **Vercel**.
 
 Documentos: `docs/PRD.md`, `docs/ARQUITETURA.md`, `docs/IDENTIDADE-VISUAL.md`, `PROMPT-SONNET.md` (brief original).
 

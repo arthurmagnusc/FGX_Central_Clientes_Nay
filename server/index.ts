@@ -6,10 +6,10 @@ import { v4 as uuidv4 } from 'uuid'
 
 seed()
 
-const app = new Hono()
+export const app = new Hono()
 
 app.use('/*', cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: (origin) => origin || '*',
   credentials: true,
 }))
 
@@ -47,7 +47,9 @@ async function requireAdmin(c: any) {
 }
 
 function setSessionCookie(c: any, token: string) {
-  c.header('Set-Cookie', `fgx_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`)
+  const secure = process.env.COOKIE_SECURE === 'true' || process.env.VERCEL === '1'
+  const flags = `Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000${secure ? '; Secure' : ''}`
+  c.header('Set-Cookie', `fgx_session=${token}; ${flags}`)
 }
 
 // ===== AUTH ROUTES =====
@@ -993,13 +995,11 @@ Ficamos à disposição para discutir estes temas em maior profundidade.`
   persist()
 }
 
-app.post('/api/admin/seed-demo', async (c) => {
-  const auth = await requireAdmin(c)
-  if (!auth.session) return auth
-  createSeedDemo()
-  return c.json({ ok: true })
-})
+// Seed demo cycle on boot when empty (local + Vercel cold start)
+createSeedDemo()
 
-const port = 3001
-console.log(`Server running on http://localhost:${port}`)
-serve({ fetch: app.fetch, port })
+const port = Number(process.env.PORT || 3001)
+if (!process.env.VERCEL) {
+  console.log(`Server running on http://localhost:${port}`)
+  serve({ fetch: app.fetch, port })
+}

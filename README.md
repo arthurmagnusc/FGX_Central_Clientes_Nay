@@ -19,31 +19,26 @@ Plataforma onde clientes de recorrência da FGX Gestão (comunicação jurídica
 | Camada | Tecnologia |
 |---|---|
 | Frontend | React 19 + TypeScript + Vite + React Router + Tailwind CSS |
-| API | Hono (Node.js) em `/server` |
-| Banco | JSON local (dev) / Supabase Postgres (prod) |
-| Arquivos | Supabase Storage (bucket privado) |
+| API | Hono (Node) em `/server` — também em `/api` na Vercel |
+| Banco (fase atual) | Memória / JSON local — **Supabase na próxima fase** |
+| Arquivos (fase atual) | Demo local / Blob na rodada de correção |
 | Testes | Vitest (unit) + Playwright (e2e) |
-| i18n | 100% português do Brasil; datas dd/mm/aaaa |
+| Deploy | Vercel |
 
-## Setup rápido
+## Credenciais demo (validação)
+
+| Acesso | URL | Senha |
+|---|---|---|
+| Admin | `/admin` | `fgxadmin2026` (trocar no painel) |
+| Cliente Fiedra | `/c/fiedra` | senha `fiedra123` + seu nome |
+
+## Setup local
 
 ```bash
-# 1. Instalar dependências
 npm install
-
-# 2. Configurar variáveis de ambiente
 cp .env.example .env
-# Editar .env com ADMIN_SENHA_INICIAL (obrigatório)
-
-# 3. Iniciar servidor API (porta 3001)
-npm run dev:server
-
-# 4. Em outro terminal, iniciar frontend (porta 5173)
-npm run dev
-
-# 5. Acessar
-# Admin: http://localhost:5173/admin
-# Cliente (ex): http://localhost:5173/c/fiedra
+npm run dev:server   # API :3001
+npm run dev          # Front :5173
 ```
 
 ## Variáveis de ambiente

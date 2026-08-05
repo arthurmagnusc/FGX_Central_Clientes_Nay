@@ -95,6 +95,7 @@ export interface Piece {
   reasonings?: PieceReasoning[]
   trail?: ProductionTrail[]
   sources?: Source[]
+  nearbyPieces?: Piece[]
 }
 
 export interface PieceContent {

@@ -35,9 +35,15 @@ if (!db) {
 }
 
 function save() {
-  const dir = path.dirname(DB_FILE)
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2))
+  // Em serverless (Vercel) o FS é efêmero/read-only — mantém só memória
+  if (process.env.VERCEL || process.env.FGX_MEMORY_DB === '1') return
+  try {
+    const dir = path.dirname(DB_FILE)
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2))
+  } catch {
+    // ignore persist errors in constrained environments
+  }
 }
 
 export function getDB() { return db }
@@ -117,12 +123,18 @@ export function seed() {
     }
   }
 
-  if (process.env.ADMIN_SENHA_INICIAL) {
-    db.admin_users = [{
-      id: uuidv4(), nome_usuario: 'admin',
-      senha_hash: hashPassword(process.env.ADMIN_SENHA_INICIAL),
-      senha_inicial: true, created_at: new Date().toISOString(),
-    }]
+  const adminSenha = process.env.ADMIN_SENHA_INICIAL || 'fgxadmin2026'
+  db.admin_users = [{
+    id: uuidv4(), nome_usuario: 'admin',
+    senha_hash: hashPassword(adminSenha),
+    senha_inicial: true, created_at: new Date().toISOString(),
+  }]
+
+  // Demo validation phase: fiedra already usable without manual setup
+  const fiedra = db.clients.find((c: any) => c.slug === 'fiedra')
+  if (fiedra) {
+    fiedra.senha_hash = hashPassword(process.env.DEMO_CLIENT_SENHA || 'fiedra123')
+    fiedra.ativo = true
   }
 
   save()
