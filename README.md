@@ -25,12 +25,25 @@ Plataforma onde clientes de recorrência da FGX Gestão (comunicação jurídica
 | Testes | Vitest (unit) + Playwright (e2e) |
 | Deploy | Vercel |
 
-## Credenciais demo (validação)
+## Deploy
+
+- **GitHub:** https://github.com/arthurmagnusc/FGX_Central_Clientes_Nay
+- **Vercel (produção):** https://fgx-central-clientes-nay.vercel.app
+- Projeto Vercel: `fgx-central-clientes-nay` (ligado ao repo; deploys a cada push em `main`)
+
+### Credenciais demo (validação)
 
 | Acesso | URL | Senha |
 |---|---|---|
-| Admin | `/admin` | `fgxadmin2026` (trocar no painel) |
-| Cliente Fiedra | `/c/fiedra` | senha `fiedra123` + seu nome |
+| Home | `/` | — |
+| Admin | `/admin` | `fgxadmin2026` |
+| Cliente Fiedra | `/c/fiedra` | `fiedra123` + nome |
+
+> Supabase ainda **não** está conectado. Dados ficam em memória no cold start da API (seed automático).
+
+## Prompt para o Sonnet (próxima rodada)
+
+Cole o arquivo inteiro: [`PROMPT-SONNET-CORRECAO.md`](PROMPT-SONNET-CORRECAO.md)
 
 ## Setup local
 
