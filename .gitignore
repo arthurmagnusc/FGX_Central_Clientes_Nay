@@ -3,9 +3,7 @@ dist/
 *.db.json
 backend/db.json
 server/db.json
-api/bundle.mjs
 api/[...route].cjs
-api/[...route].js
 lib/api-bundle.mjs
 backend/uploads/
 .env
