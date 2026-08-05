@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.db.json
+server/db.json
+server/uploads/
+.env
+.env.local
+.env.*.local
+.vercel
+playwright-report/
+test-results/
+*.log
+.DS_Store
