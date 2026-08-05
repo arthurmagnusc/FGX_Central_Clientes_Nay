@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "dev:server": "tsx server/index.ts",
-    "build": "tsc -b && vite build",
+    "build": "npm run build:api && tsc -b && vite build",
+    "build:api": "esbuild server/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=api/bundle.mjs --packages=external",
     "preview": "vite preview",
     "db:migrate": "supabase migration up",
     "db:seed": "tsx supabase/seed.ts",
@@ -19,6 +20,7 @@
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.4.0",
     "dompurify": "^3.4.13",
+    "esbuild": "^0.25.0",
     "hono": "^4.13.0",
     "marked": "^18.0.9",
     "react": "^19.2.8",

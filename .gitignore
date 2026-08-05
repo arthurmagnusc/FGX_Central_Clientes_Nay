@@ -2,6 +2,8 @@ node_modules/
 dist/
 *.db.json
 server/db.json
+server/bundle.mjs
+api/bundle.mjs
 server/uploads/
 .env
 .env.local
@@ -11,3 +13,5 @@ playwright-report/
 test-results/
 *.log
 .DS_Store
+
+.vercel

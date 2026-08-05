@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
 const DB_FILE = path.join(process.cwd(), 'server', 'db.json')
 let db: any = null
