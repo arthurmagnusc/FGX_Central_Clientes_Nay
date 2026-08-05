@@ -296,7 +296,7 @@ export default function ClientePeca() {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <div className="page-shell max-w-4xl">
         <div className="flex items-center justify-between mb-6">
           <button type="button" className="btn-secondary text-sm px-4" onClick={() => navTo(-1)} disabled={!hasPrev}>
             &larr; Anterior

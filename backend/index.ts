@@ -1026,15 +1026,24 @@ Ficamos à disposição para discutir estes temas em maior profundidade.`
   getDB().comments.push({ id: uuidv4(), piece_id: p1Id, piece_content_id: getDB().piece_contents.find((pc: any) => pc.piece_id === p1Id)?.id || null, autor_nome: 'Marina S.', autor_tipo: 'cliente', texto: 'Excelente abordagem! Sugiro incluir menção ao REsp 1.850.000.', trecho: 'Artigo 927', created_at: new Date().toISOString() })
   getDB().comments.push({ id: uuidv4(), piece_id: p2Id, piece_content_id: null, autor_nome: 'Carlos F.', autor_tipo: 'cliente', texto: 'Poderíamos acrescentar dados da OAB sobre o tema.', trecho: null, created_at: new Date().toISOString() })
 
-  // Deliverables (7, placeholder)
-  const cats = ['diagnostico', 'planejamento', 'apresentacao', 'proposta', 'politica', 'material_institucional', 'relatorio_resultado']
-  cats.forEach(cat => {
+  // Deliverables (7) — títulos reais para a demo visual
+  const seedDeliverables = [
+    { cat: 'diagnostico', titulo: 'Diagnóstico de comunicação — Fiedra', desc: 'Leitura da presença digital, canais ativos e oportunidades de posicionamento jurídico.' },
+    { cat: 'planejamento', titulo: 'Planejamento editorial semestral', desc: 'Calendário de temas, formatos e objetivos por canal para o ciclo contratado.' },
+    { cat: 'apresentacao', titulo: 'Apresentação de resultados — Q2', desc: 'Síntese executiva do desempenho editorial e engajamento no trimestre.' },
+    { cat: 'proposta', titulo: 'Proposta de aditivo — redes sociais', desc: 'Escopo, volume e investimento para expansão do canal de redes sociais.' },
+    { cat: 'politica', titulo: 'Política editorial revisada', desc: 'Diretrizes de tom, compliance e fluxos de aprovação do escritório.' },
+    { cat: 'material_institucional', titulo: 'Kit institucional — bio e one-pager', desc: 'Textos base revisados para site, LinkedIn e materiais de apresentação.' },
+    { cat: 'relatorio_resultado', titulo: 'Relatório de resultados — junho/2026', desc: 'Métricas, aprendizados e recomendações do ciclo editorial do mês.' },
+  ]
+  seedDeliverables.forEach((item, i) => {
     getDB().deliverables.push({
-      id: uuidv4(), client_id: fiedra.id, categoria: cat,
-      titulo: `Entregável de ${cat.replace('_', ' ')}`,
-      descricao: 'Documento placeholder para demonstração',
-      versao: '1.0', storage_path: 'deliverables/placeholder.pdf',
-      mime_type: 'application/pdf', tamanho_bytes: 102400,
+      id: uuidv4(), client_id: fiedra.id, categoria: item.cat,
+      titulo: item.titulo,
+      descricao: item.desc,
+      versao: String(i + 1), storage_path: 'deliverables/placeholder.pdf',
+      mime_type: i % 3 === 0 ? 'text/html' : 'application/pdf',
+      tamanho_bytes: 45000 + i * 12300,
       status: 'aprovado', created_at: new Date().toISOString(),
     })
   })

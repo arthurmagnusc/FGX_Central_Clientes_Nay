@@ -51370,18 +51370,26 @@ Ficamos \xE0 disposi\xE7\xE3o para discutir estes temas em maior profundidade.`;
   }
   getDB().comments.push({ id: v4_default(), piece_id: p1Id, piece_content_id: getDB().piece_contents.find((pc) => pc.piece_id === p1Id)?.id || null, autor_nome: "Marina S.", autor_tipo: "cliente", texto: "Excelente abordagem! Sugiro incluir men\xE7\xE3o ao REsp 1.850.000.", trecho: "Artigo 927", created_at: (/* @__PURE__ */ new Date()).toISOString() });
   getDB().comments.push({ id: v4_default(), piece_id: p2Id, piece_content_id: null, autor_nome: "Carlos F.", autor_tipo: "cliente", texto: "Poder\xEDamos acrescentar dados da OAB sobre o tema.", trecho: null, created_at: (/* @__PURE__ */ new Date()).toISOString() });
-  const cats = ["diagnostico", "planejamento", "apresentacao", "proposta", "politica", "material_institucional", "relatorio_resultado"];
-  cats.forEach((cat) => {
+  const seedDeliverables = [
+    { cat: "diagnostico", titulo: "Diagn\xF3stico de comunica\xE7\xE3o \u2014 Fiedra", desc: "Leitura da presen\xE7a digital, canais ativos e oportunidades de posicionamento jur\xEDdico." },
+    { cat: "planejamento", titulo: "Planejamento editorial semestral", desc: "Calend\xE1rio de temas, formatos e objetivos por canal para o ciclo contratado." },
+    { cat: "apresentacao", titulo: "Apresenta\xE7\xE3o de resultados \u2014 Q2", desc: "S\xEDntese executiva do desempenho editorial e engajamento no trimestre." },
+    { cat: "proposta", titulo: "Proposta de aditivo \u2014 redes sociais", desc: "Escopo, volume e investimento para expans\xE3o do canal de redes sociais." },
+    { cat: "politica", titulo: "Pol\xEDtica editorial revisada", desc: "Diretrizes de tom, compliance e fluxos de aprova\xE7\xE3o do escrit\xF3rio." },
+    { cat: "material_institucional", titulo: "Kit institucional \u2014 bio e one-pager", desc: "Textos base revisados para site, LinkedIn e materiais de apresenta\xE7\xE3o." },
+    { cat: "relatorio_resultado", titulo: "Relat\xF3rio de resultados \u2014 junho/2026", desc: "M\xE9tricas, aprendizados e recomenda\xE7\xF5es do ciclo editorial do m\xEAs." }
+  ];
+  seedDeliverables.forEach((item, i) => {
     getDB().deliverables.push({
       id: v4_default(),
       client_id: fiedra.id,
-      categoria: cat,
-      titulo: `Entreg\xE1vel de ${cat.replace("_", " ")}`,
-      descricao: "Documento placeholder para demonstra\xE7\xE3o",
-      versao: "1.0",
+      categoria: item.cat,
+      titulo: item.titulo,
+      descricao: item.desc,
+      versao: String(i + 1),
       storage_path: "deliverables/placeholder.pdf",
-      mime_type: "application/pdf",
-      tamanho_bytes: 102400,
+      mime_type: i % 3 === 0 ? "text/html" : "application/pdf",
+      tamanho_bytes: 45e3 + i * 12300,
       status: "aprovado",
       created_at: (/* @__PURE__ */ new Date()).toISOString()
     });

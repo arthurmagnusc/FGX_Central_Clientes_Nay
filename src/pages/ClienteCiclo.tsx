@@ -8,6 +8,7 @@ import {
   ContextPill,
   PieceCard,
   StatusPill,
+  FilterBar,
   ErrorMessage,
   Skeleton,
   EmptyState,
@@ -60,11 +61,17 @@ export default function ClienteCiclo() {
     if (p.channel) channelNames[p.channel_id] = p.channel.nome
   })
 
+  const filterItems = channels.map((ch) => ({
+    id: ch,
+    label: channelNames[ch] || ch,
+    count: pieces.filter((p) => p.channel_id === ch).length,
+  }))
+
   const initial = (pessoaNome || slug || 'C').charAt(0).toUpperCase()
 
   return (
     <ClientChrome active="ciclo">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <div className="page-shell">
         <PageIntro
           eyebrow={
             <ContextPill letter={initial} label={`${pessoaNome || 'Cliente'} · Ciclo editorial`} />
@@ -77,13 +84,14 @@ export default function ClienteCiclo() {
         {loading ? (
           <div className="space-y-6">
             <Skeleton className="h-28 w-full rounded-xl" />
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3].map((i) => (
+            <div className="cards-grid">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="card">
-                  <Skeleton className="h-36 w-full rounded-none" />
+                  <Skeleton className="h-[8.75rem] w-full rounded-none" />
                   <div className="p-5 space-y-3">
                     <Skeleton className="h-5 w-28" />
                     <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-9 w-full" />
                   </div>
                 </div>
               ))}
@@ -119,7 +127,7 @@ export default function ClienteCiclo() {
 
             {cycle && (
               <>
-                <div className="card p-6 mb-8 overflow-visible">
+                <div className="card p-6 mb-8 overflow-visible animate-fade-up">
                   <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
                     <div>
                       <h2 className="font-titillium font-bold text-xl text-ink">
@@ -129,7 +137,9 @@ export default function ClienteCiclo() {
                         {pieces.length} peças · {approved} aprovadas
                       </p>
                     </div>
-                    <div className="text-3xl font-black font-titillium text-fgx-red">{progressPct}%</div>
+                    <div className="text-3xl font-black font-titillium text-fgx-red tabular-nums">
+                      {progressPct}%
+                    </div>
                   </div>
                   <div className="w-full h-2.5 bg-fgx-gray rounded-full overflow-hidden">
                     <div
@@ -137,11 +147,11 @@ export default function ClienteCiclo() {
                       style={{ width: `${progressPct}%` }}
                     />
                   </div>
-                  <div className="flex gap-1 mt-3">
+                  <div className="flex gap-1.5 mt-3">
                     {pieces.map((p) => (
                       <div
                         key={p.id}
-                        className={`flex-1 h-1.5 rounded-full ${
+                        className={`flex-1 h-1.5 rounded-full transition-colors ${
                           p.status === 'aprovada'
                             ? 'bg-fgx-green'
                             : p.status === 'ajustada'
@@ -154,37 +164,16 @@ export default function ClienteCiclo() {
                   </div>
                 </div>
 
-                {channels.length > 1 && (
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <button
-                      type="button"
-                      onClick={() => setChannelFilter('')}
-                      className={`px-3 py-1.5 rounded-full text-xs font-montserrat font-medium transition-colors ${
-                        !channelFilter
-                          ? 'bg-fgx-red text-white'
-                          : 'bg-white text-ink-3 border border-line hover:bg-fgx-gray'
-                      }`}
-                    >
-                      Todos
-                    </button>
-                    {channels.map((ch) => (
-                      <button
-                        type="button"
-                        key={ch}
-                        onClick={() => setChannelFilter(ch === channelFilter ? '' : ch)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-montserrat font-medium transition-colors ${
-                          channelFilter === ch
-                            ? 'bg-fgx-red text-white'
-                            : 'bg-white text-ink-3 border border-line hover:bg-fgx-gray'
-                        }`}
-                      >
-                        {channelNames[ch] || ch}
-                      </button>
-                    ))}
-                  </div>
+                {filterItems.length > 1 && (
+                  <FilterBar
+                    items={filterItems}
+                    value={channelFilter}
+                    onChange={setChannelFilter}
+                    allLabel="Todos os canais"
+                  />
                 )}
 
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="cards-grid">
                   {filteredPieces.map((p, idx) => (
                     <PieceCard
                       key={p.id}
@@ -196,6 +185,7 @@ export default function ClienteCiclo() {
                       area={p.area_direito}
                       status={p.status}
                       commentCount={p.comments?.length}
+                      stagger={idx + 1}
                     />
                   ))}
                 </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { api } from '../lib/api'
@@ -7,6 +7,7 @@ import {
   PageIntro,
   ContextPill,
   DeliverableCard,
+  FilterBar,
   ErrorMessage,
   Skeleton,
   EmptyState,
@@ -32,6 +33,10 @@ export default function ClienteEntregaveis() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [toastMsg, setToastMsg] = useState('')
+  const [toastError, setToastError] = useState(false)
+  const [catFilter, setCatFilter] = useState('')
+  const [busyId, setBusyId] = useState<string | null>(null)
+  const [busyKind, setBusyKind] = useState<'open' | 'download' | null>(null)
 
   const load = () => {
     setLoading(true)
@@ -49,21 +54,32 @@ export default function ClienteEntregaveis() {
     return res.blob()
   }
 
+  const flash = (msg: string, isError = false) => {
+    setToastMsg(msg)
+    setToastError(isError)
+    setTimeout(() => setToastMsg(''), 2800)
+  }
+
   const handleOpen = async (del: Deliverable) => {
+    setBusyId(del.id)
+    setBusyKind('open')
     try {
       const blob = await fetchBlob(del)
       const url = URL.createObjectURL(blob)
       window.open(url, '_blank', 'noopener,noreferrer')
       setTimeout(() => URL.revokeObjectURL(url), 60_000)
-      setToastMsg(`Abrindo "${del.titulo}"`)
-      setTimeout(() => setToastMsg(''), 2500)
+      flash(`Abrindo “${del.titulo}”`)
     } catch {
-      setToastMsg('Erro ao abrir arquivo')
-      setTimeout(() => setToastMsg(''), 3000)
+      flash('Erro ao abrir arquivo', true)
+    } finally {
+      setBusyId(null)
+      setBusyKind(null)
     }
   }
 
   const handleDownload = async (del: Deliverable) => {
+    setBusyId(del.id)
+    setBusyKind('download')
     try {
       const blob = await fetchBlob(del)
       const url = URL.createObjectURL(blob)
@@ -72,25 +88,35 @@ export default function ClienteEntregaveis() {
       a.download = del.titulo
       a.click()
       URL.revokeObjectURL(url)
-      setToastMsg(`Download de "${del.titulo}" iniciado`)
-      setTimeout(() => setToastMsg(''), 3000)
+      flash(`Download de “${del.titulo}” iniciado`)
     } catch {
-      setToastMsg('Erro ao baixar arquivo')
-      setTimeout(() => setToastMsg(''), 3000)
+      flash('Erro ao baixar arquivo', true)
+    } finally {
+      setBusyId(null)
+      setBusyKind(null)
     }
   }
 
-  const grouped: Record<string, Deliverable[]> = {}
-  deliverables.forEach((d) => {
-    if (!grouped[d.categoria]) grouped[d.categoria] = []
-    grouped[d.categoria].push(d)
-  })
+  const filterItems = useMemo(() => {
+    return CAT_ORDER.map((cat) => ({
+      id: cat,
+      label: CATEGORY_LABELS[cat] || cat,
+      count: deliverables.filter((d) => d.categoria === cat).length,
+    })).filter((i) => i.count > 0)
+  }, [deliverables])
+
+  const visible = catFilter
+    ? deliverables.filter((d) => d.categoria === catFilter)
+    : [...deliverables].sort(
+        (a, b) => CAT_ORDER.indexOf(a.categoria) - CAT_ORDER.indexOf(b.categoria),
+      )
 
   const initial = (pessoaNome || slug || 'C').charAt(0).toUpperCase()
+  const allApproved = deliverables.length > 0 && deliverables.every((d) => d.status === 'aprovado')
 
   return (
     <ClientChrome active="entregaveis">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <div className="page-shell">
         <PageIntro
           eyebrow={
             <ContextPill
@@ -101,25 +127,25 @@ export default function ClienteEntregaveis() {
           title="Biblioteca de entregáveis"
           status={
             deliverables.length > 0 ? (
-              <span className="pill pill-status-aprovado">
+              <span className={`pill ${allApproved ? 'pill-status-aprovado' : 'pill-status-em_validacao'}`}>
                 <span className="pill-dot" />
-                {deliverables.length} arquivos
+                {allApproved ? 'Entregue' : `${deliverables.length} arquivos`}
               </span>
             ) : undefined
           }
-          description="Relatórios e materiais macro do contrato. Abra para visualizar ou baixe o arquivo original."
+          description="Relatórios e materiais macro do contrato. Abra para visualizar no navegador ou baixe o arquivo original."
         />
 
         {loading ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
+          <div className="cards-grid">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="card">
-                <Skeleton className="h-40 w-full rounded-none" />
+                <Skeleton className="h-[9.5rem] w-full rounded-none" />
                 <div className="p-5 space-y-3">
-                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-5 w-28" />
                   <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-9 w-full" />
                 </div>
               </div>
             ))}
@@ -133,38 +159,46 @@ export default function ClienteEntregaveis() {
             description="Os entregáveis aparecerão aqui quando forem publicados pela equipe FGX."
           />
         ) : (
-          CAT_ORDER.map((cat) => {
-            const items = grouped[cat]
-            if (!items || items.length === 0) return null
-            return (
-              <section key={cat} className="mb-12">
-                <h2 className="font-titillium font-semibold text-lg text-ink mb-5">
-                  {CATEGORY_LABELS[cat]}
-                  <span className="text-sm text-ink-3 font-montserrat ml-2 font-normal">({items.length})</span>
-                </h2>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {items.map((d, idx) => (
-                    <DeliverableCard
-                      key={d.id}
-                      badge={mimeBadge(d.mime_type, d.titulo)}
-                      stage={d.versao || String(idx + 1)}
-                      stageLabel={CATEGORY_LABELS[cat] || cat}
-                      status={d.status}
-                      statusPrefix={`v${d.versao}`}
-                      title={d.titulo}
-                      description={d.descricao}
-                      meta={`Relatório · ${formatBytes(d.tamanho_bytes)} · ${formatDate(d.created_at)}`}
-                      onOpen={() => handleOpen(d)}
-                      onDownload={() => handleDownload(d)}
-                    />
-                  ))}
-                </div>
-              </section>
-            )
-          })
+          <>
+            {filterItems.length > 1 && (
+              <FilterBar items={filterItems} value={catFilter} onChange={setCatFilter} />
+            )}
+
+            <div className="cards-grid">
+              {visible.map((d, idx) => (
+                <DeliverableCard
+                  key={d.id}
+                  badge={mimeBadge(d.mime_type, d.titulo)}
+                  stage={String(idx + 1)}
+                  stageLabel={CATEGORY_LABELS[d.categoria] || d.categoria}
+                  status={d.status}
+                  statusPrefix={`v${d.versao}`}
+                  title={d.titulo}
+                  description={d.descricao}
+                  meta={`Relatório · ${formatBytes(d.tamanho_bytes)} · ${formatDate(d.created_at)}`}
+                  onOpen={() => handleOpen(d)}
+                  onDownload={() => handleDownload(d)}
+                  busy={busyId === d.id ? busyKind : null}
+                  stagger={idx + 1}
+                />
+              ))}
+            </div>
+
+            {visible.length === 0 && (
+              <div className="mt-6">
+                <EmptyState
+                  icon="🔍"
+                  title="Nenhum item nesta categoria"
+                  description="Tente outro filtro para ver os entregáveis."
+                />
+              </div>
+            )}
+          </>
         )}
 
-        {toastMsg && <div className="toast toast-success">{toastMsg}</div>}
+        {toastMsg && (
+          <div className={`toast ${toastError ? 'toast-error' : 'toast-success'}`}>{toastMsg}</div>
+        )}
       </div>
     </ClientChrome>
   )

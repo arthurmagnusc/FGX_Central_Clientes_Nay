@@ -22,7 +22,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <header className="fgx-header px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Logo />
-          <span className="font-titillium font-semibold text-lg text-ink">Admin FGX</span>
+          <div className="leading-tight">
+            <p className="font-titillium font-semibold text-base text-ink">Admin FGX</p>
+            <p className="font-montserrat text-xs text-ink-3">Portal interno</p>
+          </div>
         </div>
         <button type="button" className="fgx-nav-link" onClick={logout}>
           Sair
