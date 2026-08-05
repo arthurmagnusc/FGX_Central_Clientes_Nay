@@ -4,12 +4,13 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/[[...route]].js": {
+    "api/[...route].js": {
       "includeFiles": "lib/api-bundle.mjs",
       "maxDuration": 30
     }
   },
   "rewrites": [
+    { "source": "/api", "destination": "/api/health" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
