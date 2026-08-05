@@ -1,9 +1,10 @@
 node_modules/
 dist/
 *.db.json
+backend/db.json
 server/db.json
-server/bundle.mjs
 api/bundle.mjs
+backend/uploads/
 server/uploads/
 .env
 .env.local

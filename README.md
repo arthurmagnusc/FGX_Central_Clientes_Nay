@@ -19,7 +19,7 @@ Plataforma onde clientes de recorrência da FGX Gestão (comunicação jurídica
 | Camada | Tecnologia |
 |---|---|
 | Frontend | React 19 + TypeScript + Vite + React Router + Tailwind CSS |
-| API | Hono (Node) em `/server` — também em `/api` na Vercel |
+| API | Hono (Node) em `/backend` — exposta em `/api` na Vercel |
 | Banco (fase atual) | Memória / JSON local — **Supabase na próxima fase** |
 | Arquivos (fase atual) | Demo local / Blob na rodada de correção |
 | Testes | Vitest (unit) + Playwright (e2e) |

@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:server": "tsx server/index.ts",
+    "dev:server": "tsx backend/index.ts",
     "build": "npm run build:api && tsc -b && vite build",
-    "build:api": "esbuild server/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=api/bundle.mjs --packages=external",
+    "build:api": "esbuild backend/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=api/bundle.mjs --packages=external",
     "preview": "vite preview",
     "db:migrate": "supabase migration up",
     "db:seed": "tsx supabase/seed.ts",
