@@ -4,8 +4,8 @@ dist/
 backend/db.json
 server/db.json
 api/bundle.mjs
+lib/api-bundle.mjs
 backend/uploads/
-server/uploads/
 .env
 .env.local
 .env.*.local
