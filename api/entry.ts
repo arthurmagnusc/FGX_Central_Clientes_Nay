@@ -1,4 +1,4 @@
 import { handle } from 'hono/vercel'
-import { app } from '../lib/api-bundle.mjs'
+import { app } from '../backend/index'
 
 export default handle(app)
