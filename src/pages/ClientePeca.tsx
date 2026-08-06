@@ -5,16 +5,11 @@ import { api } from '../lib/api'
 import { ClientShell } from '../components/ClientShell'
 import { ErrorMessage, Skeleton, StatusPill, PageIntro, ContextPill } from '../components/Shared'
 import { FORMAT_LABELS, formatDateTime } from '../lib/utils'
+import { markdownSeguro } from '../lib/sanitizar'
 import type { Piece, Comment, Adjustment } from '../types'
-import DOMPurify from 'dompurify'
-import { marked } from 'marked'
 
 function renderMarkdown(text: string): string {
-  const raw = marked.parse(text, { async: false }) as string
-  return DOMPurify.sanitize(raw, {
-    ALLOWED_TAGS: ['p','br','strong','em','ul','ol','li','h1','h2','h3','h4','h5','h6','a','blockquote','code','pre','table','thead','tbody','tr','th','td','hr','span'],
-    ALLOWED_ATTR: ['href','target','rel'],
-  })
+  return markdownSeguro(text)
 }
 
 function blockLabel(formato: string, idx: number) {

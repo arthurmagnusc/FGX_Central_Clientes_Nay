@@ -1,7 +1,7 @@
 {
   "name": "portal-cliente-fgx",
   "private": true,
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,14 +9,17 @@
     "build": "npm run build:api && tsc -b && vite build",
     "build:api": "esbuild backend/vercel-entry.ts --bundle --platform=node --target=node22 --format=esm --outfile=api/index.js",
     "preview": "vite preview",
-    "db:migrate": "supabase migration up",
-    "db:seed": "tsx supabase/seed.ts",
+    "db:migrate": "npx supabase db push",
+    "db:seed": "node -e \"console.log('Aplique supabase/seed.sql no SQL Editor ou use: npx supabase db reset (ver docs/GO-LIVE.md)')\"",
+    "criar-admin": "node scripts/criar-admin.mjs",
+    "definir-senha-cliente": "node scripts/definir-senha-cliente.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.0",
+    "@supabase/supabase-js": "^2.112.1",
     "@vercel/blob": "^2.6.1",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.4.0",
@@ -49,4 +52,3 @@
     "vitest": "^4.0.0"
   }
 }
-

@@ -29,13 +29,15 @@
 | Camada | Escolha | Motivo |
 |---|---|---|
 | Frontend | React 18+ · TypeScript · Vite · React Router · Tailwind | Igual ao brief; DX local |
-| Banco | **Supabase Postgres** | RLS real entre clientes; migrations versionadas |
-| Arquivos | **Supabase Storage** (bucket privado) | Substitui Netlify Blobs; download só via API autenticada |
-| API | **Supabase Edge Functions** (Deno) **ou** `server/` com Hono no mesmo monorepo | Auth, CRUD, upload/download, webhook |
-| Auth | Cookie httpOnly + hash bcrypt/argon2 nas Functions | Senha por cliente / admin, sem Auth mágico de e-mail |
+| Banco | **Supabase Postgres** (go-live) · Hono in-memory (demo atual) | RLS real entre clientes; migrations versionadas em `supabase/migrations/` (vocabulário PT) |
+| Arquivos | **Supabase Storage** (privado) no go-live | Download só via Edge Functions autenticadas |
+| API | **Edge Functions** no go-live · `backend/` Hono na demo Vercel | Auth, CRUD, upload/download, webhook |
+| Auth | JWT + claims RLS (go-live) · sessão Hono (demo) | Senha compartilhada por cliente; ver `docs/HANDOFF-CLAUDE.md` |
 | Testes | Vitest + Playwright (e2e fidelidade/isolamento/persistência) | Aceite do PRD |
 | Observabilidade | Sentry (opcional, `SENTRY_DSN`) | Erros de frontend |
-| Deploy alvo | Vercel (front) + Supabase (back) **ou** Netlify + Supabase | Decisão de infra depois do MVP |
+| Deploy alvo | Vercel (front) + Supabase (back) | Checklist em `docs/GO-LIVE.md` |
+
+**Modo atual:** demo com Hono. Ligar Supabase quando as env `VITE_SUPABASE_*` e secrets das Functions estiverem prontas (`src/lib/dataMode.ts`).
 
 **Não usar:** Firebase, Netlify Database/Blobs (salvo se explicitamente pedido depois), senha no frontend, URLs públicas de arquivo.
 

@@ -1,0 +1,8 @@
+# Stub mínimo. Ao ligar o projeto: `npx supabase link` regenera/completa esta config.
+# Migrations canônicas: migrations/0001–0003. Não aplicar legacy-en/.
+
+[api]
+enabled = true
+
+[db]
+major_version = 15

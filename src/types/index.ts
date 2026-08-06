@@ -4,8 +4,16 @@ export type PieceStatus = 'pendente' | 'em_revisao' | 'ajustada' | 'aprovada'
 export type DeliverableStatus = 'em_producao' | 'em_validacao' | 'aprovado'
 export type ChannelSlug = 'redes_sociais' | 'blog' | 'newsletter' | 'video'
 export type PieceFormat = 'carrossel' | 'artigo' | 'analise_tecnica' | 'texto_email' | 'roteiro_video'
+export type Funil = 'topo' | 'meio' | 'fundo'
+export type TipoGancho = 'jornalistico' | 'analitico'
 export type AdjustmentType = 'pontual' | 'estrutural'
-export type AdjustmentEvalStatus = 'pendente' | 'em_avaliacao' | 'concluido'
+/** Demo Hono: em_avaliacao/concluido. Schema Supabase (go-live): avaliado/aplicado. */
+export type AdjustmentEvalStatus =
+  | 'pendente'
+  | 'em_avaliacao'
+  | 'concluido'
+  | 'avaliado'
+  | 'aplicado'
 export type DeliverableCategory = 'diagnostico' | 'planejamento' | 'apresentacao' | 'proposta' | 'politica' | 'material_institucional' | 'relatorio_resultado'
 
 export interface Client {
@@ -89,6 +97,14 @@ export interface Piece {
   limite_caracteres_override: number | null
   ordem: number
   created_at: string
+  /** Campos do schema Supabase (PT) — opcionais no demo Hono */
+  funil?: Funil | null
+  editoria_nome?: string | null
+  pilar_nome?: string | null
+  gancho_texto?: string | null
+  gancho_tipo?: TipoGancho | null
+  gancho_url?: string | null
+  gancho_data?: string | null
   contents?: PieceContent[]
   comments?: Comment[]
   approvals?: Approval[]

@@ -10,10 +10,16 @@ Plataforma onde clientes de recorrência da FGX Gestão (comunicação jurídica
 |---|---|
 | Frontend | React 19 + TypeScript + Vite + React Router + Tailwind CSS |
 | API | Hono (Node.js) em `/backend`, serverless na Vercel via `/api` |
-| Banco | Em memória (JSON opcional em disco local). Supabase na próxima fase. |
-| Arquivos | Vercel Blob (produção) / `server/uploads/` (local dev) / memória (fallback) |
-| Testes | Vitest (unit) + Playwright (e2e) |
+| Banco | Em memória (JSON opcional em disco local). Schema + RLS + Edge Functions já em `supabase/` — ver [docs/GO-LIVE.md](docs/GO-LIVE.md). |
+| Arquivos | Vercel Blob (produção demo) / Storage Supabase no go-live |
+| Testes | Vitest (unit: blocos, sanitização, …) + Playwright (e2e) |
 | i18n | 100% português do Brasil; datas dd/mm/aaaa |
+
+## Documentação
+
+- [docs/GO-LIVE.md](docs/GO-LIVE.md) — checklist para ligar Supabase
+- [docs/HANDOFF-CLAUDE.md](docs/HANDOFF-CLAUDE.md) — decisões de auth/RLS do pacote produto
+- [docs/ARQUITETURA.md](docs/ARQUITETURA.md) · [docs/PRD.md](docs/PRD.md) · [docs/PADRAO-DESIGN.md](docs/PADRAO-DESIGN.md)
 
 ## Credenciais demo (ambiente de validação)
 
